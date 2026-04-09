@@ -61,11 +61,13 @@ return [
      * Support Collect Methods
      * Array in order of preference
      */
-    'services' => [
-        'MTN'    => ['country' => 'CM'],
-        'ORANGE' => ['country' => 'CM'],
-        'MOOV'   => ['country' => 'CI'],
-        'AIRTEL' => ['country' => 'CM'],
+    'services' => ['MTN', 'ORANGE', 'MOOV', 'AIRTEL'],
+
+    'service_countries' => [
+        'MTN'    => 'CM',
+        'ORANGE' => 'CM',
+        'MOOV'   => 'CI',
+        'AIRTEL' => 'CM',
     ],
 
     /*
