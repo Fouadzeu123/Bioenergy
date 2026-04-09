@@ -16,7 +16,7 @@ return new class extends Migration
              $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('produit_id')->constrained()->onDelete('cascade');
             $table->integer('quantity')->default(1);
-            $table->decimal('amount_invested', 15, 2)->nullable()->after('quantity');
+            $table->decimal('amount_invested', 15, 2)->nullable();
             $table->date('start_date');
             $table->date('end_date'); // 1 an après start_date
             $table->timestamp('next_gain_date')->nullable();
