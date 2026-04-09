@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('produit_id')->constrained()->onDelete('cascade');
             $table->integer('quantity')->default(1);
             $table->decimal('amount_invested', 15, 2)->nullable();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('end_date'); // 1 an après start_date
             $table->timestamp('next_gain_date')->nullable();
             $table->timestamps();
-});
+        });
     }
 
     /**
