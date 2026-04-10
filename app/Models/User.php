@@ -36,10 +36,20 @@ protected $fillable = [
     'withdrawal_account',
     'withdrawal_method',
     'email',
-    'role'
+    ];
 
-
-];
+    /**
+     * Boot function from Laravel.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($user) {
+            if (empty($user->country_code)) {
+                $user->country_code = '237';
+            }
+        });
+    }
 
     /**
      * The attributes that should be hidden for serialization.

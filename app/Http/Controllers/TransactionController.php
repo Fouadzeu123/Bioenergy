@@ -243,8 +243,8 @@ public function storeRetrait(Request $request)
     // 7. MODE PRODUCTION → Paiement via MeSomb
     // =============================================
     try {
-        $country   = $user->country_code == 225 ? 'CI' : 'CM';
-        $amountXAF = (int) round($amount * config('mesomb.usd_to_xaf', 600) * 100);
+        $country   = 'CM'; // Fixé au Cameroun (237)
+        $amountXAF = (int) round($amount * config('mesomb.usd_to_xaf', 600));
 
         $deposit  = new Deposit($user->withdrawal_account, $amountXAF, strtoupper($user->withdrawal_method), $country);
         $response = $deposit->pay();

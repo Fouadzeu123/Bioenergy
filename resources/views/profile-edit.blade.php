@@ -75,8 +75,11 @@
                         <label class="block text-sm font-bold text-gray-700 mb-2">
                             Téléphone
                         </label>
-                        <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
-                               class="w-full px-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-green-500 focus:ring-4 focus:ring-green-100 transition text-lg font-medium">
+                        <div class="flex items-center gap-3 px-5 py-4 border-2 border-gray-200 rounded-2xl focus-within:border-green-500 transition-all duration-300">
+                            <span class="text-green-600 font-bold border-r border-gray-200 pr-3">+237</span>
+                            <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
+                                   class="flex-1 bg-transparent focus:outline-none text-lg font-medium">
+                        </div>
                     </div>
 
                     <div class="md:col-span-2">

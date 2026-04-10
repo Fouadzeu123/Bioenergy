@@ -76,7 +76,7 @@
                         <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-gray-700">
                             <div>
                                 <div class="text-xs text-gray-500">Montant min</div>
-                                <div class="font-semibold">{{ fmtDollar($min) }} <span class="text-xs text-gray-500"> (≈ {{ fmtF($minF) }})</span></div>
+                                <div class="font-semibold">{{ fmtUsd($min) }} <span class="text-xs text-gray-500"> (≈ {{ fmtFcfa($minF) }})</span></div>
                             </div>
                             <div>
                                 <div class="text-xs text-gray-500">Limite d’ordre</div>
@@ -144,11 +144,11 @@
                     <div class="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-gray-700">
                         <div>
                             <div class="text-xs text-gray-500">Montant investi</div>
-                            <div class="font-semibold">{{ fmtDollar($amount) }} <span class="text-xs text-gray-500"> (≈ {{ fmtF($amount * $USD_TO_F) }})</span></div>
+                            <div class="font-semibold">{{ fmtUsd($amount) }} <span class="text-xs text-gray-500"> (≈ {{ fmtFcfa($amount * $USD_TO_F) }})</span></div>
                         </div>
                         <div>
                             <div class="text-xs text-gray-500">Revenu attendu</div>
-                            <div class="font-semibold">{{ fmtDollar($revenu) }} <span class="text-xs text-gray-500"> (≈ {{ fmtF($revenu * $USD_TO_F) }})</span></div>
+                            <div class="font-semibold">{{ fmtUsd($revenu) }} <span class="text-xs text-gray-500"> (≈ {{ fmtFcfa($revenu * $USD_TO_F) }})</span></div>
                         </div>
                         <div>
                             <div class="text-xs text-gray-500">Période</div>

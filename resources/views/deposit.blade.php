@@ -3,33 +3,12 @@
 @php
     $user = Auth::user();
     $balance = $user->account_balance ?? 0;
-    $countryCode = $user->country_code ?? 237;
     $phone = $user->phone ?? '';
-    $isCameroon = $countryCode == 237;
+    $isCameroon = true;
 
-    // Mapping des devises par code pays (taux approximatifs USD à devise locale)
-    $currencyMap = [
-        237 => ['code' => 'XAF', 'symbol' => 'CFA', 'rate' => 600], // Cameroun
-        225 => ['code' => 'XOF', 'symbol' => 'CFA', 'rate' => 600], // Côte d'Ivoire
-        221 => ['code' => 'XOF', 'symbol' => 'CFA', 'rate' => 600], // Sénégal
-        223 => ['code' => 'XOF', 'symbol' => 'CFA', 'rate' => 600], // Mali
-        226 => ['code' => 'XOF', 'symbol' => 'CFA', 'rate' => 600], // Burkina Faso
-        227 => ['code' => 'XOF', 'symbol' => 'CFA', 'rate' => 600], // Niger
-        224 => ['code' => 'GNF', 'symbol' => 'GNF', 'rate' => 8700], // Guinée
-        229 => ['code' => 'XOF', 'symbol' => 'CFA', 'rate' => 600], // Bénin
-        228 => ['code' => 'XOF', 'symbol' => 'CFA', 'rate' => 600], // Togo
-        261 => ['code' => 'MGA', 'symbol' => 'MGA', 'rate' => 4500], // Madagascar
-        241 => ['code' => 'XAF', 'symbol' => 'CFA', 'rate' => 600], // Gabon
-        235 => ['code' => 'XAF', 'symbol' => 'CFA', 'rate' => 600], // Tchad
-        242 => ['code' => 'XAF', 'symbol' => 'CFA', 'rate' => 600], // Congo Brazzaville
-        243 => ['code' => 'CDF', 'symbol' => 'CDF', 'rate' => 2300], // RDC
-        236 => ['code' => 'XAF', 'symbol' => 'CFA', 'rate' => 600], // Centrafrique
-    ];
-
-    // Récupérer la devise locale ou défaut XAF
-    $localCurrency = $currencyMap[$countryCode] ?? ['code' => 'XAF', 'symbol' => 'CFA', 'rate' => 558];
-    $localRate = $localCurrency['rate'];
-    $localSymbol = $localCurrency['symbol'];
+    // Fixé pour le Cameroun
+    $localRate = config('mesomb.usd_to_xaf', 600);
+    $localSymbol = 'CFA';
 
     // Détection opérateur UNIQUEMENT pour le Cameroun
     $detectedOperator = 'UNKNOWN';
@@ -151,30 +130,14 @@
                 @csrf
 
                 <!-- Choix du canal selon le pays -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <div class="grid grid-cols-1 gap-8 lg:gap-12 max-w-2xl mx-auto">
                     <!-- Canal 1 : uniquement pour le Cameroun -->
-                    <label class="cursor-pointer {{ !$isCameroon ? 'opacity-50 pointer-events-none' : '' }}">
-                        <input type="radio" name="canal" value="mesomb" {{ $isCameroon ? 'checked' : 'disabled' }} class="hidden peer">
-                        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-10 md:p-12 text-white shadow-2xl {{ $isCameroon ? 'peer-checked:ring-8 peer-checked:ring-emerald-400' : '' }} transition-all text-center">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="canal" value="mesomb" checked class="hidden peer">
+                        <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-10 md:p-12 text-white shadow-2xl peer-checked:ring-8 peer-checked:ring-emerald-400 transition-all text-center">
                             <i class="fas fa-mobile-alt text-7xl md:text-9xl mb-8"></i>
-                            <h4 class="text-2xl md:text-3xl font-extrabold mb-4">Canal Paiement 1</h4>
+                            <h4 class="text-2xl md:text-3xl font-extrabold mb-4">Paiement Mobile Money</h4>
                             <p class="text-lg md:text-xl opacity-90 leading-relaxed">MTN • Orange Money<br>Crédit instantané</p>
-                            @if(!$isCameroon)
-                                <p class="text-sm mt-4 bg-black/30 px-4 py-2 rounded-full">Non disponible dans votre pays</p>
-                            @endif
-                        </div>
-                    </label>
-
-                    <!-- Canal 2 : pour tous sauf Cameroun -->
-                    <label class="cursor-pointer {{ $isCameroon ? 'opacity-50 pointer-events-none' : '' }}">
-                        <input type="radio" name="canal" value="notchpay" {{ !$isCameroon ? 'checked' : 'disabled' }} class="hidden peer">
-                        <div class="bg-gradient-to-br from-purple-600 to-pink-600 rounded-3xl p-10 md:p-12 text-white shadow-2xl {{ !$isCameroon ? 'peer-checked:ring-8 peer-checked:ring-purple-400' : '' }} transition-all text-center">
-                            <i class="fas fa-qrcode text-7xl md:text-9xl mb-8"></i>
-                            <h4 class="text-2xl md:text-3xl font-extrabold mb-4">Canal Paiement 2</h4>
-                            <p class="text-lg md:text-xl opacity-90 leading-relaxed">Carte • Crypto • Mobile Money<br>Toutes devises</p>
-                            @if($isCameroon)
-                                <p class="text-sm mt-4 bg-black/30 px-4 py-2 rounded-full">Indisponible au cameroun</p>
-                            @endif
                         </div>
                     </label>
                 </div>
@@ -206,39 +169,22 @@
                     </div>
                 </div>
 
-                <!-- Info Canal 1 (seulement si Cameroun) -->
-                @if($isCameroon)
-                    <div id="mesombInfo" class="space-y-6">
-                        @if($detectedOperator !== 'UNKNOWN')
-                            <div class="bg-gradient-to-r from-emerald-100 to-teal-100 border-4 border-emerald-400 rounded-3xl p-10 text-center">
-                                <p class="text-emerald-800 font-bold text-2xl md:text-3xl mb-4">Opérateur détecté</p>
-                                <p class="text-5xl md:text-6xl font-extrabold text-emerald-700">{{ $detectedOperator }}</p>
-                                <p class="text-xl md:text-2xl text-gray-700 mt-6">+237 {{ chunk_split($phone, 3, ' ') }}</p>
-                                <input type="hidden" name="payment_method" value="{{ $detectedOperator }}">
-                            </div>
-                        @else
-                            <div class="bg-gradient-to-r from-amber-100 to-orange-100 border-4 border-amber-400 rounded-3xl p-10 text-center">
-                                <p class="text-amber-800 font-bold text-2xl md:text-3xl">Numéro non détecté</p>
-                                <p class="text-lg md:text-xl text-gray-700 mt-6">Vérifiez votre numéro dans le profil</p>
-                            </div>
-                        @endif
-                    </div>
-                @endif
-
-                <!-- Info Canal 2 (seulement si pas Cameroun) -->
-                @if(!$isCameroon)
-                    <div id="notchpayInfo" class="text-center space-y-10">
-                        <div class="bg-gradient-to-br from-purple-100 to-pink-100 border-4 border-purple-400 rounded-3xl p-12">
-                            <p class="text-purple-800 font-extrabold text-2xl md:text-3xl mb-10">Après confirmation :</p>
-                            <div class="bg-white p-10 rounded-3xl shadow-2xl">
-                                <div class="w-64 h-64 md:w-80 md:h-80 bg-gray-200 rounded-2xl border-4 border-dashed border-purple-300 flex items-center justify-center mx-auto">
-                                    <i class="fas fa-qrcode text-7xl md:text-9xl text-purple-400"></i>
-                                </div>
-                            </div>
-                            <p class="text-purple-700 text-xl md:text-2xl mt-10">Scannez le QR code ou payez par carte/crypto</p>
+                <!-- Info Canal 1 -->
+                <div id="mesombInfo" class="space-y-6">
+                    @if($detectedOperator !== 'UNKNOWN')
+                        <div class="bg-gradient-to-r from-emerald-100 to-teal-100 border-4 border-emerald-400 rounded-3xl p-10 text-center">
+                            <p class="text-emerald-800 font-bold text-2xl md:text-3xl mb-4">Opérateur détecté</p>
+                            <p class="text-5xl md:text-6xl font-extrabold text-emerald-700">{{ $detectedOperator }}</p>
+                            <p class="text-xl md:text-2xl text-gray-700 mt-6">+237 {{ chunk_split($phone, 3, ' ') }}</p>
+                            <input type="hidden" name="payment_method" value="{{ $detectedOperator }}">
                         </div>
-                    </div>
-                @endif
+                    @else
+                        <div class="bg-gradient-to-r from-amber-100 to-orange-100 border-4 border-amber-400 rounded-3xl p-10 text-center">
+                            <p class="text-amber-800 font-bold text-2xl md:text-3xl">Numéro non détecté</p>
+                            <p class="text-lg md:text-xl text-gray-700 mt-6">Vérifiez votre numéro dans le profil</p>
+                        </div>
+                    @endif
+                </div>
 
                 <button type="submit"
                         class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-3xl md:text-4xl py-8 rounded-3xl shadow-3xl transition transform hover:scale-105">
