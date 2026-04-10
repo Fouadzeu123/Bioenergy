@@ -7,69 +7,56 @@
 <div class="max-w-7xl mx-auto px-5 py-10">
 
     <!-- Bannière premium -->
-    <div class="relative rounded-3xl overflow-hidden shadow-2xl mb-12">
-        <img src="{{ asset('images/equipe.jpg') }}" alt="Mon Équipe" class="w-full h-80 object-cover brightness-75">
+    <div class="relative rounded-3xl overflow-hidden shadow-2xl mb-8 sm:mb-12">
+        <img src="{{ asset('images/equipe.jpg') }}" alt="Mon Équipe" class="w-full h-48 sm:h-80 object-cover brightness-75">
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-10 text-white">
-            <h1 class="text-5xl font-extrabold tracking-tight mb-3">Mon Équipe VIP</h1>
-            <p class="text-xl opacity-90">Suivez la croissance de votre réseau et vos gains passifs</p>
+        <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-10 text-white">
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-2 sm:mb-3">Mon Équipe VIP</h1>
+            <p class="text-sm sm:text-xl opacity-90">Suivez la croissance de votre réseau et vos gains passifs</p>
         </div>
     </div>
 
     <!-- Cartes de gains -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-3xl p-8 shadow-xl transform hover:scale-105 transition">
-            <div class="flex items-center justify-between mb-6">
-                <div class="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                    <i class="fas fa-crown text-3xl"></i>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-12">
+        @php
+            $gainCards = [
+                ['label' => 'Parrainage VIP', 'usd' => $gainsParrainageVip, 'from' => 'emerald', 'to' => 'emerald', 'icon' => 'crown'],
+                ['label' => 'Revenus journaliers', 'usd' => $gainsJournalier, 'from' => 'blue', 'to' => 'blue', 'icon' => 'chart-line'],
+                ['label' => 'Gains totaux réseau', 'usd' => $gainsTotaux, 'from' => 'amber', 'to' => 'amber', 'icon' => 'trophy'],
+            ];
+        @endphp
+        @foreach($gainCards as $card)
+            <div class="bg-gradient-to-br from-{{$card['from']}}-500 to-{{$card['to']}}-600 text-white rounded-3xl p-6 sm:p-8 shadow-xl">
+                <div class="flex items-center justify-between mb-4 sm:mb-6">
+                    <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-{{$card['icon']}} text-xl sm:text-3xl"></i>
+                    </div>
+                    <span class="text-2xl sm:text-4xl font-bold">{{ fmtUsd($card['usd'] ?? 0) }}</span>
                 </div>
-                <span class="text-4xl font-bold">{{ fmtUsd($gainsParrainageVip ?? 0) }}</span>
+                <p class="{{$card['from']}}-100 text-[10px] sm:text-sm uppercase tracking-wider opacity-80">{{ $card['label'] }}</p>
+                <p class="text-xl sm:text-3xl font-black mt-1 sm:mt-2">{{ fmtXaf(($card['usd'] ?? 0) * $USD_TO_XAF) }}</p>
             </div>
-            <p class="text-emerald-100 text-sm uppercase tracking-wider">Parrainage VIP</p>
-            <p class="text-3xl font-bold mt-2">{{ fmtXaf(($gainsParrainageVip ?? 0) * $USD_TO_XAF) }}</p>
-        </div>
-
-        <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-3xl p-8 shadow-xl transform hover:scale-105 transition">
-            <div class="flex items-center justify-between mb-6">
-                <div class="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                    <i class="fas fa-chart-line text-3xl"></i>
-                </div>
-                <span class="text-4xl font-bold">{{ fmtUsd($gainsJournalier ?? 0) }}</span>
-            </div>
-            <p class="text-blue-100 text-sm uppercase tracking-wider">Revenus journaliers</p>
-            <p class="text-3xl font-bold mt-2">{{ fmtXaf(($gainsJournalier ?? 0) * $USD_TO_XAF) }}</p>
-        </div>
-
-        <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-3xl p-8 shadow-xl transform hover:scale-105 transition">
-            <div class="flex items-center justify-between mb-6">
-                <div class="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
-                    <i class="fas fa-trophy text-3xl"></i>
-                </div>
-                <span class="text-4xl font-bold">{{ fmtUsd($gainsTotaux ?? 0) }}</span>
-            </div>
-            <p class="text-amber-100 text-sm uppercase tracking-wider">Gains totaux réseau</p>
-            <p class="text-3xl font-bold mt-2">{{ fmtXaf(($gainsTotaux ?? 0) * $USD_TO_XAF) }}</p>
-        </div>
+        @endforeach
     </div>
 
     <!-- Statistiques rapides -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-        <div class="bg-white rounded-2xl shadow-lg p-6 text-center border border-slate-100">
-            <p class="text-slate-500 text-sm uppercase tracking-wider">Total équipe</p>
-            <p class="text-5xl font-extrabold text-slate-800 mt-3">{{ $taille_equipe ?? 0 }}</p>
-            <p class="text-xs text-slate-400 mt-2">sur 3 niveaux</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-12">
+        <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 text-center border border-slate-100">
+            <p class="text-slate-400 text-[10px] sm:text-xs uppercase tracking-widest font-bold">Total équipe</p>
+            <p class="text-3xl sm:text-5xl font-black text-slate-800 mt-2">{{ $taille_equipe ?? 0 }}</p>
+            <p class="text-[10px] text-slate-400 mt-1 uppercase">3 niveaux</p>
         </div>
-        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl shadow-lg p-6 text-center border-2 border-emerald-200">
-            <p class="text-emerald-700 text-sm uppercase tracking-wider">Niveau 1</p>
-            <p class="text-5xl font-extrabold text-emerald-700 mt-3">{{ count($niveau1 ?? []) }}</p>
+        <div class="bg-emerald-50 rounded-2xl shadow-lg p-4 sm:p-6 text-center border border-emerald-100">
+            <p class="text-emerald-700 text-[10px] sm:text-xs uppercase tracking-widest font-bold">Niveau 1</p>
+            <p class="text-3xl sm:text-5xl font-black text-emerald-800 mt-2">{{ count($niveau1 ?? []) }}</p>
         </div>
-        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl shadow-lg p-6 text-center border-2 border-blue-200">
-            <p class="text-blue-700 text-sm uppercase tracking-wider">Niveau 2</p>
-            <p class="text-5xl font-extrabold text-blue-700 mt-3">{{ count($niveau2 ?? []) }}</p>
+        <div class="bg-blue-50 rounded-2xl shadow-lg p-4 sm:p-6 text-center border border-blue-100">
+            <p class="text-blue-700 text-[10px] sm:text-xs uppercase tracking-widest font-bold">Niveau 2</p>
+            <p class="text-3xl sm:text-5xl font-black text-blue-800 mt-2">{{ count($niveau2 ?? []) }}</p>
         </div>
-        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl shadow-lg p-6 text-center border-2 border-amber-200">
-            <p class="text-amber-700 text-sm uppercase tracking-wider">Niveau 3</p>
-            <p class="text-5xl font-extrabold text-amber-700 mt-3">{{ count($niveau3 ?? []) }}</p>
+        <div class="bg-amber-50 rounded-2xl shadow-lg p-4 sm:p-6 text-center border border-amber-100">
+            <p class="text-amber-700 text-[10px] sm:text-xs uppercase tracking-widest font-bold">Niveau 3</p>
+            <p class="text-3xl sm:text-5xl font-black text-amber-800 mt-2">{{ count($niveau3 ?? []) }}</p>
         </div>
     </div>
 
@@ -92,7 +79,8 @@
                 </div>
 
                 @if($membres->count() > 0)
-                    <div class="overflow-x-auto">
+                    <!-- Liste version DESKTOP -->
+                    <div class="hidden md:block overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead class="bg-slate-50 border-b-2 border-slate-200">
                                 <tr>
@@ -107,9 +95,7 @@
                             <tbody class="divide-y divide-slate-100">
                                 @foreach($membres as $filleul)
                                     @php
-                                        // Dépôts du filleul
                                         $deposits = $filleul->deposits_sum ?? 0;
-                                        //bonus genere par le filleul
                                         $bonusGenere = App\Models\Transaction::where('user_id', Auth::id())
                                             ->where('type', 'bonus_vip')
                                             ->where('from_user_id', $filleul->id)
@@ -123,30 +109,53 @@
                                                 </div>
                                                 <div>
                                                     <p class="font-semibold text-slate-800">{{ $filleul->username }}</p>
-                                                    <p class="text-xs text-slate-500">{{ $filleul->name ?? 'Membre VIP' }}</p>
+                                                    <p class="text-xs text-slate-500">Membre VIP</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-5 font-mono text-slate-700">{{ $filleul->phone ?? 'Non renseigné' }}</td>
-                                        <td class="px-10 py-5 ">
-                                            <span class="px-4 py-2 rounded-full text-white font-bold text-sm
-                                                {{ $filleul->level >= 5 ? 'bg-gradient-to-r from-amber-500 to-orange-600' : 'bg-emerald-600' }}">
-                                                {{ $filleul->level ?? 0 }}
-                                            </span>
+                                        <td class="px-4 py-5 font-mono text-slate-700">{{ $filleul->phone ?? '—' }}</td>
+                                        <td class="px-10 py-5 text-center">
+                                            <span class="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-bold">{{ $filleul->level ?? 0 }}</span>
                                         </td>
                                         <td class="px-6 py-5 text-center text-slate-600">{{ $filleul->created_at->format('d/m/Y') }}</td>
                                         <td class="px-6 py-5 text-right">
                                             <p class="font-bold text-slate-800">{{ fmtUsd($deposits) }}</p>
-                                            <p class="text-xs text-slate-500">{{ fmtXaf($deposits * $USD_TO_XAF) }}</p>
                                         </td>
                                         <td class="px-6 py-5 text-right">
                                             <p class="font-bold text-emerald-600">{{ fmtUsd($bonusGenere) }}</p>
-                                            <p class="text-xs text-emerald-500">{{ fmtXaf($bonusGenere * $USD_TO_XAF) }}</p>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- Liste version MOBILE -->
+                    <div class="md:hidden divide-y divide-slate-100">
+                        @foreach($membres as $filleul)
+                            @php
+                                $deposits = $filleul->deposits_sum ?? 0;
+                                $bonusGenere = App\Models\Transaction::where('user_id', Auth::id())
+                                    ->where('type', 'bonus_vip')
+                                    ->where('from_user_id', $filleul->id)
+                                    ->sum('montant');
+                            @endphp
+                            <div class="p-4 flex items-center justify-between gap-4" onclick="openMemberModal({{ $filleul->id }})">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
+                                        {{ strtoupper(substr($filleul->username ?? 'U', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-800 text-sm">{{ $filleul->username }}</p>
+                                        <p class="text-[10px] text-slate-500">VIP {{ $filleul->level ?? 0 }} • {{ $filleul->created_at->format('d/m/y') }}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-gray-400 uppercase">Commission</p>
+                                    <p class="font-bold text-emerald-600 text-sm">{{ fmtUsd($bonusGenere) }}</p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 @else
                     <div class="p-16 text-center text-slate-400">
@@ -159,29 +168,29 @@
         @endforeach
     </div>
 
-    <!-- Modal détail membre (inchangé) -->
-    <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 p-5">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8">
-            <div class="text-center mb-8">
-                <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white text-4xl font-bold shadow-xl">
+    <!-- Modal détail membre -->
+    <div id="memberModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 p-4">
+        <div class="bg-white rounded-3xl shadow-xl max-w-sm w-full p-6 sm:p-8 animate__animated animate__zoomIn">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-white text-3xl font-bold">
                     <span id="modalAvatar">U</span>
                 </div>
-                <h3 id="modalName" class="text-3xl font-extrabold text-slate-800 mt-6"></h3>
-                <p id="modalPhone" class="text-slate-600 text-lg"></p>
+                <h3 id="modalName" class="text-2xl font-black text-slate-800 mt-4"></h3>
+                <p id="modalPhone" class="text-slate-500 font-mono"></p>
             </div>
 
-            <div class="space-y-6 text-center">
-                <div class="bg-slate-50 rounded-2xl p-6">
-                    <p class="text-slate-500 text-sm">Niveau VIP</p>
-                    <p id="modalLevel" class="text-4xl font-bold text-emerald-600"></p>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-slate-50 rounded-2xl p-4">
+                    <p class="text-slate-400 text-[10px] uppercase">Niveau</p>
+                    <p id="modalLevel" class="text-2xl font-black text-emerald-600"></p>
                 </div>
-                <div class="bg-slate-50 rounded-2xl p-6">
-                    <p class="text-slate-500 text-sm">Inscrit le</p>
-                    <p id="modalDate" class="text-xl font-semibold text-slate-800"></p>
+                <div class="bg-slate-50 rounded-2xl p-4">
+                    <p class="text-slate-400 text-[10px] uppercase">Inscription</p>
+                    <p id="modalDate" class="text-sm font-bold text-slate-800"></p>
                 </div>
             </div>
 
-            <button onclick="closeMemberModal()" class="mt-10 w-full py-5 bg-slate-800 text-white font-bold rounded-2xl hover:bg-slate-900 transition">
+            <button onclick="closeMemberModal()" class="mt-8 w-full py-4 bg-slate-900 text-white font-bold rounded-xl active:scale-95 transition">
                 Fermer
             </button>
         </div>

@@ -27,6 +27,10 @@ use App\Http\Controllers\AdminTransactionController;
 Route::get('/', [AuthController::class, 'index'])->name('index');
 
 // Inscription
+Route::get('/register', [AuthController::class, 'index'])
+    ->name('register.view')
+    ->middleware('guest');
+
 Route::post('/register', [AuthController::class, 'register'])
     ->name('register')
     ->middleware('guest');

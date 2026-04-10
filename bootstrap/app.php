@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             \App\Http\Middleware\ProcessAutomatedTasks::class,
+            \App\Http\Middleware\StoreReferralCode::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

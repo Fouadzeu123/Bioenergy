@@ -107,7 +107,9 @@
 
                 <!-- Code d'invitation -->
                 <div>
-                    <input type="text" name="invitation_code" value="{{ old('invitation_code', request('ref')) }}" required
+                    <input type="text" name="invitation_code" 
+                           value="{{ old('invitation_code', request('ref', session('referral_code'))) }}" 
+                           required
                            class="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none input-glow"
                            placeholder="Code d'invitation (obligatoire)">
                 </div>

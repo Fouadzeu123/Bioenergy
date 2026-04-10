@@ -16,27 +16,31 @@
 </div>
 @endif
 
-<!-- Hero + CTA -->
-<div class="w-full mt-6">
-    <img src="{{ asset('images/biomasse.jpg') }}" alt="BioEnergy" class="w-full h-64 object-cover rounded-xl shadow-2xl">
-</div>
-<div class="text-center my-8">
-    <a href="{{ route('Mesproduits') }}" class="inline-block bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg px-10 py-5 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition">
-        Voir mes produits actifs
-    </a>
-</div>
+<!-- Main Container -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-<!-- Intro -->
-<div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-10 text-center shadow-inner mb-12">
-    <h2 class="text-4xl font-bold text-green-800 mb-4">Investissez dans l'énergie verte</h2>
-    <p class="text-xl text-gray-700 leading-relaxed max-w-5xl mx-auto">
-        Rendement journalier de <strong>2% à 8%</strong> selon le produit.<br>
-        Revenus journaliers pendant <strong>365 jours</strong>.
-    </p>
-</div>
+    <!-- Hero + CTA -->
+    <div class="w-full">
+        <img src="{{ asset('images/biomasse.jpg') }}" alt="BioEnergy" class="w-full h-48 sm:h-64 object-cover rounded-2xl shadow-xl">
+    </div>
+    
+    <div class="text-center my-6 sm:my-8">
+        <a href="{{ route('Mesproduits') }}" class="inline-block w-full sm:w-auto bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg px-8 py-4 sm:py-5 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition">
+            Voir mes produits actifs
+        </a>
+    </div>
 
-<!-- Grille produits -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto ">
+    <!-- Intro -->
+    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 sm:p-10 text-center shadow-inner mb-8 sm:mb-12 border border-green-100">
+        <h2 class="text-2xl sm:text-4xl font-bold text-green-800 mb-3">Investissez dans l'énergie verte</h2>
+        <p class="text-lg sm:text-xl text-gray-700 leading-relaxed max-w-5xl mx-auto">
+            Rendement journalier de <strong>2% à 8%</strong> selon le produit.<br class="hidden sm:block">
+            Revenus journaliers pendant <strong>365 jours</strong>.
+        </p>
+    </div>
+
+    <!-- Grille produits -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
 @foreach($produits as $produit)
     @php
         $purchases = Auth::user()->orders()->where('produit_id', $produit->id)->count();
@@ -104,64 +108,70 @@
         </div>
     </div>
 @endforeach
+    </div>
 </div>
 
 <!-- Modal -->
-<div id="productModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 p-4">
-    <div class="bg-white rounded-2xl shadow-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b p-6 flex justify-between items-center">
-            <h3 id="modalTitle" class="text-3xl font-bold text-gray-800"></h3>
-            <button onclick="closeProductModal()" class="text-gray-500 hover:text-gray-800 text-4xl">×</button>
+<div id="productModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 p-2 sm:p-4">
+    <div class="bg-white rounded-2xl shadow-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto">
+        <div class="sticky top-0 bg-white border-b p-4 sm:p-6 flex justify-between items-center z-10">
+            <h3 id="modalTitle" class="text-xl sm:text-3xl font-bold text-gray-800 truncate pr-4"></h3>
+            <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-800 text-3xl sm:text-4xl">&times;</button>
         </div>
 
-        <div class="p-8 space-y-8">
-            <div class="grid md:grid-cols-2 gap-8">
-                <img id="modalImage" src="" alt="" class="w-full h-80 object-cover rounded-2xl shadow-xl">
-                <div class="space-y-6">
-                    <p id="modalDescription" class="text-lg text-gray-700 leading-relaxed"></p>
-                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl space-y-4">
-                        <div class="flex justify-between text-xl">
-                            <span class="font-bold">Taux Journalier :</span>
+        <div class="p-4 sm:p-8 space-y-6 sm:space-y-8">
+            <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
+                <img id="modalImage" src="" alt="" class="w-full h-48 sm:h-80 object-cover rounded-2xl shadow-xl">
+                <div class="space-y-4 sm:space-y-6">
+                    <p id="modalDescription" class="text-base sm:text-lg text-gray-600 leading-relaxed"></p>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 sm:p-6 rounded-2xl space-y-3 sm:space-y-4 border border-green-100">
+                        <div class="flex justify-between items-center text-lg sm:text-xl">
+                            <span class="text-gray-600">Taux Journalier :</span>
                             <span id="modalRate" class="text-green-600 font-bold"></span>
                         </div>
-                        <div class="flex justify-between text-xl">
-                            <span class="font-bold">Durée :</span>
-                            <span class="font-bold">365 jours</span>
+                        <div class="flex justify-between items-center text-lg sm:text-xl">
+                            <span class="text-gray-600">Durée :</span>
+                            <span class="font-bold text-gray-800">365 jours</span>
                         </div>
-                        <div class="flex justify-between text-xl">
-                            <span class="font-bold">Minimum :</span>
+                        <div class="flex justify-between items-center text-lg sm:text-xl">
+                            <span class="text-gray-600">Minimum :</span>
                             <span id="modalMin" class="text-green-600 font-bold"></span>
                         </div>
-                        <div id="maxRow" class="flex justify-between text-xl hidden">
-                            <span class="font-bold">Maximum :</span>
+                        <div id="maxRow" class="flex justify-between items-center text-lg sm:text-xl hidden">
+                            <span class="text-gray-600">Maximum :</span>
                             <span id="modalMax" class="text-blue-600 font-bold"></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <h4 class="text-2xl font-bold text-gray-800 mb-4">Informations détaillées</h4>
-                <div id="modalInformation" class="bg-gray-50 p-8 rounded-2xl text-gray-700 whitespace-pre-line text-lg leading-relaxed"></div>
+            <div class="bg-gray-50 p-5 sm:p-8 rounded-2xl border border-gray-100">
+                <h4 class="text-lg sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">Informations détaillées</h4>
+                <div id="modalInformation" class="text-gray-600 whitespace-pre-line text-sm sm:text-lg leading-relaxed"></div>
             </div>
 
             <!-- Formulaire -->
-            <form id="investForm" method="POST" class="bg-green-50 p-8 rounded-2xl space-y-6">
+            <form id="investForm" method="POST" class="bg-green-600/5 p-5 sm:p-8 rounded-2xl border border-green-200/50 space-y-5 sm:space-y-6">
                 @csrf
                 <div>
-                    <label class="block text-xl font-bold mb-3">Montant à investir (en $)</label>
-                    <input type="number" name="amount" id="investAmount" step="0.01" required
-                           class="w-full px-6 py-4 text-xl border-2 border-green-300 rounded-xl focus:border-green-600 focus:outline-none"
-                           placeholder="Ex: 1000.00">
-                    <p id="amountInF" class="text-2xl font-bold text-green-700 mt-3"></p>
-                    <p id="amountHelp" class="text-lg text-gray-600 mt-2"></p>
+                    <label class="block text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-3">Montant à investir (en $)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">$</span>
+                        <input type="number" name="amount" id="investAmount" step="0.01" required
+                               class="w-full pl-8 pr-6 py-3 sm:py-4 text-lg sm:text-xl border-2 border-green-100 rounded-xl focus:border-green-600 focus:outline-none transition bg-white"
+                               placeholder="100.00">
+                    </div>
+                    <div class="mt-3 flex flex-wrap items-baseline gap-2">
+                        <p id="amountInF" class="text-xl sm:text-2xl font-black text-green-700"></p>
+                        <p id="amountHelp" class="text-sm sm:text-lg text-gray-500"></p>
+                    </div>
                 </div>
 
-                <div class="flex gap-6">
-                    <button type="submit" class="flex-1 bg-green-600 text-white font-bold text-xl py-5 rounded-xl hover:bg-green-700 transition transform hover:scale-105">
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg sm:text-xl py-4 sm:py-5 rounded-xl hover:shadow-lg transition transform hover:-translate-y-1">
                         Confirmer l'investissement
                     </button>
-                    <button type="button" onclick="closeProductModal()" class="px-10 py-5 border-2 border-gray-400 rounded-xl hover:bg-gray-100 transition text-xl font-bold">
+                    <button type="button" onclick="closeProductModal()" class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition font-bold">
                         Annuler
                     </button>
                 </div>

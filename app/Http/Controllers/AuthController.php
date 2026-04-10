@@ -47,7 +47,7 @@ class AuthController extends Controller
             'password'        => Hash::make($request->password),
             'invited_by'      => $parrain->id,
             'invitation_code' => strtoupper(Str::random(8)), // ex: X7K9P2M4
-            'account_balance' => 10,
+            'account_balance' => 0,
             'level'           => 0,
         ]);
 
@@ -73,6 +73,9 @@ class AuthController extends Controller
 
         // Connexion automatique
         Auth::login($user);
+
+        // Nettoyage de la session
+        session()->forget('referral_code');
 
         return redirect()->route('dashboard')
                          ->with('success', 'Inscription réussie ! Vous avez reçu 10 $ de bonus');
