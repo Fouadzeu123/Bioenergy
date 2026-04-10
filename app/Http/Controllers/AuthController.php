@@ -26,8 +26,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'username'        => 'required|string|max:30|unique:users,username',
-            'country_code'    => 'required|in:237', // uniquement Cameroun pour l’instant
-            'phone'           => 'required|digits_between:9,10|unique:users,phone',
+            'phone'           => 'required|digits_between:8,12|unique:users,phone',
             'password'        => 'required|confirmed|min:6',
             'invitation_code' => 'required|string|exists:users,invitation_code',
         ], [
@@ -42,7 +41,7 @@ class AuthController extends Controller
         // Création de l'utilisateur
         $user = User::create([
             'username'        => $request->username,
-            'country_code'    => $request->country_code,
+            'country_code'    => $request->country_code ?? '237', // par défaut Cameroun
             'phone'           => $request->phone,
             'password'        => Hash::make($request->password),
             'invited_by'      => $parrain->id,

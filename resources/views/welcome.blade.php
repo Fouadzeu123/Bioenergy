@@ -81,14 +81,14 @@
                 </div>
 
                 <!-- Numéro de téléphone -->
-                <div class="flex gap-3">
-                    <div class="w-28">
-                        <select name="country_code" class="w-full px-4 py-4 rounded-2xl bg-white/10 border border-white/30 text-white focus:outline-none input-glow">
-                            <option value="237" selected>+237</option>
-                        </select>
+                <div class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/10 border border-white/30 focus-within:border-green-500 transition-all duration-300 group">
+                    <div class="flex items-center gap-2 border-r border-white/20 pr-4">
+                        <img src="https://flagcdn.com/w20/cm.png" alt="Cameroon" class="w-5 shadow-sm">
+                        <span class="text-green-400 font-bold text-lg tracking-wider">+237</span>
                     </div>
+                    <input type="hidden" name="country_code" value="237">
                     <input type="tel" name="phone" value="{{ old('phone') }}" required
-                           class="flex-1 px-5 py-4 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none input-glow"
+                           class="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none text-lg"
                            placeholder="Numéro de téléphone">
                 </div>
 
