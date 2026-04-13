@@ -6,10 +6,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "hachther/laravel-mesomb": "^1.8",
         "laravel/framework": "^11.0",
-        "laravel/tinker": "^2.9",
-        "notchpay/notchpay-php": "^2.0"
+        "laravel/tinker": "^2.9"
     },
 
     "require-dev": {

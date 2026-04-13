@@ -36,10 +36,13 @@ class SystemAutomationService
             ->get();
 
         foreach ($orders as $order) {
-            $startDate = $order->last_gain_at ? Carbon::parse($order->last_gain_at)->addDay() : Carbon::parse($order->start_date);
-            $endDate = Carbon::yesterday(); // We process full days that have passed
+            $startDate = $order->last_gain_at 
+                ? Carbon::parse($order->last_gain_at)->startOfDay()->addDay() 
+                : Carbon::parse($order->start_date)->startOfDay();
+            
+            $endDate = Carbon::yesterday()->startOfDay(); // On traite tous les jours révolus
 
-            // If start date is today or in the future, nothing to process yet for "passed days"
+            // Si la date de début est dans le futur par rapport à hier, rien à faire
             if ($startDate->isAfter($endDate)) {
                 continue;
             }
@@ -49,7 +52,7 @@ class SystemAutomationService
             $daysProcessed = 0;
 
             while ($currentDate->lte($endDate)) {
-                // Skip Sundays as per original logic
+                // Ignore les dimanches
                 if (!$currentDate->isSunday()) {
                     $gain = (float) $order->day_income;
                     if ($gain > 0) {
@@ -65,7 +68,7 @@ class SystemAutomationService
                                 'status'      => 'completed',
                                 'reference'   => uniqid('GAIN-'),
                                 'description' => 'Gain journalier (' . $currentDate->format('d/m/Y') . ') : ' . ($order->produit->name ?? 'Produit'),
-                                'created_at'  => $currentDate->copy()->setTime(12, 0, 0), // Use the day it belongs to for records
+                                'created_at'  => $currentDate->copy()->setTime(12, 0, 0),
                             ]);
 
                             $this->attribuerBonusParrainage($user, $gain, $currentDate);
@@ -82,9 +85,8 @@ class SystemAutomationService
                 $currentDate->addDay();
             }
 
-            if ($daysProcessed > 0 || $order->last_gain_at === null) {
-                $order->update(['last_gain_at' => Carbon::yesterday()]);
-            }
+            // On marque que les gains ont été vérifiés jusqu'à hier
+            $order->update(['last_gain_at' => $endDate]);
         }
     }
 

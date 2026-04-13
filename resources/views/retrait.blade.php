@@ -1,7 +1,7 @@
 <x-layouts :title="'Retrait'" :level="Auth::user()->level">
 
 @php
-    $USD_TO_XAF = config('mesomb.usd_to_xaf', 600);
+    $USD_TO_XAF = config('notchpay.usd_to_xaf', 600);
     $MIN_WITHDRAWAL_USD = 10;
     $FEE_PERCENT = 10;
 

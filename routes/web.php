@@ -6,7 +6,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BonusController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminUserController;
@@ -14,7 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminBonusController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PreservationController;
-use App\Http\Controllers\MesombWebhookController;
+use App\Http\Controllers\NotchPayWebhookController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\WithdrawalInfoController;
 use App\Http\Controllers\AdminTransactionController;
@@ -86,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/deposit', [TransactionController::class, 'deposit'])->name('deposit');
 Route::post('/depot', [TransactionController::class, 'storeDepot'])->name('depot.store');
+Route::get('/depot/status/{reference}', [TransactionController::class, 'checkStatus'])->name('depot.status');
 
 Route::get('/retrait', [TransactionController::class, 'retrait'])->name('retrait');
 Route::post('/withdrawal', [TransactionController::class, 'storeRetrait'])->name('retrait.store');
@@ -124,10 +124,7 @@ Route::prefix('admin')->middleware(['admin' => \App\Http\Middleware\IsAdmin::cla
     Route::post('/bonus/toggle/{id}', [AdminBonusController::class, 'toggle'])->name('admin.bonus.toggle');
 });
 
-Route::post('/mesomb/webhook', [App\Http\Controllers\MesombWebhookController::class, 'handle'])
-     ->name('mesomb.webhook');
-
-//Partie Admin 
+//Partie Admin
 
 Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function () {
     Route::get('/users', [AdminUserController::class, 'index'])->name('admin.users.index');
@@ -146,11 +143,13 @@ Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function 
     Route::patch('/users/{id}/unban', [AdminUserController::class, 'unban'])->name('admin.users.unban');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('/payment/notchpay/initiate', [PaymentController::class, 'initiate'])->name('payment.notchpay.initiate');
-});
+}); // Fin du groupe middleware('auth')
 
-// Webhook (public, sans auth)
-Route::post('/payment/notchpay/webhook', [PaymentController::class, 'webhook'])->name('payment.notchpay.webhook');
-
-});
+// =============================================================================
+// WEBHOOK NOTCH PAY — Route publique (hors auth + hors CSRF)
+// Notch Pay appelle cette URL depuis ses serveurs pour notifier les paiements.
+// La signature HMAC-SHA256 (header X-Notch-Signature) protège l'endpoint.
+// URL à configurer dans le dashboard Notch Pay → Settings → Webhooks
+// =============================================================================
+Route::post('/notchpay/webhook', [NotchPayWebhookController::class, 'handle'])
+     ->name('notchpay.webhook');

@@ -11,6 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Exclure le webhook Notch Pay du CSRF (requête POST depuis les serveurs Notch Pay)
+        $middleware->validateCsrfTokens(except: [
+            'notchpay/webhook',
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\ProcessAutomatedTasks::class,
             \App\Http\Middleware\StoreReferralCode::class,

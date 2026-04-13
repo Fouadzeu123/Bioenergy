@@ -72,7 +72,7 @@
                                 <div class="text-xs text-gray-400 mt-1">Durée: {{ $fond->period_days }}j</div>
                             </div>
                         </div>
-
+p
                         <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-gray-700">
                             <div>
                                 <div class="text-xs text-gray-500">Montant min</div>

@@ -29,7 +29,7 @@ class ProfileController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $rate = config('mesomb.usd_to_xaf', 600);
+        $rate = config('notchpay.usd_to_xaf', 600);
         $rateFCFAperUSD = $rate;
         $now  = Carbon::now();
 
@@ -126,7 +126,7 @@ class ProfileController extends Controller
         $mensuel    = (clone $baseQuery)->whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->sum('montant');
         $annuel     = (clone $baseQuery)->whereYear('created_at', $now->year)->sum('montant');
 
-        $rate = config('mesomb.usd_to_xaf', 600);
+        $rate = config('notchpay.usd_to_xaf', 600);
 
         return [
             'journalier'       => round($journalier, 2),

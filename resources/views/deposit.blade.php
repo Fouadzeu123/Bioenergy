@@ -7,7 +7,7 @@
     $isCameroon = true;
 
     // Fixé pour le Cameroun
-    $localRate = config('mesomb.usd_to_xaf', 600);
+    $localRate = config('notchpay.usd_to_xaf', 600);
     $localSymbol = 'CFA';
 
     // Détection opérateur UNIQUEMENT pour le Cameroun
@@ -32,17 +32,17 @@
 
 <div class="min-h-screen bg-gradient-to-b from-emerald-50 via-teal-50 to-gray-100">
 
-    <!-- Modal succès dépôt -->
+    <!-- Modal succès/attente dépôt -->
     @if($lastPayment)
-        <div class="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 px-4 pb-4 pt-20 md:pt-0">
+        <div id="paymentSuccessModal" class="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 px-4 pb-4 pt-20 md:pt-0">
             <div class="w-full max-w-md bg-white rounded-t-3xl md:rounded-3xl shadow-2xl overflow-hidden animate__animated animate__slideInUp md:animate__zoomIn">
                 <div class="bg-gradient-to-br from-emerald-500 to-teal-600 p-10 text-center">
                     @php
                         $canal = $lastPayment['canal'] ?? ($lastPayment['operator'] ?? 'Mobile Money');
-                        $isMesomb = in_array($canal, ['MeSomb', 'MTN', 'ORANGE']);
+                        $isNotchPay = in_array($canal, ['NotchPay', 'MTN', 'ORANGE']);
                     @endphp
 
-                    @if($isMesomb)
+                    @if($isNotchPay)
                         @if($lastPayment['operator'] === 'MTN')
                             <img src="{{ asset('images/mtn-logo.png') }}" alt="MTN" class="h-20 w-20 mx-auto drop-shadow-xl">
                         @elseif($lastPayment['operator'] === 'ORANGE')
@@ -55,8 +55,8 @@
                     @endif
                 </div>
 
-                <div class="p-10 text-center space-y-8 bg-white">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800">Dépôt initié !</h2>
+                <div class="p-10 text-center space-y-8 bg-white" id="paymentStatusContent">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800">Dépôt en attente !</h2>
 
                     <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-3xl p-8">
                         <p class="text-gray-600 text-lg">Montant</p>
@@ -64,38 +64,68 @@
                         <p class="text-2xl md:text-3xl text-gray-600 mt-3">≈ {{ number_format(round($lastPayment['amount'] * $localRate)) }} {{ $localSymbol }}</p>
                     </div>
 
-                    @if($isMesomb)
-                        <p class="text-gray-700 text-lg leading-relaxed">
-                            Validez sur votre téléphone<br>
-                            <strong>Crédit automatique</strong>
-                        </p>
+                    @if($isNotchPay)
+                        <div class="text-gray-700 text-lg leading-relaxed flex flex-col items-center">
+                            <i class="fas fa-spinner fa-spin text-4xl text-emerald-500 mb-4" id="loadingSpinner"></i>
+                            <span id="instructionText">
+                                Validez la notification sur votre téléphone<br>
+                                <strong>Vérification automatique en cours...</strong>
+                            </span>
+                        </div>
                     @else
                         <p class="text-gray-700 text-lg leading-relaxed">
                             Scannez le QR code ou cliquez sur le lien<br>
                             <strong>Crédit automatique après paiement</strong>
                         </p>
-
-                        @if($lastPayment['qr_url'] ?? false)
-                            <div class="bg-white p-6 rounded-3xl shadow-2xl">
-                                <img src="{{ $lastPayment['qr_url'] }}" alt="QR NotchPay" class="w-64 h-64 md:w-80 md:h-80 mx-auto">
-                            </div>
-                        @endif
-
-                        @if($lastPayment['payment_url'] ?? false)
-                            <a href="{{ $lastPayment['payment_url'] }}" target="_blank"
-                               class="block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-extrabold text-xl md:text-2xl py-6 rounded-2xl shadow-xl transition">
-                                Payer avec NotchPay
-                            </a>
-                        @endif
                     @endif
 
                     <button onclick="document.getElementById('paymentSuccessModal').remove()"
+                            id="closeModalBtn"
                             class="w-full bg-gray-800 hover:bg-black text-white font-bold text-xl md:text-2xl py-6 rounded-2xl shadow-xl transition">
-                        Fermer
+                        Fermer la fenêtre (l'attente continuera en arrière plan)
                     </button>
                 </div>
             </div>
         </div>
+
+        <script>
+            // Logique JS pour vérifier le statut automatiquement (polling)
+            const ref = "{{ $lastPayment['reference'] ?? '' }}";
+            let pollInterval;
+
+            function verifierStatutPaiement() {
+                if (!ref) return;
+
+                fetch(`/depot/status/${ref}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'completed') {
+                            clearInterval(pollInterval);
+                            document.getElementById('loadingSpinner').className = "fas fa-check-circle text-5xl text-emerald-500 mb-4 animate__animated animate__bounceIn";
+                            document.getElementById('instructionText').innerHTML = "<strong>Paiement reçu avec succès !</strong><br>Votre solde va être mis à jour.";
+                            document.getElementById('closeModalBtn').innerText = "Rafraîchir maintenant";
+                            document.getElementById('closeModalBtn').className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xl md:text-2xl py-6 rounded-2xl shadow-xl transition";
+                            document.getElementById('closeModalBtn').onclick = () => window.location.href = "{{ route('deposit') }}";
+                            
+                            // Recharge auto après 3 secondes au cas où l'utilisateur ne clique pas
+                            setTimeout(() => {
+                                window.location.href = "{{ route('deposit') }}";
+                            }, 3000);
+                        } else if (data.status === 'failed') {
+                            clearInterval(pollInterval);
+                            document.getElementById('loadingSpinner').className = "fas fa-times-circle text-5xl text-red-500 mb-4 animate__animated animate__shakeX";
+                            document.getElementById('instructionText').innerHTML = "<strong>Le paiement a échoué ou a été annulé.</strong><br>Veuillez réessayer.";
+                            document.getElementById('closeModalBtn').innerText = "Fermer";
+                        }
+                    })
+                    .catch(err => console.error("Erreur check status", err));
+            }
+
+            if (ref) {
+                // Vérifier toutes les 3 secondes
+                pollInterval = setInterval(verifierStatutPaiement, 3000);
+            }
+        </script>
     @endif
 
     <!-- Contenu principal -->
@@ -133,7 +163,7 @@
                 <div class="grid grid-cols-1 gap-8 lg:gap-12 max-w-2xl mx-auto">
                     <!-- Canal 1 : uniquement pour le Cameroun -->
                     <label class="cursor-pointer">
-                        <input type="radio" name="canal" value="mesomb" checked class="hidden peer">
+                        <input type="radio" name="canal" value="notchpay" checked class="hidden peer">
                         <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-10 md:p-12 text-white shadow-2xl peer-checked:ring-8 peer-checked:ring-emerald-400 transition-all text-center">
                             <i class="fas fa-mobile-alt text-7xl md:text-9xl mb-8"></i>
                             <h4 class="text-2xl md:text-3xl font-extrabold mb-4">Paiement Mobile Money</h4>
@@ -170,7 +200,7 @@
                 </div>
 
                 <!-- Info Canal 1 -->
-                <div id="mesombInfo" class="space-y-6">
+                <div id="notchPayInfo" class="space-y-6">
                     @if($detectedOperator !== 'UNKNOWN')
                         <div class="bg-gradient-to-r from-emerald-100 to-teal-100 border-4 border-emerald-400 rounded-3xl p-10 text-center">
                             <p class="text-emerald-800 font-bold text-2xl md:text-3xl mb-4">Opérateur détecté</p>
