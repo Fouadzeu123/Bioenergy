@@ -19,7 +19,7 @@
         <div class="text-center">
             <h2 class="text-4xl font-extrabold text-white mb-12">Rejoignez nos communautés officielles</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-                <a href="https://t.me/bioenergy_officiel" target="_blank"
+                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank"
                    class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-12 text-white shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
                     <i class="fab fa-telegram-plane text-8xl mb-6"></i>
                     <h3 class="text-3xl font-extrabold mb-3">Groupe Telegram</h3>
@@ -29,7 +29,7 @@
                     </span>
                 </a>
 
-                <a href="https://chat.whatsapp.com/EXEMPLE_INVITE_CODE" target="_blank"
+                <a href="https://chat.whatsapp.com/JHIsnbvCzw43KssWzSJ1Qr?mode=gi_t" target="_blank"
                    class="bg-gradient-to-br from-green-600 to-emerald-700 rounded-3xl p-12 text-white shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
                     <i class="fab fa-whatsapp text-8xl mb-6"></i>
                     <h3 class="text-3xl font-extrabold mb-3">Groupe WhatsApp</h3>
@@ -53,10 +53,10 @@
                     <h3 class="text-3xl font-extrabold text-white mb-4">Service Client</h3>
                     <p class="text-green-200 text-lg mb-8">Questions générales, suivi de compte, aide</p>
                     <p class="text-sm text-gray-300 mb-4">Lun–Sam • 08:00 – 18:00</p>
-                    <a href="https://wa.me/237600000001" target="_blank"
+                    <a href="https://wa.me/2376686812801" target="_blank"
                        class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xl px-10 py-6 rounded-2xl shadow-xl transform hover:scale-110 transition">
                         <i class="fab fa-whatsapp text-3xl"></i>
-                        +237 600 000 001
+                        Service 1
                     </a>
                 </div>
 
@@ -68,25 +68,10 @@
                     <h3 class="text-3xl font-extrabold text-white mb-4">Paiements</h3>
                     <p class="text-blue-200 text-lg mb-8">Dépôts, retraits, facturation, vérifications</p>
                     <p class="text-sm text-gray-300 mb-4">Lun–Ven • 09:00 – 17:00</p>
-                    <a href="https://wa.me/237600000002" target="_blank"
+                    <a href="https://wa.me/237689910071" target="_blank"
                        class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xl px-10 py-6 rounded-2xl shadow-xl transform hover:scale-110 transition">
                         <i class="fab fa-whatsapp text-3xl"></i>
-                        +237 600 000 002
-                    </a>
-                </div>
-
-                <!-- Support Technique -->
-                <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-10 text-center shadow-2xl hover:shadow-3xl transition-all">
-                    <div class="w-28 h-28 mx-auto bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white text-5xl font-bold mb-6 shadow-2xl">
-                        24/7
-                    </div>
-                    <h3 class="text-3xl font-extrabold text-white mb-4">Support Technique</h3>
-                    <p class="text-purple-200 text-lg mb-8">Problèmes d’accès, bugs, urgences</p>
-                    <p class="text-sm text-gray-300 mb-4">Disponible 24h/24 • 7j/7</p>
-                    <a href="https://wa.me/237600000003" target="_blank"
-                       class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xl px-10 py-6 rounded-2xl shadow-xl transform hover:scale-110 transition">
-                        <i class="fab fa-whatsapp text-3xl"></i>
-                        +237 600 000 003
+                        Service RH
                     </a>
                 </div>
             </div>
