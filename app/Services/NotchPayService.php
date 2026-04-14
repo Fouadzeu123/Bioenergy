@@ -56,7 +56,7 @@ class NotchPayService
     ): array {
         try {
             // Étape 1 : Initialiser le paiement → obtenir une référence Notch Pay
-            $initResponse = Http::timeout($this->timeout)
+            $initResponse = Http::withoutVerifying()->timeout($this->timeout)
                 ->withHeaders([
                     'Authorization' => $this->publicKey,
                     'Content-Type'  => 'application/json',
@@ -101,7 +101,7 @@ class NotchPayService
             // Étape 2 : Collecter directement via Mobile Money (push USSD)
             $channel = config('notchpay.channels.' . strtoupper($operator), 'cm.mtn');
 
-            $collectResponse = Http::timeout($this->timeout)
+            $collectResponse = Http::withoutVerifying()->timeout($this->timeout)
                 ->withHeaders([
                     'Authorization' => $this->publicKey,
                     'Content-Type'  => 'application/json',
@@ -157,7 +157,7 @@ class NotchPayService
     public function verifyPayment(string $notchReference): array
     {
         try {
-            $response = Http::timeout($this->timeout)
+            $response = Http::withoutVerifying()->timeout($this->timeout)
                 ->withHeaders([
                     'Authorization' => $this->privateKey,
                     'Accept'        => 'application/json',
@@ -251,7 +251,7 @@ class NotchPayService
     public function createBeneficiary(string $name, string $phone, string $email, string $country = 'CM'): array
     {
         try {
-            $response = Http::timeout($this->timeout)
+            $response = Http::withoutVerifying()->timeout($this->timeout)
                 ->withHeaders([
                     'Authorization' => $this->publicKey,
                     'X-Grant'       => $this->privateKey,
@@ -309,7 +309,7 @@ class NotchPayService
                 'reference'   => $reference,
             ];
 
-            $response = Http::timeout($this->timeout)
+            $response = Http::withoutVerifying()->timeout($this->timeout)
                 ->withHeaders([
                     'Authorization' => $this->publicKey,
                     'X-Grant'       => $this->privateKey,

@@ -46,28 +46,28 @@ class TransactionController extends Controller
     public function storeDepot(Request $request)
     {
         $request->validate([
-            'amount'         => 'required|numeric|min:10|max:100000',
+            'amount' => 'required|numeric|min:10|max:100000',
             'payment_method' => 'required|in:MTN,ORANGE',
         ]);
 
-        $user      = Auth::user();
-        $amount    = (float) $request->amount;
-        $operator  = strtoupper($request->payment_method);
+        $user = Auth::user();
+        $amount = (float) $request->amount;
+        $operator = strtoupper($request->payment_method);
         $amountXAF = $this->notchPay->usdToXaf($amount);
 
         $internalRef = 'DEP-' . $user->id . '-' . time() . '-' . Str::random(4);
 
         // Création de la transaction en statut "pending"
         $transaction = Transaction::create([
-            'user_id'       => $user->id,
-            'type'          => 'depot',
-            'montant'       => $amount,
-            'montant_fcfa'  => $amountXAF,
-            'status'        => 'pending',
-            'reference'     => $internalRef,
-            'operator'      => $operator,
-            'gateway'       => 'notchpay',
-            'description'   => "Dépôt de {$amount}$ via {$operator}",
+            'user_id' => $user->id,
+            'type' => 'depot',
+            'montant' => $amount,
+            'montant_fcfa' => $amountXAF,
+            'status' => 'pending',
+            'reference' => $internalRef,
+            'operator' => $operator,
+            'gateway' => 'notchpay',
+            'description' => "Dépôt de {$amount}$ via {$operator}",
         ]);
 
         // ── MODE SIMULATION / TEST ─────────────────────────────────────────────
@@ -75,7 +75,7 @@ class TransactionController extends Controller
             $transaction->update(['status' => 'completed']);
             $user->increment('account_balance', $amount);
 
-            return back()->with('success', "Dépôt de {$amount}$ SIMULÉ avec succès ! (Mode Test)");
+            return redirect()->route('depot.success', ['reference' => $transaction->reference]);
         }
 
         // ── PRODUCTION : Appel direct Notch Pay ───────────────────────────────
@@ -88,12 +88,12 @@ class TransactionController extends Controller
             }
 
             $result = $this->notchPay->initializePayment(
-                amountXAF:   $amountXAF,
-                email:       $user->email,
-                phone:       $phone,
-                reference:   $internalRef,
+                amountXAF: $amountXAF,
+                email: $user->email ?? 'no-reply@bioenergy.cm',
+                phone: $phone,
+                reference: $internalRef,
                 description: "Dépôt de {$amount}$ via {$operator} – BioEnergy",
-                operator:    $operator
+                operator: $operator
             );
 
             if (!$result['success']) {
@@ -111,21 +111,15 @@ class TransactionController extends Controller
                 $transaction->update(['status' => 'completed']);
                 $user->increment('account_balance', $amount);
 
-                return back()->with('success', "Dépôt de {$amount}$ crédité avec succès !");
+                return redirect()->route('depot.success', ['reference' => $transaction->reference]);
             }
 
             // Statut "pending" → l'utilisateur doit valider le push USSD sur son téléphone
-            return back()
-                ->with('success', "Dépôt initié ! Veuillez valider le message reçu sur votre téléphone {$operator} pour confirmer le paiement.")
-                ->with('last_payment', [
-                    'amount'    => $amount,
-                    'operator'  => $operator,
-                    'reference' => $transaction->reference
-                ]);
+            return redirect()->route('depot.waiting', ['reference' => $transaction->reference]);
         } catch (Exception $e) {
             Log::error('NotchPay Dépôt: exception', [
                 'user_id' => $user->id,
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
             $transaction->update(['status' => 'failed']);
             return back()->with('error', 'Erreur lors de la connexion au service de paiement. Réessayez plus tard.');
@@ -144,6 +138,34 @@ class TransactionController extends Controller
 
         return response()->json(['status' => $transaction->status]);
     }
+
+    public function waitingDepot($reference)
+    {
+        $transaction = Transaction::where('reference', $reference)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        return view('depot-waiting', compact('transaction'));
+    }
+
+    public function successDepot($reference)
+    {
+        $transaction = Transaction::where('reference', $reference)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        return view('depot-success', compact('transaction'));
+    }
+
+    public function failedDepot($reference)
+    {
+        $transaction = Transaction::where('reference', $reference)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        return view('depot-failed', compact('transaction'));
+    }
+
 
 
     // ====================================================================
@@ -191,11 +213,11 @@ class TransactionController extends Controller
     public function storeRetrait(Request $request)
     {
         $request->validate([
-            'amount'              => 'required|numeric|min:10|max:10000',
+            'amount' => 'required|numeric|min:10|max:10000',
             'withdrawal_password' => 'required|string',
         ]);
 
-        $user   = Auth::user();
+        $user = Auth::user();
         $amount = (float) $request->amount;
 
         // =============================================
@@ -204,7 +226,7 @@ class TransactionController extends Controller
         $now = now();
 
         $dayOfWeek = $now->dayOfWeekIso; // 1 = lundi, 4 = jeudi, 7 = dimanche
-        $hour      = $now->hour;
+        $hour = $now->hour;
 
         if ($dayOfWeek !== 4 || $hour < 9 || $hour >= 18) {
             $message = "Les retraits sont uniquement possibles le <strong>jeudi de 9h00 à 18h00</strong>.";
@@ -251,13 +273,13 @@ class TransactionController extends Controller
         $reference = 'WDR-' . $user->id . '-' . time() . '-' . rand(10, 99);
 
         $transaction = Transaction::create([
-            'user_id'     => $user->id,
-            'type'        => 'retrait',
-            'montant'     => $amount,
-            'status'      => 'pending',
-            'reference'   => $reference,
-            'operator'    => strtoupper($user->withdrawal_method),
-            'gateway'     => 'notchpay',
+            'user_id' => $user->id,
+            'type' => 'retrait',
+            'montant' => $amount,
+            'status' => 'pending',
+            'reference' => $reference,
+            'operator' => strtoupper($user->withdrawal_method),
+            'gateway' => 'notchpay',
             'description' => "Retrait de {$amount}$ via " . strtoupper($user->withdrawal_method),
         ]);
 
@@ -290,7 +312,7 @@ class TransactionController extends Controller
             $beneficiary = $this->notchPay->createBeneficiary(
                 name: $user->withdrawal_name ?? 'Investisseur BioEnergy',
                 phone: $phone,
-                email: $user->email,
+                email: $user->email ?? 'no-reply@bioenergy.cm',
                 country: 'CM'
             );
 
@@ -314,9 +336,9 @@ class TransactionController extends Controller
 
             // Succès de l'initiation du transfert
             $user->decrement('account_balance', $amount);
-            
+
             // Le statut reste 'pending' si le transfert n'est pas finalisé immédiatement.
-            // Notch Pay webhooks renverront l'événement "transfer.complete" 
+            // Notch Pay webhooks renverront l'événement "transfer.complete"
             $status = ($transfer['status'] === 'complete') ? 'completed' : 'pending';
 
             $transaction->update([
@@ -325,10 +347,10 @@ class TransactionController extends Controller
             ]);
 
             Log::info('NotchPay: Retrait API initié', [
-                'user_id'    => $user->id,
+                'user_id' => $user->id,
                 'amount_usd' => $amount,
                 'amount_xaf' => $amountNetXAF,
-                'ref'        => $reference,
+                'ref' => $reference,
             ]);
 
             return back()->with('success', "Votre retrait de {$amount}$ a été pris en compte. Il est en cours d'envoi vers votre compte Mobile Money.");
@@ -336,7 +358,7 @@ class TransactionController extends Controller
         } catch (Exception $e) {
             Log::error('Retrait NotchPay: exception', [
                 'user_id' => $user->id,
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ]);
 
             $transaction->update(['status' => 'failed']);
@@ -354,7 +376,7 @@ class TransactionController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        $totalDepots   = $transactions->where('type', 'depot')->sum('montant');
+        $totalDepots = $transactions->where('type', 'depot')->sum('montant');
         $totalRetraits = $transactions->where('type', 'retrait')->sum('montant');
 
         return view('transactions', compact('transactions', 'totalDepots', 'totalRetraits'));

@@ -86,6 +86,9 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/deposit', [TransactionController::class, 'deposit'])->name('deposit');
 Route::post('/depot', [TransactionController::class, 'storeDepot'])->name('depot.store');
 Route::get('/depot/status/{reference}', [TransactionController::class, 'checkStatus'])->name('depot.status');
+Route::get('/depot/waiting/{reference}', [TransactionController::class, 'waitingDepot'])->name('depot.waiting');
+Route::get('/depot/success/{reference}', [TransactionController::class, 'successDepot'])->name('depot.success');
+Route::get('/depot/failed/{reference}', [TransactionController::class, 'failedDepot'])->name('depot.failed');
 
 Route::get('/retrait', [TransactionController::class, 'retrait'])->name('retrait');
 Route::post('/withdrawal', [TransactionController::class, 'storeRetrait'])->name('retrait.store');
