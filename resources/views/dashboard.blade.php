@@ -4,32 +4,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <!-- POPUP BIENVENUE – FONCTIONNE À 100% -->
-    <div id="welcomePopup" 
+    <div id="welcomePopup"
          class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
-        
+
         <!-- Fond sombre -->
         <div id="popupOverlay" class="absolute inset-0 bg-black/70"></div>
 
         <!-- Carte popup -->
         <div class="relative bg-gradient-to-br from-white to-green-50 rounded-3xl shadow-2xl max-w-md w-11/12 p-8 animate__animated animate__zoomIn">
-            
+
             <!-- Bouton fermer -->
-            <button id="closePopup" 
+            <button id="closePopup"
                     class="absolute top-4 right-4 w-10 h-10 bg-red-500/20 hover:bg-red-500/40 rounded-full flex items-center justify-center text-red-600 text-2xl font-bold transition hover:scale-110">
                 X
             </button>
 
             <div class="text-center">
                 <h2 class="text-2xl md:text-3xl font-extrabold text-green-700 mb-4">
-                    Bienvenue chez BioEnergy
+                    Bienvenue chez BioEnergy Investment
                 </h2>
                 <p class="text-gray-700 text-lg leading-relaxed mb-8">
                     Vous avez <strong class="text-green-600">10 $ de bonus offert</strong> !<br>
-                    Gagnez plus grâce au <strong class="text-blue-600">parrainage multi-niveaux</strong>
+                    Gagnez plus grâce au <strong class="text-blue-600">parrainage multi-niveaux et notre systeme de recompenses personalisés</strong>
                 </p>
-                <a href="https://chat.whatsapp.com/TON-LIEN-GROUPE" target="_blank"
-                   class="block w-full bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white font-bold text-lg py-5 rounded-2xl shadow-2xl transition transform hover:scale-105">
-                    Rejoindre le Groupe WhatsApp
+                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank"
+                   class="block w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-green-700 hover:to-emerald-800 text-white font-bold text-lg py-5 rounded-2xl shadow-2xl transition transform hover:scale-105">
+                    Rejoindre le canal d'annonce officiel telegram
                 </a>
             </div>
         </div>
@@ -60,7 +60,7 @@
 
       <!-- GRILLE D'ICÔNES – CORRIGÉE : PLUS JAMAIS DE DÉBORDEMENT -->
 <div class="max-w-5xl mx-auto grid grid-cols-3 md:grid-cols-4 gap-5 md:gap-8 mb-12 px-2">
-    
+
     <a href="{{ route('presentation') }}" class="group">
         <div class="bg-white rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex flex-col justify-between h-full">
             <i class="fas fa-info-circle text-blue-600 text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
@@ -150,10 +150,10 @@
             <h2 class="text-3xl md:text-4xl font-extrabold text-center text-gray-800 mb-8">
                 L'énergie biomasse expliquée
             </h2>
-            
+
             <div class="relative w-full overflow-hidden rounded-3xl shadow-2xl bg-black" style="padding-top: 56.25%;">
                 <iframe class="absolute inset-0 w-full h-full"
-                        src="https://www.youtube.com/embed/yHWcddUZ35s" 
+                        src="https://www.youtube.com/embed/yHWcddUZ35s"
                         title="Biomass 101 - What is Biomass Energy?"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -212,7 +212,7 @@
 function showNotif() {
     // Génère un numéro camerounais aléatoire (237 + 6 chiffres masqués + 3 visibles)
     function generateRandomPhone() {
-        const prefixes = ['650', '651', '652', '653', '654', '655', '656', '657', '658', '659', 
+        const prefixes = ['650', '651', '652', '653', '654', '655', '656', '657', '658', '659',
                           '680', '681', '682', '683', '690', '691', '692', '693', '694', '695'];
         const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
         const last3 = Math.floor(Math.random() * 900) + 100; // 100 à 999
