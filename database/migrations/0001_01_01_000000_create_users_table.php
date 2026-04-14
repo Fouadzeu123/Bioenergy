@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('phone')->unique();
-            $table->integer('account_balance')->unsigned()->nullable();
+            $table->decimal('account_balance', 15, 4)->unsigned()->nullable();
             $table->integer('level')->default(0);
             $table->unsignedBigInteger('invited_by')->nullable();
             $table->foreign('invited_by')->references('id')->on('users')->onDelete('set null');

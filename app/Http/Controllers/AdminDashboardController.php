@@ -94,7 +94,7 @@ class AdminDashboardController extends Controller
             ->take(8)
             ->get()
             ->map(function ($user) use ($rateFCFAperUSD) {
-                $balanceUsd = round((float) ($user->account_balance ?? 0), 2);
+                $balanceUsd = (float) ($user->account_balance ?? 0);
                 $user->balance_usd  = $balanceUsd;
                 $user->balance_fcfa = (int) round($balanceUsd * $rateFCFAperUSD);
                 return $user;

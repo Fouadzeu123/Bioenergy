@@ -44,7 +44,7 @@ class ProfileController extends Controller
         $revenus = $this->calculateIncome($user->id, $now);
 
         // 2. Solde actuel
-        $solde_total_usd   = round($user->account_balance ?? 0, 2);
+        $solde_total_usd   = (float) ($user->account_balance ?? 0);
         $solde_total_fcfa  = round($solde_total_usd * $rate);
 
         // 3. Total retraits validés

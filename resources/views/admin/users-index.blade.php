@@ -67,7 +67,7 @@
                         @php
                             $totalDepots = $user->total_deposits ?? 0;
                             $totalRetraits = $user->total_withdrawals ?? 0;
-                            $balanceUsd = round($user->account_balance ?? 0, 2);
+                            $balanceUsd = (float) ($user->account_balance ?? 0);
                         @endphp
                         <tr class="hover:bg-gray-50 transition">
                             <!-- Avatar + Nom -->
