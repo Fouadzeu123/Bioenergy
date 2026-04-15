@@ -49,90 +49,91 @@
     </style>
 
     <!-- POPUP BIENVENUE -->
-    <div id="welcomePopup" class="fixed inset-0 z-[9999] flex items-center justify-center hidden px-4">
+    <div id="welcomePopup" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center hidden">
 
         <!-- Overlay flouté -->
         <div id="popupOverlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
 
-        <!-- Carte popup améliorée -->
-        <div class="popup-card relative rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate__animated animate__zoomIn">
+        <!-- Carte popup — slide depuis le bas sur mobile, centrée sur desktop -->
+        <div class="popup-card relative w-full sm:max-w-md sm:mx-4 sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden animate__animated animate__slideInUp sm:animate__zoomIn max-h-[92dvh] flex flex-col">
 
-            <!-- En-tête gradient animé -->
-            <div class="popup-header-bg px-8 pt-10 pb-16 text-center relative overflow-hidden">
+            <!-- En-tête gradient animé — compact sur mobile -->
+            <div class="popup-header-bg px-6 pt-8 pb-12 text-center relative overflow-hidden flex-shrink-0">
                 <!-- Cercles décoratifs -->
-                <div class="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full -translate-x-12 -translate-y-12"></div>
-                <div class="absolute bottom-0 right-0 w-40 h-40 bg-white/5 rounded-full translate-x-16 translate-y-16"></div>
+                <div class="absolute top-0 left-0 w-28 h-28 bg-white/5 rounded-full -translate-x-10 -translate-y-10"></div>
+                <div class="absolute bottom-0 right-0 w-36 h-36 bg-white/5 rounded-full translate-x-14 translate-y-14"></div>
 
-                <!-- Bouton fermer -->
+                <!-- Bouton fermer — plus grand sur mobile pour le toucher -->
                 <button id="closePopup"
-                        class="absolute top-4 right-4 w-9 h-9 bg-white/15 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition hover:scale-110 text-lg font-bold">
+                        class="absolute top-3 right-3 w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white transition text-base font-bold touch-manipulation">
                     <i class="fas fa-times"></i>
                 </button>
 
-                <!-- Icône principale flottante -->
-                <div class="float-icon inline-flex items-center justify-center w-20 h-20 bg-white/15 rounded-3xl mb-4 mx-auto border border-white/20">
-                    <i class="fas fa-leaf text-white text-4xl"></i>
+                <!-- Icône principale flottante — taille réduite sur mobile -->
+                <div class="float-icon inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-white/15 rounded-2xl sm:rounded-3xl mb-3 mx-auto border border-white/20">
+                    <i class="fas fa-leaf text-white text-3xl sm:text-4xl"></i>
                 </div>
 
-                <h2 class="text-2xl md:text-3xl font-extrabold text-white leading-tight mb-2">
+                <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight mb-1">
                     Bienvenue chez<br>
                     <span class="text-emerald-200">BioEnergy Investment</span>
                 </h2>
-                <p class="text-emerald-100/80 text-sm">La plateforme d'investissement vert qui rapporte</p>
+                <p class="text-emerald-100/80 text-xs sm:text-sm">La plateforme d'investissement vert qui rapporte</p>
             </div>
 
-            <!-- Chip bonus flottant sur la ligne de séparation -->
-            <div class="flex justify-center -mt-5 mb-0">
-                <div class="bonus-chip inline-flex items-center gap-2 text-white font-extrabold text-sm px-5 py-2.5 rounded-full shadow-lg">
+            <!-- Chip bonus flottant -->
+            <div class="flex justify-center -mt-5 flex-shrink-0">
+                <div class="bonus-chip inline-flex items-center gap-2 text-white font-extrabold text-xs sm:text-sm px-4 py-2 sm:px-5 sm:py-2.5 rounded-full shadow-lg">
                     <i class="fas fa-gift"></i>
                     <span>10 $ de bonus de bienvenue offert !</span>
                 </div>
             </div>
 
-            <!-- Corps -->
-            <div class="px-7 pt-6 pb-7">
+            <!-- Corps — scrollable si écran très petit -->
+            <div class="px-5 sm:px-7 pt-5 pb-6 overflow-y-auto overscroll-contain">
 
                 <!-- Avantages -->
-                <div class="space-y-3 mb-6">
-                    <div class="feature-item flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
-                        <div class="w-9 h-9 flex-shrink-0 bg-emerald-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-users text-white text-sm"></i>
+                <div class="space-y-2 sm:space-y-3 mb-5">
+                    <div class="feature-item flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 bg-emerald-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-users text-white text-xs sm:text-sm"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-slate-800 text-sm">Parrainage multi-niveaux</p>
-                            <p class="text-slate-500 text-xs">Gagnez sur 3 niveaux de filleuls</p>
+                            <p class="font-bold text-slate-800 text-xs sm:text-sm">Parrainage multi-niveaux</p>
+                            <p class="text-slate-500 text-[11px] sm:text-xs">Gagnez sur 3 niveaux de filleuls</p>
                         </div>
                     </div>
 
-                    <div class="feature-item flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
-                        <div class="w-9 h-9 flex-shrink-0 bg-blue-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-trophy text-white text-sm"></i>
+                    <div class="feature-item flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 bg-blue-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-trophy text-white text-xs sm:text-sm"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-slate-800 text-sm">Récompenses exclusives</p>
-                            <p class="text-slate-500 text-xs">De 1 $ à 1 000 $ pour nos meilleurs investisseurs</p>
+                            <p class="font-bold text-slate-800 text-xs sm:text-sm">Récompenses exclusives</p>
+                            <p class="text-slate-500 text-[11px] sm:text-xs">De 1 $ à 1 000 $ pour nos meilleurs investisseurs</p>
                         </div>
                     </div>
 
-                    <div class="feature-item flex items-center gap-3 bg-violet-50 border border-violet-100 rounded-xl px-4 py-3">
-                        <div class="w-9 h-9 flex-shrink-0 bg-violet-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-briefcase text-white text-sm"></i>
+                    <div class="feature-item flex items-center gap-3 bg-violet-50 border border-violet-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 bg-violet-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-briefcase text-white text-xs sm:text-sm"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-slate-800 text-sm">Programme Emploi</p>
-                            <p class="text-slate-500 text-xs">Jusqu'à 2 000 $/mois selon votre poste</p>
+                            <p class="font-bold text-slate-800 text-xs sm:text-sm">Programme Emploi</p>
+                            <p class="text-slate-500 text-[11px] sm:text-xs">Jusqu'à 2 000 $/mois selon votre poste</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- CTA Telegram -->
-                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank" class="telegram-btn flex items-center justify-center gap-3 w-full text-white font-bold text-base py-4 rounded-2xl">
-                    <i class="fab fa-telegram text-xl"></i>
+                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank"
+                   class="telegram-btn flex items-center justify-center gap-3 w-full text-white font-bold text-sm sm:text-base py-3.5 sm:py-4 rounded-2xl touch-manipulation">
+                    <i class="fab fa-telegram text-lg sm:text-xl"></i>
                     <span>Rejoindre le canal officiel</span>
-                    <i class="fas fa-arrow-right text-sm opacity-70"></i>
+                    <i class="fas fa-arrow-right text-xs sm:text-sm opacity-70"></i>
                 </a>
 
-                <p class="text-center text-slate-400 text-xs mt-3">
+                <p class="text-center text-slate-400 text-[11px] mt-2.5 pb-safe">
                     <i class="fas fa-lock mr-1"></i> Canal vérifié · Annonces exclusives
                 </p>
             </div>
