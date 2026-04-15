@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Exclure le webhook Notch Pay du CSRF (requête POST depuis les serveurs Notch Pay)
         $middleware->validateCsrfTokens(except: [
-            'notchpay/webhook',
+            'webhooks/notchpay',
         ]);
 
         $middleware->web(append: [

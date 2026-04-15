@@ -157,5 +157,5 @@ Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function 
 // La signature HMAC-SHA256 (header X-Notch-Signature) protège l'endpoint.
 // URL à configurer dans le dashboard Notch Pay → Settings → Webhooks
 // =============================================================================
-Route::post('/notchpay/webhook', [NotchPayWebhookController::class, 'handle'])
+Route::post('/webhooks/notchpay', [NotchPayWebhookController::class, 'handle'])
      ->name('notchpay.webhook');
