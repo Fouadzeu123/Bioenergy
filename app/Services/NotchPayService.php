@@ -261,7 +261,7 @@ class NotchPayService
                 ->post("{$this->apiUrl}/beneficiaries", [
                     'name'           => $name,
                     'phone'          => $phone,
-                    'number'         => $phone,
+                    'account_number' => $phone,
                     'email'          => $email,
                     'channel'        => $channel,
                     'country'        => $country,
