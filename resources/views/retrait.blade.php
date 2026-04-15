@@ -7,7 +7,6 @@
     $FEE_PERCENT = 10;
 
     $balance = $user->account_balance ?? 0;
-    $totalRetraits = $retraits->sum('montant') ?? 0;
 @endphp
 
 <div class="max-w-2xl mx-auto py-8 px-4">
@@ -111,7 +110,7 @@
                        required placeholder="50.00"
                        class="w-full pl-10 pr-4 py-4 text-2xl font-bold bg-gray-50 border border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition">
             </div>
-            
+
             <!-- Boutons rapides -->
             <div class="grid grid-cols-4 gap-2 mt-4">
                 <button type="button" data-amount="20"  class="quick-btn bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition text-sm">20 $</button>
@@ -188,7 +187,7 @@
             <h3 class="font-bold text-gray-700">Derniers retraits</h3>
             <a href="{{ route('transaction') }}" class="text-emerald-600 hover:underline">Voir tout</a>
         </div>
-        
+
         @if(isset($retraits) && $retraits->count() > 0)
             <div class="space-y-3">
                 @foreach($retraits->take(3) as $retrait)
@@ -231,7 +230,7 @@
     }));
 
     document.getElementById('amountInput').addEventListener('input', updatePreview);
-    
+
     function updatePreview() {
         const val = parseFloat(document.getElementById('amountInput').value) || 0;
         const net = val * (1 - FEE);
