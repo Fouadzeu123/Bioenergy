@@ -5,7 +5,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
-        #welcomePopup * { font-family: 'Inter', sans-serif; }
+        #welcomePopup { font-family: 'Inter', sans-serif; }
 
         @keyframes gradientShift {
             0%   { background-position: 0% 50%; }
@@ -394,7 +394,7 @@ function showNotif() {
 
     // Limiter à 4 notifications visibles simultanément
     const container = document.getElementById('notifications');
-    while (container.children.length > 4) {
+    while (container.children.length > 2) {
         container.removeChild(container.lastChild);
     }
 
