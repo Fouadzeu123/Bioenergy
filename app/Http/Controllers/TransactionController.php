@@ -144,7 +144,7 @@ class TransactionController extends Controller
             try {
                 $check = $this->notchPay->verifyPayment($transaction->gateway_reference);
 
-                if ($check['success'] && ($check['status'] ?? '') === 'complete') {
+                if (($check['status'] ?? '') === 'complete') {
                     // Paiement confirmé par l'API !
                     $transaction->update(['status' => 'completed']);
                     Auth::user()->increment('account_balance', $transaction->montant);
@@ -157,7 +157,7 @@ class TransactionController extends Controller
                     return response()->json(['status' => 'completed']);
                 }
 
-                if ($check['success'] && in_array($check['status'], ['failed', 'canceled', 'rejected'])) {
+                if (in_array($check['status'] ?? '', ['failed', 'canceled', 'rejected', 'expired'])) {
                     $transaction->update(['status' => 'failed']);
                     return response()->json(['status' => 'failed']);
                 }

@@ -60,7 +60,11 @@ class NotchPayWebhookController extends Controller
         $event = $request->json()->all();
         $type  = $event['event'] ?? $event['type'] ?? null;
 
-        Log::info('NotchPay Webhook: événement', ['type' => $type, 'data' => $event]);
+        Log::info('NotchPay Webhook: événement reçu', [
+            'type' => $type,
+            'notch_reference' => $event['data']['reference'] ?? 'N/A',
+            'full_payload' => $event
+        ]);
 
         // ── 4. Router selon le type d'événement ──────────────────────────────
         switch ($type) {
@@ -117,30 +121,34 @@ class NotchPayWebhookController extends Controller
             return;
         }
 
-        // ── Trouver la transaction via gateway_reference (référence Notch Pay) ─
-        $transaction = Transaction::where('gateway_reference', $notchReference)
-                                  ->where('status', 'pending')
-                                  ->first();
+        // ── Recherche de la transaction de façon robuste ───────────────────────
+        $transaction = Transaction::where('status', 'pending')
+            ->where(function ($query) use ($transactionData, $notchReference) {
+                // On essaie toutes les clés possibles envoyées par NotchPay
+                $refs = array_filter([
+                    $notchReference,
+                    $transactionData['id'] ?? null,
+                    $transactionData['merchant_reference'] ?? null,
+                    $transactionData['metadata']['internal_reference'] ?? null
+                ]);
 
-        // Fallback : chercher via notre référence interne stockée dans les metadata
+                foreach ($refs as $ref) {
+                    $query->orWhere('gateway_reference', $ref)
+                          ->orWhere('reference', $ref);
+                }
+            })
+            ->first();
+
         if (!$transaction) {
-            $internalRef = $transactionData['merchant_reference']
-                        ?? $transactionData['metadata']['internal_reference']
-                        ?? null;
-
-            if ($internalRef) {
-                $transaction = Transaction::where('reference', $internalRef)
-                                          ->where('status', 'pending')
-                                          ->first();
-            }
-        }
-
-        if (!$transaction) {
-            Log::warning('NotchPay Webhook: transaction introuvable ou déjà traitée', [
-                'notch_reference' => $notchReference,
+            Log::warning('NotchPay Webhook: transaction introuvable dans la DB', [
+                'notch_reference'  => $notchReference,
+                'merchant_ref'     => $transactionData['merchant_reference'] ?? 'void',
+                'internal_ref_met' => $transactionData['metadata']['internal_reference'] ?? 'void'
             ]);
             return;
         }
+
+        Log::info('NotchPay Webhook: transaction trouvée, mise à jour...', ['id' => $transaction->id, 'ref' => $transaction->reference]);
 
         // ── Idempotence : éviter le double-crédit ──────────────────────────────
         if ($transaction->status !== 'pending') {
@@ -188,11 +196,24 @@ class NotchPayWebhookController extends Controller
             return;
         }
 
-        $transaction = Transaction::where('gateway_reference', $notchReference)
-                                  ->where('status', 'pending')
-                                  ->first();
+        $transaction = Transaction::where('status', 'pending')
+            ->where(function ($query) use ($transactionData, $notchReference) {
+                $refs = array_filter([
+                    $notchReference,
+                    $transactionData['id'] ?? null,
+                    $transactionData['merchant_reference'] ?? null,
+                    $transactionData['metadata']['internal_reference'] ?? null
+                ]);
+
+                foreach ($refs as $ref) {
+                    $query->orWhere('gateway_reference', $ref)
+                          ->orWhere('reference', $ref);
+                }
+            })
+            ->first();
 
         if (!$transaction) {
+            Log::warning('NotchPay Webhook Failed: transaction introuvable', ['event' => $event]);
             return;
         }
 
@@ -214,12 +235,27 @@ class NotchPayWebhookController extends Controller
 
         if (!$notchReference) return;
 
-        $transaction = Transaction::where('gateway_reference', $notchReference)
-                                  ->where('type', 'retrait')
-                                  ->where('status', 'pending')
-                                  ->first();
+        $transaction = Transaction::where('type', 'retrait')
+            ->where('status', 'pending')
+            ->where(function ($query) use ($transferData, $notchReference) {
+                $refs = array_filter([
+                    $notchReference,
+                    $transferData['id'] ?? null,
+                    $transferData['merchant_reference'] ?? null,
+                    $transferData['metadata']['internal_reference'] ?? null
+                ]);
 
-        if (!$transaction) return;
+                foreach ($refs as $ref) {
+                    $query->orWhere('gateway_reference', $ref)
+                          ->orWhere('reference', $ref);
+                }
+            })
+            ->first();
+
+        if (!$transaction) {
+            Log::warning('NotchPay Transfer Webhook: transaction introuvable', ['event' => $event]);
+            return;
+        }
 
         $transaction->update(['status' => 'completed']);
         Log::info('NotchPay Webhook: retrait complété', ['ref' => $transaction->reference]);
@@ -235,12 +271,27 @@ class NotchPayWebhookController extends Controller
 
         if (!$notchReference) return;
 
-        $transaction = Transaction::where('gateway_reference', $notchReference)
-                                  ->where('type', 'retrait')
-                                  ->where('status', 'pending')
-                                  ->first();
+        $transaction = Transaction::where('type', 'retrait')
+            ->where('status', 'pending')
+            ->where(function ($query) use ($transferData, $notchReference) {
+                $refs = array_filter([
+                    $notchReference,
+                    $transferData['id'] ?? null,
+                    $transferData['merchant_reference'] ?? null,
+                    $transferData['metadata']['internal_reference'] ?? null
+                ]);
 
-        if (!$transaction) return;
+                foreach ($refs as $ref) {
+                    $query->orWhere('gateway_reference', $ref)
+                          ->orWhere('reference', $ref);
+                }
+            })
+            ->first();
+
+        if (!$transaction) {
+            Log::warning('NotchPay Transfer Webhook Failed: transaction introuvable', ['event' => $event]);
+            return;
+        }
 
         $transaction->update(['status' => 'failed']);
 

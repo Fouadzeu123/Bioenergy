@@ -169,7 +169,7 @@ class NotchPayService
             if (!$response->successful()) {
                 return [
                     'success' => false,
-                    'status'  => 'unknown',
+                    'status'  => $data['transaction']['status'] ?? 'unknown',
                     'message' => $data['message'] ?? 'Impossible de vérifier le paiement.',
                     'data'    => $data,
                 ];
