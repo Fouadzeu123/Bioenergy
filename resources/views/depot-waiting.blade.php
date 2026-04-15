@@ -39,9 +39,9 @@
             fetch(`/depot/status/${ref}`)
                 .then(r => r.json())
                 .then(data => {
-                    if (data.status === 'completed') {
+                    if (data.status === 'completed' || data.status === 'complete') {
                         window.location.href = successRoute;
-                    } else if (data.status === 'failed' || data.status === 'rejected' || data.status === 'canceled') {
+                    } else if (data.status === 'failed' || data.status === 'rejected' || data.status === 'canceled' || data.status === 'expired') {
                         window.location.href = failedRoute;
                     } else {
                         // pending

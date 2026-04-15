@@ -138,24 +138,23 @@ class TransactionController extends Controller
             return response()->json(['status' => 'not_found'], 404);
         }
 
+        if ($transaction->status === 'pending' && !$transaction->gateway_reference) {
+             Log::warning("Polling: La transaction {$reference} n'a pas de gateway_reference. Le polling NotchPay est impossible.");
+        }
+
         if ($transaction->status === 'pending' && $transaction->gateway_reference) {
             try {
                 $check = $this->notchPay->verifyPayment($transaction->gateway_reference);
 
                 if (($check['status'] ?? '') === 'complete') {
-                    // Paiement confirmé par l'API !
+                    // Paiement confirmé !
                     $transaction->update(['status' => 'completed']);
                     Auth::user()->increment('account_balance', $transaction->montant);
-
-                    Log::info('checkStatus: Paiement confirmé par polling direct', [
-                        'ref' => $transaction->reference,
-                        'notch_ref' => $transaction->gateway_reference
-                    ]);
-
                     return response()->json(['status' => 'completed']);
                 }
 
-                if (in_array($check['status'] ?? '', ['failed', 'canceled', 'rejected', 'expired'])) {
+                if ($check['status'] !== 'pending') {
+                    // C'est un échec (failed, expired, canceled, etc.)
                     $transaction->update(['status' => 'failed']);
                     return response()->json(['status' => 'failed']);
                 }

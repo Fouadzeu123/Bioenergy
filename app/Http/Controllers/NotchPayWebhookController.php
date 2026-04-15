@@ -74,6 +74,7 @@ class NotchPayWebhookController extends Controller
 
             case 'payment.failed':
             case 'payment.canceled':
+            case 'payment.expired':
                 $this->handlePaymentFailed($event);
                 break;
 
