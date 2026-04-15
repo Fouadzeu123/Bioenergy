@@ -23,7 +23,7 @@
     <div class="w-full">
         <img src="{{ asset('images/biomasse.jpg') }}" alt="BioEnergy" class="w-full h-48 sm:h-64 object-cover rounded-2xl shadow-xl">
     </div>
-    
+
     <div class="text-center my-6 sm:my-8">
         <a href="{{ route('Mesproduits') }}" class="inline-block w-full sm:w-auto bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg px-8 py-4 sm:py-5 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition">
             Voir mes produits actifs
@@ -34,8 +34,8 @@
     <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 sm:p-10 text-center shadow-inner mb-8 sm:mb-12 border border-green-100">
         <h2 class="text-2xl sm:text-4xl font-bold text-green-800 mb-3">Investissez dans l'énergie verte</h2>
         <p class="text-lg sm:text-xl text-gray-700 leading-relaxed max-w-5xl mx-auto">
-            Rendement journalier de <strong>2% à 8%</strong> selon le produit.<br class="hidden sm:block">
-            Revenus journaliers pendant <strong>365 jours</strong>.
+            Rendement journalier de <strong>4% à 7%</strong> selon le produit.<br class="hidden sm:block">
+            Revenus journaliers pendant <strong>180 jours</strong>.
         </p>
     </div>
 
@@ -219,15 +219,15 @@
         if (p.max_amount) input.max = p.max_amount;
         else input.removeAttribute('max');
 
-        document.getElementById('amountHelp').textContent = 
-            p.max_amount 
+        document.getElementById('amountHelp').textContent =
+            p.max_amount
                 ? `Montant accepté : ${p.min_amount}$ → ${p.max_amount}$`
                 : `Minimum : ${p.min_amount}$`;
 
         // Conversion en temps réel
         input.oninput = function() {
             const val = parseFloat(this.value) || 0;
-            document.getElementById('amountInF').textContent = 
+            document.getElementById('amountInF').textContent =
                 val > 0 ? `≈ ${val.toLocaleString()} $ = ${(val * USD_TO_F).toLocaleString()} F` : '';
         };
         input.oninput(); // trigger initial
