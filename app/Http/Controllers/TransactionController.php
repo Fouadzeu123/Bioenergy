@@ -138,8 +138,6 @@ class TransactionController extends Controller
             return response()->json(['status' => 'not_found'], 404);
         }
 
-        // Si c'est encore 'pending' localement, on tente une vérification directe via l'API Notch Pay
-        // au cas où le webhook n'aurait pas encore été reçu (ou aurait échoué).
         if ($transaction->status === 'pending' && $transaction->gateway_reference) {
             try {
                 $check = $this->notchPay->verifyPayment($transaction->gateway_reference);

@@ -51,10 +51,12 @@
         'status' => $tx->status,
         'created_at' => $tx->created_at ? $tx->created_at->toDateTimeString() : null,
         'description' => $tx->description,
-    ], JSON_HEX_APOS | JSON_HEX_QUOT);
+    ], JSON_UNESCAPED_UNICODE);
 @endphp
 
-<div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer mb-4" onclick="openTxModal({!! htmlspecialchars($txJson) !!})">
+<div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer mb-4" 
+     data-tx="{{ $txJson }}" 
+     onclick="openTxModal(this.getAttribute('data-tx'))">
     <div class="flex items-center justify-between">
         
         <!-- Icon & Info -->
