@@ -19,7 +19,7 @@ class AdminDashboardController extends Controller
         // ===================================================================
         $totalUsers       = User::count();
         $totalAdmins      = User::where('role', 'admin')->count();
-        $activeToday      = User::whereDate('last_login_at', today())->count();
+        $activeToday      = User::whereDate('updated_at', today())->count();
         $pendingWithdrawals = Transaction::where('type', 'retrait')
                                          ->where('status', 'pending')
                                          ->count();
