@@ -248,7 +248,7 @@ class NotchPayService
      *
      * @return array ['success', 'beneficiary_id', 'message']
      */
-    public function createBeneficiary(string $name, string $phone, string $email, string $country = 'CM'): array
+    public function createBeneficiary(string $name, string $phone, string $email, string $channel, string $country = 'CM'): array
     {
         try {
             $response = Http::withoutVerifying()->timeout($this->timeout)
@@ -262,6 +262,7 @@ class NotchPayService
                     'name'           => $name,
                     'phone'          => $phone,
                     'email'          => $email,
+                    'channel'        => $channel,
                     'country'        => $country,
                 ]);
 

@@ -226,7 +226,8 @@ class TransactionController extends Controller
             ->latest()
             ->get();
 
-        $totalRetraits = $retraits->sum('montant');
+        $totalRetraits = $retraits->where('status','completed')
+        ->sum('montant');
 
         return view('retrait', compact('retraits', 'totalRetraits'));
     }
@@ -338,11 +339,15 @@ class TransactionController extends Controller
             $amountXAF = $this->notchPay->usdToXaf($amount);
             $amountNetXAF = (int) round($amountXAF * 0.90); // 10% de frais appliqués
 
+            // Résoudre le canal (cm.mtn / cm.orange)
+            $channel = config('notchpay.channels.' . strtoupper($user->withdrawal_method), 'cm.mtn');
+
             // Étape 1 : Créer le bénéficiaire
             $beneficiary = $this->notchPay->createBeneficiary(
                 name: $user->withdrawal_name ?? 'Investisseur BioEnergy',
                 phone: $phone,
                 email: $user->email ?? 'no-reply@bioenergy.cm',
+                channel: $channel,
                 country: 'CM'
             );
 
