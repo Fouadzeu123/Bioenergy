@@ -138,6 +138,34 @@ class TransactionController extends Controller
             return response()->json(['status' => 'not_found'], 404);
         }
 
+        // Si c'est encore 'pending' localement, on tente une vérification directe via l'API Notch Pay
+        // au cas où le webhook n'aurait pas encore été reçu (ou aurait échoué).
+        if ($transaction->status === 'pending' && $transaction->gateway_reference) {
+            try {
+                $check = $this->notchPay->verifyPayment($transaction->gateway_reference);
+
+                if ($check['success'] && ($check['status'] ?? '') === 'complete') {
+                    // Paiement confirmé par l'API !
+                    $transaction->update(['status' => 'completed']);
+                    Auth::user()->increment('account_balance', $transaction->montant);
+
+                    Log::info('checkStatus: Paiement confirmé par polling direct', [
+                        'ref' => $transaction->reference,
+                        'notch_ref' => $transaction->gateway_reference
+                    ]);
+
+                    return response()->json(['status' => 'completed']);
+                }
+
+                if ($check['success'] && in_array($check['status'], ['failed', 'canceled', 'rejected'])) {
+                    $transaction->update(['status' => 'failed']);
+                    return response()->json(['status' => 'failed']);
+                }
+            } catch (Exception $e) {
+                Log::error('checkStatus: erreur polling direct', ['error' => $e->getMessage()]);
+            }
+        }
+
         return response()->json(['status' => $transaction->status]);
     }
 

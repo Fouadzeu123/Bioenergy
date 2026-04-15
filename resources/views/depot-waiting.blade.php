@@ -33,7 +33,7 @@
         const failedRoute = "{{ route('depot.failed', $transaction->reference) }}";
 
         let attempts = 0;
-        const maxAttempts = 20; // ~ 1 minute maximum de vérification (20 * 3s = 60s)
+        const maxAttempts = 60; // ~ 3 minutes maximum de vérification (60 * 3s = 180s)
 
         function checkStatus() {
             fetch(`/depot/status/${ref}`)
