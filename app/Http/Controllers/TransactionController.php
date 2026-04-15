@@ -221,17 +221,17 @@ class TransactionController extends Controller
         $amount = (float) $request->amount;
 
         // =============================================
-        // 1. VÉRIFICATION HORAIRES RETRAIT : JEUDI 9H-18H
+        // 1. VÉRIFICATION HORAIRES RETRAIT : LUNDI-VENDREDI 9H-18H
         // =============================================
         $now = now();
 
-        $dayOfWeek = $now->dayOfWeekIso; // 1 = lundi, 4 = jeudi, 7 = dimanche
+        $dayOfWeek = $now->dayOfWeekIso; // 1 = lundi, 5 = vendredi, 7 = dimanche
         $hour = $now->hour;
 
-        if ($dayOfWeek !== 4 || $hour < 9 || $hour >= 18) {
-            $message = "Les retraits sont uniquement possibles le <strong>jeudi de 9h00 à 18h00</strong>.";
+        if ($dayOfWeek < 1 || $dayOfWeek > 5 || $hour < 9 || $hour >= 18) {
+            $message = "Les retraits sont uniquement possibles du <strong>lundi au vendredi de 9h00 à 18h00</strong>.";
 
-            if ($dayOfWeek !== 4) {
+            if ($dayOfWeek < 1 || $dayOfWeek > 5) {
                 $message .= " Aujourd'hui nous sommes " . $now->translatedFormat('l') . ".";
             } else {
                 $message .= " Il est actuellement {$now->format('H\\hi')}.";

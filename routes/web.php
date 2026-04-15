@@ -17,6 +17,7 @@ use App\Http\Controllers\NotchPayWebhookController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\WithdrawalInfoController;
 use App\Http\Controllers\AdminTransactionController;
+use App\Http\Controllers\EmploiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,6 +120,8 @@ Route::put('/retrait/info/update',[WithdrawalInfoController::class,'update'])->n
 // Reclamation du bonus
 Route::get('/bonus', [BonusController::class, 'index'])->name('bonus.code');
 Route::post('/bonus/reclamer', [BonusController::class, 'reclamer'])->name('bonus.reclamer');
+
+Route::get('/emploi', [EmploiController::class, 'index'])->name('emploi');
 
 Route::prefix('admin')->middleware(['admin' => \App\Http\Middleware\IsAdmin::class])->group(function () {
     Route::get('/bonus', [AdminBonusController::class, 'index'])->name('admin.bonus.index');

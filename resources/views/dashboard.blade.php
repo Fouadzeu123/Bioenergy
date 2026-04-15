@@ -116,6 +116,13 @@
             <p class="font-bold text-pink-700 text-xs md:text-base leading-tight">Contact</p>
         </div>
     </a>
+
+    <a href="{{ route('emploi') }}" class="group">
+        <div class="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 text-white flex flex-col justify-between h-full">
+            <i class="fas fa-briefcase text-white text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
+            <p class="font-bold text-white text-xs md:text-base leading-tight">Emploi</p>
+        </div>
+    </a>
 </div>
 
         <!-- Impact & Avantages -->

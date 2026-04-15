@@ -61,7 +61,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs text-amber-900/80 font-medium">
             <div class="flex items-start gap-2"><i class="fas fa-check mt-0.5 text-amber-600"></i> Minimum de retrait : <strong>{{ $MIN_WITHDRAWAL_USD }} $</strong></div>
             <div class="flex items-start gap-2"><i class="fas fa-check mt-0.5 text-amber-600"></i> Frais appliqués : <strong>{{ $FEE_PERCENT }}%</strong></div>
-            <div class="flex items-start gap-2"><i class="fas fa-clock mt-0.5 text-amber-600"></i> Horaires : <strong>Jeudi de 08:00 à 18:00 (GMT+1)</strong></div>
+            <div class="flex items-start gap-2"><i class="fas fa-clock mt-0.5 text-amber-600"></i> Horaires : <strong>Lun. au Ven. de 09:00 à 18:00</strong></div>
             <div class="flex items-start gap-2"><i class="fas fa-exclamation-triangle mt-0.5 text-amber-600"></i> Limite : <strong>1 retrait par jour</strong></div>
         </div>
     </div>
