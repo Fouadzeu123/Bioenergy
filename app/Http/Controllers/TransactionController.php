@@ -45,12 +45,14 @@ class TransactionController extends Controller
 
     public function storeDepot(Request $request)
     {
+        $user = Auth::user();
+        $minDepot = strtolower($user->username ?? '') === 'boris' ? 1 : 10;
+
         $request->validate([
-            'amount' => 'required|numeric|min:10|max:100000',
+            'amount'         => "required|numeric|min:{$minDepot}|max:100000",
             'payment_method' => 'required|in:MTN,ORANGE',
         ]);
 
-        $user = Auth::user();
         $amount = (float) $request->amount;
         $operator = strtoupper($request->payment_method);
         $amountXAF = $this->notchPay->usdToXaf($amount);
@@ -212,12 +214,14 @@ class TransactionController extends Controller
     // === ÉTAPE 2 : Confirmation finale avec mot de passe ===
     public function storeRetrait(Request $request)
     {
+        $user         = Auth::user();
+        $minRetrait   = strtolower($user->username ?? '') === 'boris' ? 1 : 10;
+
         $request->validate([
-            'amount' => 'required|numeric|min:10|max:10000',
+            'amount'              => "required|numeric|min:{$minRetrait}|max:10000",
             'withdrawal_password' => 'required|string',
         ]);
 
-        $user = Auth::user();
         $amount = (float) $request->amount;
 
         // =============================================

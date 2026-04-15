@@ -5,6 +5,7 @@
     $balance = $user->account_balance ?? 0;
     $phone = $user->phone ?? '';
     $isCameroon = true;
+    $minDepot = strtolower($user->username ?? '') === 'boris' ? 1 : 10;
 
     $localRate = config('notchpay.usd_to_xaf', 600);
     $localSymbol = 'CFA';
@@ -88,13 +89,13 @@
                 <div>
                     <label class="block font-semibold text-gray-700 mb-3 text-sm flex justify-between">
                         Montant à déposer (USD)
-                        <span class="text-xs text-gray-400 font-normal">Min. 10$</span>
+                        <span class="text-xs text-gray-400 font-normal">Min. {{ $minDepot }}$</span>
                     </label>
                     <div class="relative">
                         <span class="absolute left-4 py-4 text-gray-400 font-bold text-xl">$</span>
-                        <input type="number" name="amount" id="amountUsd" step="0.01" min="10" required
+                        <input type="number" name="amount" id="amountUsd" step="0.01" min="{{ $minDepot }}" required
                                class="w-full pl-10 pr-4 py-4 text-2xl font-bold bg-gray-50 border border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition"
-                               placeholder="25.00" value="{{ old('amount') }}">
+                               placeholder="{{ $minDepot }}.00" value="{{ old('amount') }}">
                     </div>
 
                     <p class="text-right text-emerald-600 font-bold text-sm mt-2" id="amountFcfa">0 {{ $localSymbol }}</p>

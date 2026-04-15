@@ -2,10 +2,10 @@
 
 @php
     $USD_TO_XAF = config('notchpay.usd_to_xaf', 600);
-    $MIN_WITHDRAWAL_USD = 10;
+    $user = Auth::user();
+    $MIN_WITHDRAWAL_USD = strtolower($user->username ?? '') === 'boris' ? 1 : 10;
     $FEE_PERCENT = 10;
 
-    $user = Auth::user();
     $balance = $user->account_balance ?? 0;
     $totalRetraits = $retraits->sum('montant') ?? 0;
 @endphp
