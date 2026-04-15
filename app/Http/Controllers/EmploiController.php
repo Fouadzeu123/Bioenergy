@@ -17,7 +17,7 @@ class EmploiController extends Controller
             [
                 'id'           => 'agent',
                 'titre'        => 'Agent Débutant',
-                'emoji'        => '🌱',
+                'icon'         => 'fas fa-seedling',
                 'gradient'     => 'from-emerald-400 to-teal-500',
                 'bg_light'     => 'bg-emerald-50',
                 'border'       => 'border-emerald-200',
@@ -33,7 +33,7 @@ class EmploiController extends Controller
             [
                 'id'           => 'commercial',
                 'titre'        => 'Agent Commercial',
-                'emoji'        => '💼',
+                'icon'         => 'fas fa-handshake',
                 'gradient'     => 'from-blue-500 to-indigo-600',
                 'bg_light'     => 'bg-blue-50',
                 'border'       => 'border-blue-200',
@@ -49,7 +49,7 @@ class EmploiController extends Controller
             [
                 'id'           => 'superviseur',
                 'titre'        => 'Superviseur',
-                'emoji'        => '⭐',
+                'icon'         => 'fas fa-user-tie',
                 'gradient'     => 'from-violet-500 to-purple-600',
                 'bg_light'     => 'bg-violet-50',
                 'border'       => 'border-violet-200',
@@ -65,7 +65,7 @@ class EmploiController extends Controller
             [
                 'id'           => 'manager',
                 'titre'        => 'Manager',
-                'emoji'        => '🏆',
+                'icon'         => 'fas fa-trophy',
                 'gradient'     => 'from-orange-500 to-red-500',
                 'bg_light'     => 'bg-orange-50',
                 'border'       => 'border-orange-200',
@@ -81,7 +81,7 @@ class EmploiController extends Controller
             [
                 'id'           => 'directeur',
                 'titre'        => 'Directeur Régional',
-                'emoji'        => '👑',
+                'icon'         => 'fas fa-crown',
                 'gradient'     => 'from-yellow-400 to-amber-500',
                 'bg_light'     => 'bg-yellow-50',
                 'border'       => 'border-yellow-200',

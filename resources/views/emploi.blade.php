@@ -60,8 +60,8 @@
             <div class="w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl"></div>
         </div>
 
-        <span class="inline-block bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
-            💼 Programme Emploi BioEnergy
+        <span class="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+            <i class="fas fa-briefcase"></i> Programme Emploi BioEnergy
         </span>
         <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
             Devenez un<br>
@@ -116,7 +116,9 @@
             {{-- Badge poste actuel --}}
             @if($posteActuel)
                 <div class="mt-5 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-2xl p-4 flex items-center gap-4">
-                    <div class="text-4xl">{{ $posteActuel['emoji'] }}</div>
+                    <div class="w-14 h-14 flex-shrink-0 bg-gradient-to-br {{ $posteActuel['gradient'] }} rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="{{ $posteActuel['icon'] }} text-white text-2xl"></i>
+                    </div>
                     <div>
                         <p class="text-emerald-300 text-xs font-bold uppercase tracking-widest">Poste actuel atteint</p>
                         <p class="text-white font-extrabold text-xl">{{ $posteActuel['titre'] }}</p>
@@ -128,7 +130,9 @@
                 </div>
             @else
                 <div class="mt-5 bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                    <div class="text-4xl">🚀</div>
+                    <div class="w-14 h-14 flex-shrink-0 bg-white/10 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-rocket text-slate-300 text-2xl"></i>
+                    </div>
                     <div>
                         <p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Aucun poste atteint</p>
                         <p class="text-white font-bold text-base">Commencez à parrainer pour débloquer votre 1er poste !</p>
@@ -162,8 +166,8 @@
 
                         {{-- Left: icon + titre --}}
                         <div class="flex-shrink-0 flex flex-col items-center md:items-start gap-2 text-center md:text-left w-full md:w-48">
-                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br {{ $poste['gradient'] }} flex items-center justify-center text-3xl shadow-lg">
-                                {{ $poste['emoji'] }}
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br {{ $poste['gradient'] }} flex items-center justify-center shadow-lg">
+                                <i class="{{ $poste['icon'] }} text-white text-2xl"></i>
                             </div>
                             <h3 class="text-white font-extrabold text-lg leading-snug">{{ $poste['titre'] }}</h3>
 
@@ -248,8 +252,8 @@
                 {{-- Overlay badge "DÉBLOQUÉ" --}}
                 @if($eli)
                     <div class="absolute top-4 right-4">
-                        <span class="bg-emerald-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
-                            ✅ Débloqué
+                        <span class="inline-flex items-center gap-1.5 bg-emerald-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+                            <i class="fas fa-check"></i> Débloqué
                         </span>
                     </div>
                 @endif
@@ -259,7 +263,9 @@
 
         {{-- CTA bottom --}}
         <div class="mt-10 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-8 text-center shadow-2xl">
-            <p class="text-4xl mb-4">🎯</p>
+            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-bullseye text-white text-3xl"></i>
+            </div>
             <h3 class="text-white font-extrabold text-2xl mb-2">Prêt à gravir les échelons ?</h3>
             <p class="text-emerald-100 mb-6 text-sm max-w-md mx-auto">
                 Invitez de nouveaux membres, encouragez les dépôts et atteignez votre prochain poste pour augmenter votre revenu mensuel.
