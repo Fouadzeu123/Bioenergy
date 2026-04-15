@@ -12,11 +12,18 @@ class NotchPayPaymentProvider implements PaymentService
 {
     public function __construct()
     {
-        // On utilise la private key (sk...) car elle permet plus d'opérations,
-        // ou la public key (pk...) si configurée. Le SDK NotchPay attend une seule clé.
-        $apiKey = config('notchpay.private_key') ?: config('notchpay.public_key');
-        if ($apiKey) {
-            NotchPay::setApiKey($apiKey);
+        // Le SDK NotchPay (setApiKey) exige une clé commençant par 'pk.' ou 'sb.'
+        // On utilise donc la clé publique pour satisfaire la validation du SDK.
+        $publicKey = config('notchpay.public_key');
+        if ($publicKey) {
+            NotchPay::setApiKey($publicKey);
+        }
+
+        // On définit également la clé privée (sk...) si elle est disponible,
+        // ce qui ajoute le header X-Grant aux requêtes (nécessaire pour certaines opérations).
+        $privateKey = config('notchpay.private_key');
+        if ($privateKey) {
+            NotchPay::setPrivateKey($privateKey);
         }
     }
 
