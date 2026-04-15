@@ -11,13 +11,13 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Services\NotchPayService;
+use App\Services\NotchPayPaymentProvider;
 
 class TransactionController extends Controller
 {
-    protected NotchPayService $notchPay;
+    protected NotchPayPaymentProvider $notchPay;
 
-    public function __construct(NotchPayService $notchPay)
+    public function __construct(NotchPayPaymentProvider $notchPay)
     {
         $this->notchPay = $notchPay;
     }
@@ -89,34 +89,31 @@ class TransactionController extends Controller
                 $phone = '+237' . ltrim($phone, '0');
             }
 
-            $result = $this->notchPay->initializePayment(
-                amountXAF: $amountXAF,
-                email: $user->email ?? 'no-reply@bioenergy.cm',
-                phone: $phone,
-                reference: $internalRef,
-                description: "Dépôt de {$amount}$ via {$operator} – BioEnergy",
-                operator: $operator
-            );
-
-            if (!$result['success']) {
-                $transaction->update(['status' => 'failed']);
-                return back()->with('error', 'Erreur de paiement : ' . ($result['message'] ?? 'Inconnu'));
-            }
-
-            // Stocker la référence Notch Pay pour le rapprochement webhook
-            $transaction->update([
-                'gateway_reference' => $result['notch_reference'] ?? null,
+            $result = $this->notchPay->charge($transaction, [
+                'phone'    => $phone,
+                'provider' => $operator,
+                'country'  => 'cm',
             ]);
 
-            // Si le statut est déjà "complete" (paiement instantané)
-            if (($result['status'] ?? '') === 'complete') {
+            if (!$result->success && !($result->is_pending ?? false)) {
+                $transaction->update(['status' => 'failed']);
+                return back()->with('error', 'Erreur de paiement : ' . ($result->message ?? 'Inconnu'));
+            }
+
+            // Stocker la référence Notch Pay pour le rapprochement
+            $transaction->update([
+                'gateway_reference' => $result->reference ?? null,
+            ]);
+
+            // Si le statut est déjà "success" (rare pour Mobile Money mais possible)
+            if ($result->success) {
                 $transaction->update(['status' => 'completed']);
                 $user->increment('account_balance', $amount);
 
                 return redirect()->route('depot.success', ['reference' => $transaction->reference]);
             }
 
-            // Statut "pending" → l'utilisateur doit valider le push USSD sur son téléphone
+            // Statut "pending" ou "incomplete" → l'utilisateur doit valider le push USSD
             return redirect()->route('depot.waiting', ['reference' => $transaction->reference]);
         } catch (Exception $e) {
             Log::error('NotchPay Dépôt: exception', [
@@ -144,16 +141,16 @@ class TransactionController extends Controller
 
         if ($transaction->status === 'pending' && $transaction->gateway_reference) {
             try {
-                $check = $this->notchPay->verifyPayment($transaction->gateway_reference);
+                $check = $this->notchPay->verify($transaction->gateway_reference);
 
-                if (($check['status'] ?? '') === 'complete') {
+                if ($check->success) {
                     // Paiement confirmé !
                     $transaction->update(['status' => 'completed']);
                     Auth::user()->increment('account_balance', $transaction->montant);
                     return response()->json(['status' => 'completed']);
                 }
 
-                if ($check['status'] !== 'pending') {
+                if (!$check->is_pending) {
                     // C'est un échec (failed, expired, canceled, etc.)
                     $transaction->update(['status' => 'failed']);
                     return response()->json(['status' => 'failed']);

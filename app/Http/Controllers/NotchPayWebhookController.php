@@ -7,7 +7,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Services\NotchPayService;
+use App\Services\NotchPayPaymentProvider;
 
 /**
  * NotchPayWebhookController
@@ -25,9 +25,9 @@ use App\Services\NotchPayService;
  */
 class NotchPayWebhookController extends Controller
 {
-    protected NotchPayService $notchPay;
+    protected NotchPayPaymentProvider $notchPay;
 
-    public function __construct(NotchPayService $notchPay)
+    public function __construct(NotchPayPaymentProvider $notchPay)
     {
         $this->notchPay = $notchPay;
     }
@@ -112,9 +112,9 @@ class NotchPayWebhookController extends Controller
         }
 
         // ── Vérification server-to-server (anti-spoofing) ─────────────────────
-        $verification = $this->notchPay->verifyPayment($notchReference);
+        $verification = $this->notchPay->verify($notchReference);
 
-        if (!$verification['success'] || $verification['status'] !== 'complete') {
+        if (!$verification->success) {
             Log::warning('NotchPay Webhook: vérification échouée ou statut non-complete', [
                 'notch_reference' => $notchReference,
                 'verification'    => $verification,

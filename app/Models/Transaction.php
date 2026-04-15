@@ -13,12 +13,15 @@ class Transaction extends Model
         'user_id',
         'type',
         'montant',
+        'montant_fcfa',
         'status',
         'operator',
         'gateway',
         'reference',
+        'gateway_reference',
         'description',
-        'order_id'
+        'order_id',
+        'from_user_id'
     ];
 
     // Relation avec User
