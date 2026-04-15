@@ -2,35 +2,139 @@
 
     <!-- Animation CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- POPUP BIENVENUE – FONCTIONNE À 100% -->
-    <div id="welcomePopup"
-         class="fixed inset-0 z-[9999] flex items-center justify-center hidden">
+    <style>
+        #welcomePopup * { font-family: 'Inter', sans-serif; }
 
-        <!-- Fond sombre -->
-        <div id="popupOverlay" class="absolute inset-0 bg-black/70"></div>
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .popup-header-bg {
+            background: linear-gradient(135deg, #064e3b, #065f46, #047857, #0d9488, #0369a1);
+            background-size: 300% 300%;
+            animation: gradientShift 6s ease infinite;
+        }
 
-        <!-- Carte popup -->
-        <div class="relative bg-gradient-to-br from-white to-green-50 rounded-3xl shadow-2xl max-w-md w-11/12 p-8 animate__animated animate__zoomIn">
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0px) rotate(-3deg); }
+            50%       { transform: translateY(-8px) rotate(3deg); }
+        }
+        .float-icon { animation: floatIcon 3s ease-in-out infinite; }
 
-            <!-- Bouton fermer -->
-            <button id="closePopup"
-                    class="absolute top-4 right-4 w-10 h-10 bg-red-500/20 hover:bg-red-500/40 rounded-full flex items-center justify-center text-red-600 text-2xl font-bold transition hover:scale-110">
-                X
-            </button>
+        .bonus-chip {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+        .popup-card {
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(20px);
+        }
+        .telegram-btn {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+            transition: all 0.3s ease;
+        }
+        .telegram-btn:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            box-shadow: 0 12px 35px rgba(37, 99, 235, 0.6);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .feature-item {
+            transition: transform 0.2s ease;
+        }
+        .feature-item:hover { transform: translateX(4px); }
+    </style>
 
-            <div class="text-center">
-                <h2 class="text-2xl md:text-3xl font-extrabold text-green-700 mb-4">
-                    Bienvenue chez BioEnergy Investment
+    <!-- POPUP BIENVENUE -->
+    <div id="welcomePopup" class="fixed inset-0 z-[9999] flex items-center justify-center hidden px-4">
+
+        <!-- Overlay flouté -->
+        <div id="popupOverlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
+
+        <!-- Carte popup améliorée -->
+        <div class="popup-card relative rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate__animated animate__zoomIn">
+
+            <!-- En-tête gradient animé -->
+            <div class="popup-header-bg px-8 pt-10 pb-16 text-center relative overflow-hidden">
+                <!-- Cercles décoratifs -->
+                <div class="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full -translate-x-12 -translate-y-12"></div>
+                <div class="absolute bottom-0 right-0 w-40 h-40 bg-white/5 rounded-full translate-x-16 translate-y-16"></div>
+
+                <!-- Bouton fermer -->
+                <button id="closePopup"
+                        class="absolute top-4 right-4 w-9 h-9 bg-white/15 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition hover:scale-110 text-lg font-bold">
+                    <i class="fas fa-times"></i>
+                </button>
+
+                <!-- Icône principale flottante -->
+                <div class="float-icon inline-flex items-center justify-center w-20 h-20 bg-white/15 rounded-3xl mb-4 mx-auto border border-white/20">
+                    <i class="fas fa-leaf text-white text-4xl"></i>
+                </div>
+
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white leading-tight mb-2">
+                    Bienvenue chez<br>
+                    <span class="text-emerald-200">BioEnergy Investment</span>
                 </h2>
-                <p class="text-gray-700 text-lg leading-relaxed mb-8">
-                    Vous avez <strong class="text-green-600">10 $ de bonus offert</strong> !<br>
-                    Gagnez plus grâce au <strong class="text-blue-600">parrainage multi-niveaux et notre systeme de recompenses personalisés</strong>
-                </p>
-                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank"
-                   class="block w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-green-700 hover:to-emerald-800 text-white font-bold text-lg py-5 rounded-2xl shadow-2xl transition transform hover:scale-105">
-                    Rejoindre le canal d'annonce officiel telegram
+                <p class="text-emerald-100/80 text-sm">La plateforme d'investissement vert qui rapporte</p>
+            </div>
+
+            <!-- Chip bonus flottant sur la ligne de séparation -->
+            <div class="flex justify-center -mt-5 mb-0">
+                <div class="bonus-chip inline-flex items-center gap-2 text-white font-extrabold text-sm px-5 py-2.5 rounded-full shadow-lg">
+                    <i class="fas fa-gift"></i>
+                    <span>10 $ de bonus de bienvenue offert !</span>
+                </div>
+            </div>
+
+            <!-- Corps -->
+            <div class="px-7 pt-6 pb-7">
+
+                <!-- Avantages -->
+                <div class="space-y-3 mb-6">
+                    <div class="feature-item flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
+                        <div class="w-9 h-9 flex-shrink-0 bg-emerald-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-users text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Parrainage multi-niveaux</p>
+                            <p class="text-slate-500 text-xs">Gagnez sur 3 niveaux de filleuls</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
+                        <div class="w-9 h-9 flex-shrink-0 bg-blue-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-trophy text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Récompenses exclusives</p>
+                            <p class="text-slate-500 text-xs">De 1 $ à 1 000 $ pour nos meilleurs investisseurs</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-item flex items-center gap-3 bg-violet-50 border border-violet-100 rounded-xl px-4 py-3">
+                        <div class="w-9 h-9 flex-shrink-0 bg-violet-500 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-briefcase text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Programme Emploi</p>
+                            <p class="text-slate-500 text-xs">Jusqu'à 2 000 $/mois selon votre poste</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA Telegram -->
+                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank" class="telegram-btn flex items-center justify-center gap-3 w-full text-white font-bold text-base py-4 rounded-2xl">
+                    <i class="fab fa-telegram text-xl"></i>
+                    <span>Rejoindre le canal officiel</span>
+                    <i class="fas fa-arrow-right text-sm opacity-70"></i>
                 </a>
+
+                <p class="text-center text-slate-400 text-xs mt-3">
+                    <i class="fas fa-lock mr-1"></i> Canal vérifié · Annonces exclusives
+                </p>
             </div>
         </div>
     </div>
@@ -217,45 +321,91 @@
         }, 4500);
 
 function showNotif() {
-    // Génère un numéro camerounais aléatoire (237 + 6 chiffres masqués + 3 visibles)
-    function generateRandomPhone() {
-        const prefixes = ['650', '651', '652', '653', '654', '655', '656', '657', '658', '659',
-                          '680', '681', '682', '683', '690', '691', '692', '693', '694', '695'];
-        const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-        const last3 = Math.floor(Math.random() * 900) + 100; // 100 à 999
-        return `237${prefix.slice(0, 3)}****${last3}`; // ex: 237652****847
+    // Numéro camerounais masqué
+    function randomPhone() {
+        const prefixes = ['650','651','652','653','655','656','657','658','659',
+                          '670','671','672','673','680','681','682','683',
+                          '690','691','692','693','694','695','696'];
+        const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const mid = Math.floor(Math.random() * 90) + 10;
+        const last = Math.floor(Math.random() * 900) + 100;
+        return `237${p}**${mid}**${last}`;
     }
 
-    // Génère un niveau VIP aléatoire avec couleurs différentes
-    const vipLevels = [
-        { name: "VIP 1", color: "text-yellow-600" },
-        { name: "VIP 2", color: "text-orange-600" },
-        { name: "VIP 3", color: "text-red-600" },
-    ];
-    const vip = vipLevels[Math.floor(Math.random() * vipLevels.length)];
+    // Montant vraiment aléatoire entre min et max, arrondi à 2 décimals
+    function randomAmount(min, max) {
+        return (Math.random() * (max - min) + min).toFixed(2);
+    }
 
-    // Montants aléatoires de récompense (pour plus de réalisme)
-    const rewards = ["150.50$", "280.00$", "42.75$", "750.00$", "120.00$",
-     "815.25$", "551.00$","260.46$",'52.15$','91.23$','190.45$'];
-    const reward = rewards[Math.floor(Math.random() * rewards.length)];
+    const phone = randomPhone();
 
-    const phone = generateRandomPhone();
-    const msg = `${phone} vient d'inviter un <span class="${vip.color} font-extrabold">${vip.name}</span>, récompense <span class="text-green-600 font-bold">${reward}</span> attribuée !`;
+    // Choisir un type de notification au hasard
+    const type = Math.floor(Math.random() * 3); // 0 = parrainage, 1 = dépôt, 2 = retrait
+
+    let msg, borderColor, headerColor, icon, accentClass;
+
+    if (type === 0) {
+        // ── PARRAINAGE ──
+        const vipLevels = [
+            { name: 'VIP 1', color: 'text-yellow-600' },
+            { name: 'VIP 2', color: 'text-orange-600' },
+            { name: 'VIP 3', color: 'text-red-600'    },
+        ];
+        const vip    = vipLevels[Math.floor(Math.random() * vipLevels.length)];
+        const reward = randomAmount(10, 1200);
+        borderColor  = 'border-emerald-500';
+        icon         = '👥';
+        accentClass  = 'text-emerald-700';
+        msg = `${phone} vient d'inviter un <span class="${vip.color} font-extrabold">${vip.name}</span>, récompense <span class="text-emerald-600 font-bold">${reward} $</span> attribuée !`;
+
+    } else if (type === 1) {
+        // ── DÉPÔT ──
+        const operators = ['MTN Mobile Money', 'Orange Money'];
+        const op     = operators[Math.floor(Math.random() * operators.length)];
+        const amount = randomAmount(20, 5000);
+        borderColor  = 'border-blue-500';
+        icon         = '💳';
+        accentClass  = 'text-blue-700';
+        msg = `${phone} vient d'effectuer un dépôt de <span class="text-blue-600 font-bold">${amount} $</span> via <span class="font-semibold">${op}</span> ✅`;
+
+    } else {
+        // ── RETRAIT ──
+        const methods = ['MTN Mobile Money', 'Orange Money'];
+        const method  = methods[Math.floor(Math.random() * methods.length)];
+        const amount  = randomAmount(15, 2500);
+        borderColor   = 'border-violet-500';
+        icon          = '💸';
+        accentClass   = 'text-violet-700';
+        msg = `${phone} a retiré <span class="text-violet-600 font-bold">${amount} $</span> vers son compte <span class="font-semibold">${method}</span> 🎉`;
+    }
 
     const div = document.createElement('div');
-    div.className = "bg-white/95 backdrop-blur-lg shadow-2xl rounded-xl px-5 py-4 border-l-4 border-green-500 animate__animated animate__fadeInRight text-sm md:text-base";
-    div.innerHTML = `<strong class="text-green-700">${msg}</strong>`;
+    div.className = `bg-white/95 backdrop-blur-lg shadow-2xl rounded-xl px-4 py-3 border-l-4 ${borderColor} animate__animated animate__fadeInRight text-sm`;
+    div.innerHTML = `
+        <div class="flex items-start gap-2">
+            <span class="text-lg leading-none mt-0.5">${icon}</span>
+            <p class="${accentClass} font-semibold leading-snug">${msg}</p>
+        </div>
+        <p class="text-gray-400 text-[10px] mt-1 ml-6">Il y a quelques secondes</p>
+    `;
 
     document.getElementById('notifications').prepend(div);
 
-    // Disparition douce après 7 secondes
+    // Limiter à 4 notifications visibles simultanément
+    const container = document.getElementById('notifications');
+    while (container.children.length > 4) {
+        container.removeChild(container.lastChild);
+    }
+
+    // Disparition après 7,5s
     setTimeout(() => {
-        div.classList.add('animate__animated', 'animate__fadeOutRight');
+        div.classList.replace('animate__fadeInRight', 'animate__fadeOutRight');
         setTimeout(() => div.remove(), 800);
-    }, 7000);
+    }, 7500);
 }
-        setInterval(showNotif, 8000);
-        setTimeout(showNotif, 3000);
+        setInterval(showNotif, 7000);
+        setTimeout(showNotif, 2500);
+        setTimeout(showNotif, 5000);
     </script>
 
 </x-layouts>
