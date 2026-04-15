@@ -13,21 +13,12 @@ class UserSeeder extends Seeder
         User::create([
             'username' => 'AdminBioEnergy',
             'country_code'=>237,
-            'phone' => '600000000',
+            'phone' => '691051864',
             'role'=>'admin',
             'invited_by' => null,
-            'invitation_code' => 'ADMIN001',
-            'password' => Hash::make('admin123'),
+            'invitation_code' => 'HTAD3210',
+            'password' => Hash::make('Boris#@2000#'),
         ]);
 
-        User::create([
-            'username' => 'TestUser',
-            'country_code'=>237,
-            'phone' => '699999999',
-            'account_balance'=> 500,
-            'invited_by' => 1, // parrainé par Admin
-            'invitation_code' => 'TEST001',
-            'password' => Hash::make('test123'),
-        ]);
     }
 }

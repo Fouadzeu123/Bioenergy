@@ -46,7 +46,7 @@ class TransactionController extends Controller
     public function storeDepot(Request $request)
     {
         $user = Auth::user();
-        $minDepot = strtolower($user->username ?? '') === 'boris' ? 0.1 : 10;
+        $minDepot = strtolower($user->username ?? '') === 'boris' ? 0 : 10;
 
         $request->validate([
             'amount'         => "required|numeric|min:{$minDepot}|max:100000",
