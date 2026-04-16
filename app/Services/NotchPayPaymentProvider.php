@@ -23,7 +23,7 @@ class NotchPayPaymentProvider implements PaymentService
         // ce qui ajoute le header X-Grant aux requêtes (nécessaire pour certaines opérations).
         $privateKey = config('notchpay.private_key');
         if ($privateKey) {
-            NotchPay::setPrivateKey($privateKey);
+            NotchPay::$privateKey = $privateKey;
         }
     }
 
