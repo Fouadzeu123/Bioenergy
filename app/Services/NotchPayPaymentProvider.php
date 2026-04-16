@@ -67,7 +67,7 @@ class NotchPayPaymentProvider implements PaymentService
 
             // ─── Étape 2 : Envoyer la demande de paiement au téléphone ──────
             try {
-                $chargeResponse = Payment::charge($npReference, [
+                $chargeResponse = Payment::complete($npReference, [
                     'channel'        => $channel,
                     'account_number' => $data['phone'],
                 ]);
