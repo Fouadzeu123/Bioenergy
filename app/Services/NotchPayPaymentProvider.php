@@ -23,7 +23,11 @@ class NotchPayPaymentProvider implements PaymentService
         // ce qui ajoute le header X-Grant aux requêtes (nécessaire pour certaines opérations).
         $privateKey = config('notchpay.private_key');
         if ($privateKey) {
-            NotchPay::$privateKey = $privateKey;
+            // Plan B : On vérifie si la propriété existe avant de tenter de l'assigner
+            // pour éviter les erreurs "undeclared static property".
+            if (property_exists(NotchPay::class, 'privateKey')) {
+                NotchPay::$privateKey = $privateKey;
+            }
         }
     }
 
