@@ -5,7 +5,7 @@
     $balance = $user->account_balance ?? 0;
     $phone = $user->phone ?? '';
     $isCameroon = true;
-    $minDepot = strtolower($user->username ?? '') === 'boris' ? 0.1 : 10;
+    $minDepot = strtolower($user->username ?? '') === 'boris' ? 0.1 : 5;
 
     $localRate = config('notchpay.usd_to_xaf', 600);
     $localSymbol = 'CFA';

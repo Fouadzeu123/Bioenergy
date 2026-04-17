@@ -46,7 +46,7 @@ class TransactionController extends Controller
     public function storeDepot(Request $request)
     {
         $user = Auth::user();
-        $minDepot = strtolower($user->username ?? '') === 'boris' ? 0 : 10;
+        $minDepot = strtolower($user->username ?? '') === 'boris' ? 0 : 5;
 
         $request->validate([
             'amount'         => "required|numeric|min:{$minDepot}|max:100000",
@@ -238,7 +238,7 @@ class TransactionController extends Controller
     public function storeRetrait(Request $request)
     {
         $user         = Auth::user();
-        $minRetrait   = strtolower($user->username ?? '') === 'boris' ? 1 : 10;
+        $minRetrait   = strtolower($user->username ?? '') === 'boris' ? 1 : 5;
 
         $request->validate([
             'amount'              => "required|numeric|min:{$minRetrait}|max:10000",

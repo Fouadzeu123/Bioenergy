@@ -3,7 +3,7 @@
 @php
     $USD_TO_XAF = config('notchpay.usd_to_xaf', 600);
     $user = Auth::user();
-    $MIN_WITHDRAWAL_USD = strtolower($user->username ?? '') === 'boris' ? 1 : 10;
+    $MIN_WITHDRAWAL_USD = strtolower($user->username ?? '') === 'boris' ? 0.1 : 5;
     $FEE_PERCENT = 10;
 
     $balance = $user->account_balance ?? 0;
