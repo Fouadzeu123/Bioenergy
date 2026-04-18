@@ -160,21 +160,28 @@ class NotchPayWebhookController extends Controller
             return;
         }
 
-        // ── Créditer l'utilisateur (dépôts seulement) ─────────────────────────
-        if ($transaction->type === 'depot') {
-            $montantUSD = $this->notchPay->xafToUsd($amountXAF > 0 ? $amountXAF : $this->notchPay->usdToXaf($transaction->montant));
+        // ── Idempotence : on n'augmente le solde que si la transaction était encore en 'pending'
+        $updated = Transaction::where('id', $transaction->id)
+            ->where('status', 'pending')
+            ->update([
+                'status'            => 'completed',
+                'gateway_reference' => $notchReference,
+            ]);
 
-            $user = User::find($transaction->user_id);
-            if ($user) {
-                $user->increment('account_balance', $montantUSD > 0 ? $montantUSD : $transaction->montant);
+        if ($updated) {
+            // ── Créditer l'utilisateur (dépôts seulement) ─────────────────────────
+            if ($transaction->type === 'depot') {
+                $montantUSD = $this->notchPay->xafToUsd($amountXAF > 0 ? $amountXAF : $this->notchPay->usdToXaf($transaction->montant));
+
+                $user = User::find($transaction->user_id);
+                if ($user) {
+                    $user->increment('account_balance', $montantUSD > 0 ? $montantUSD : $transaction->montant);
+                }
+                Log::info('NotchPay Webhook: dépôt crédité avec succès', ['ref' => $transaction->reference]);
             }
+        } else {
+            Log::info('NotchPay Webhook: transaction déjà complétée par une autre source (polling/direct)', ['ref' => $transaction->reference]);
         }
-
-        // ── Mettre à jour la transaction ──────────────────────────────────────
-        $transaction->update([
-            'status'            => 'completed',
-            'gateway_reference' => $notchReference,
-        ]);
 
         Log::info('NotchPay Webhook: dépôt crédité', [
             'user_id'         => $transaction->user_id,

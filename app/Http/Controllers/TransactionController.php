@@ -105,12 +105,17 @@ class TransactionController extends Controller
                 'gateway_reference' => $result->reference ?? null,
             ]);
 
-            // Si le statut est déjà "success" (rare pour Mobile Money mais possible)
+            // Si le statut est déjà "success" (cas rare ou sandbox immédiat)
             if ($result->success) {
-                $transaction->update(['status' => 'completed']);
-                $user->increment('account_balance', $amount);
+                // On utilise une mise à jour atomique pour éviter le double-crédit avec le webhook
+                $updated = Transaction::where('id', $transaction->id)
+                    ->where('status', 'pending')
+                    ->update(['status' => 'completed']);
 
-                return redirect()->route('depot.success', ['reference' => $transaction->reference]);
+                if ($updated) {
+                    $user->increment('account_balance', $amount);
+                    return redirect()->route('depot.success', ['reference' => $transaction->reference]);
+                }
             }
 
             // Statut "pending" ou "incomplete" → l'utilisateur doit valider le push USSD
@@ -145,9 +150,18 @@ class TransactionController extends Controller
 
                 if ($check->success) {
                     // Paiement confirmé !
-                    $transaction->update(['status' => 'completed']);
-                    Auth::user()->increment('account_balance', $transaction->montant);
-                    return response()->json(['status' => 'completed']);
+                    // Idempotence : on n'augmente le solde que si la transaction était encore en 'pending'
+                    $updated = Transaction::where('id', $transaction->id)
+                        ->where('status', 'pending')
+                        ->update(['status' => 'completed']);
+
+                    if ($updated) {
+                        Auth::user()->increment('account_balance', $transaction->montant);
+                        return response()->json(['status' => 'completed']);
+                    } else {
+                        // Déjà complétée par le webhook par exemple
+                        return response()->json(['status' => 'completed']);
+                    }
                 }
 
                 if (!$check->is_pending) {
