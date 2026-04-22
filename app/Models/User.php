@@ -35,6 +35,7 @@ protected $fillable = [
     'withdrawal_name',
     'withdrawal_account',
     'withdrawal_method',
+    'withdrawal_country',
     'email',
     ];
 
@@ -46,7 +47,11 @@ protected $fillable = [
         parent::boot();
         static::creating(function ($user) {
             if (empty($user->country_code)) {
-                $user->country_code = '237';
+                $user->country_code = '237'; // Cameroun par défaut
+            }
+            if (empty($user->withdrawal_country)) {
+                // Déduire le pays à partir de country_code
+                $user->withdrawal_country = $user->country_code === '225' ? 'CI' : 'CM';
             }
         });
     }

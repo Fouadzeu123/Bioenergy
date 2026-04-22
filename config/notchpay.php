@@ -63,13 +63,52 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Canaux Mobile Money (opérateurs)
+    | Canaux Mobile Money par pays et opérateur
     |--------------------------------------------------------------------------
-    | Correspondance entre le nom de l'opérateur et le canal Notch Pay.
+    | Cameroun (CM) : MTN, ORANGE
+    | Côte d'Ivoire (CI) : MTN, ORANGE, MOOV
     */
     'channels' => [
-        'MTN'    => 'cm.mtn',
-        'ORANGE' => 'cm.orange',
+        'CM' => [
+            'MTN'    => 'cm.mtn',
+            'ORANGE' => 'cm.orange',
+        ],
+        'CI' => [
+            'MTN'    => 'ci.mtn',
+            'ORANGE' => 'ci.orange',
+            'MOOV'   => 'ci.moov',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Canal générique pour les bénéficiaires (Payouts/Retraits)
+    |--------------------------------------------------------------------------
+    | NotchPay préfère un canal générique "mobile" pour la création de bénéficiaires.
+    */
+    'beneficiary_channels' => [
+        'CM' => 'cm.mobile',
+        'CI' => 'ci.mobile',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Indicatifs téléphoniques par pays
+    |--------------------------------------------------------------------------
+    */
+    'country_phone_codes' => [
+        'CM' => '237',
+        'CI' => '225',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Nom des pays (pour l'affichage)
+    |--------------------------------------------------------------------------
+    */
+    'country_names' => [
+        'CM' => 'Cameroun',
+        'CI' => "Côte d'Ivoire",
     ],
 
     /*

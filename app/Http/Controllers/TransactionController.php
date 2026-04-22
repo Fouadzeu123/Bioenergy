@@ -48,9 +48,13 @@ class TransactionController extends Controller
         $user = Auth::user();
         $minDepot = strtolower($user->username ?? '') === 'boris' ? 0 : 5;
 
+        // Déterminer le pays de l'utilisateur depuis l'indicatif téléphonique
+        $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
+        $allowedOperators = ($userCountry === 'CI') ? ['MTN', 'ORANGE', 'MOOV'] : ['MTN', 'ORANGE'];
+
         $request->validate([
             'amount'         => "required|numeric|min:{$minDepot}|max:100000",
-            'payment_method' => 'required|in:MTN,ORANGE',
+            'payment_method' => ['required', \Illuminate\Validation\Rule::in($allowedOperators)],
         ]);
 
         $amount = (float) $request->amount;
@@ -59,17 +63,29 @@ class TransactionController extends Controller
 
         $internalRef = 'DEP-' . $user->id . '-' . time() . '-' . Str::random(4);
 
+        // Formatage du téléphone selon le pays
+        $phonePrefix = config('notchpay.country_phone_codes.' . $userCountry, '237');
+        $phone = $user->phone;
+        if (!str_starts_with($phone, '+')) {
+            $phone = '+' . $phonePrefix . ltrim($phone, '0');
+        }
+
+        // Canal NotchPay
+        $channel = config("notchpay.channels.{$userCountry}.{$operator}",
+            $userCountry === 'CI' ? 'ci.mtn' : 'cm.mtn'
+        );
+
         // Création de la transaction en statut "pending"
         $transaction = Transaction::create([
-            'user_id' => $user->id,
-            'type' => 'depot',
-            'montant' => $amount,
+            'user_id'      => $user->id,
+            'type'         => 'depot',
+            'montant'      => $amount,
             'montant_fcfa' => $amountXAF,
-            'status' => 'pending',
-            'reference' => $internalRef,
-            'operator' => $operator,
-            'gateway' => 'notchpay',
-            'description' => "Dépôt de {$amount}$ via {$operator}",
+            'status'       => 'pending',
+            'reference'    => $internalRef,
+            'operator'     => $operator,
+            'gateway'      => 'notchpay',
+            'description'  => "Dépôt de {$amount}$ via {$operator} (" . config('notchpay.country_names.' . $userCountry, $userCountry) . ")",
         ]);
 
         // ── MODE SIMULATION / TEST ─────────────────────────────────────────────
@@ -82,17 +98,10 @@ class TransactionController extends Controller
 
         // ── PRODUCTION : Appel direct Notch Pay ───────────────────────────────
         try {
-            $phone = $user->phone;
-
-            // On formate le numéro en format international si nécessaire
-            if (!str_starts_with($phone, '+')) {
-                $phone = '+237' . ltrim($phone, '0');
-            }
-
             $result = $this->notchPay->charge($transaction, [
                 'phone'    => $phone,
                 'provider' => $operator,
-                'country'  => 'cm',
+                'country'  => strtolower($userCountry),
             ]);
 
             if (!$result->success && !($result->is_pending ?? false)) {
@@ -107,7 +116,6 @@ class TransactionController extends Controller
 
             // Si le statut est déjà "success" (cas rare ou sandbox immédiat)
             if ($result->success) {
-                // On utilise une mise à jour atomique pour éviter le double-crédit avec le webhook
                 $updated = Transaction::where('id', $transaction->id)
                     ->where('status', 'pending')
                     ->update(['status' => 'completed']);
@@ -123,7 +131,8 @@ class TransactionController extends Controller
         } catch (Exception $e) {
             Log::error('NotchPay Dépôt: exception', [
                 'user_id' => $user->id,
-                'error' => $e->getMessage(),
+                'country' => $userCountry,
+                'error'   => $e->getMessage(),
             ]);
             $transaction->update(['status' => 'failed']);
             return back()->with('error', 'Erreur lors de la connexion au service de paiement. Réessayez plus tard.');
@@ -340,18 +349,23 @@ class TransactionController extends Controller
         // 7. MODE PRODUCTION → Transfert/Payout via Notch Pay
         // =============================================
         try {
+            // Pays de retrait de l'utilisateur (CM ou CI)
+            $withdrawalCountry = strtoupper($user->withdrawal_country ?? 'CM');
+
+            // Indicatif téléphonique selon le pays
+            $phonePrefix = config('notchpay.country_phone_codes.' . $withdrawalCountry, '237');
+
             // Nettoyage du numéro de téléphone
             $phone = $user->withdrawal_account;
             if (!str_starts_with($phone, '+')) {
-                $phone = '+237' . ltrim($phone, '0');
+                $phone = '+' . $phonePrefix . ltrim($phone, '0');
             }
 
             $amountXAF = $this->notchPay->usdToXaf($amount);
             $amountNetXAF = (int) round($amountXAF * 0.90); // 10% de frais appliqués
 
-            // Pour la création de bénéficiaires Mobile Money au Cameroun, 
-            // NotchPay préfère souvent le canal générique 'cm.mobile'.
-            $beneficiaryChannel = 'cm.mobile';
+            // Canal générique pour la création du bénéficiaire (cm.mobile ou ci.mobile)
+            $beneficiaryChannel = config('notchpay.beneficiary_channels.' . $withdrawalCountry, 'cm.mobile');
 
             // Étape 1 : Créer le bénéficiaire
             $beneficiary = $this->notchPay->createBeneficiary(
@@ -359,7 +373,7 @@ class TransactionController extends Controller
                 phone: $phone,
                 email: $user->email ?? 'no-reply@bioenergy.cm',
                 channel: $beneficiaryChannel,
-                country: 'cm'
+                country: strtolower($withdrawalCountry)
             );
 
             if (!$beneficiary['success']) {

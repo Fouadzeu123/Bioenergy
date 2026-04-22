@@ -80,17 +80,40 @@
                            placeholder="Nom d'utilisateur">
                 </div>
 
-                <!-- Numéro de téléphone -->
-                <div class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/10 border border-white/30 focus-within:border-green-500 transition-all duration-300 group">
-                    <div class="flex items-center gap-2 border-r border-white/20 pr-4">
-                        <img src="https://flagcdn.com/w20/cm.png" alt="Cameroon" class="w-5 shadow-sm">
-                        <span class="text-green-400 font-bold text-lg tracking-wider">+237</span>
+                <!-- Numéro de téléphone avec sélection de pays -->
+                <div>
+                    <!-- Sélecteur de pays -->
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="_country" value="CM" checked class="hidden peer" id="reg-cm">
+                            <div class="peer-checked:border-green-500 peer-checked:bg-green-500/20 border-2 border-white/20 rounded-2xl p-3 text-center transition">
+                                <span class="text-xl">🇨🇲</span>
+                                <p class="text-white text-xs font-bold mt-1">Cameroun</p>
+                                <p class="text-green-300 text-[10px]">+237</p>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="_country" value="CI" class="hidden peer" id="reg-ci">
+                            <div class="peer-checked:border-green-500 peer-checked:bg-green-500/20 border-2 border-white/20 rounded-2xl p-3 text-center transition">
+                                <span class="text-xl">🇨🇮</span>
+                                <p class="text-white text-xs font-bold mt-1">Côte d'Ivoire</p>
+                                <p class="text-green-300 text-[10px]">+225</p>
+                            </div>
+                        </label>
                     </div>
-                    <input type="hidden" name="country_code" value="237">
-                    <input type="tel" name="phone" value="{{ old('phone') }}" required
-                           class="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none text-lg"
-                           placeholder="Numéro de téléphone">
+                    <!-- Champ téléphone avec indicatif dynamique -->
+                    <div class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/10 border border-white/30 focus-within:border-green-500 transition-all duration-300 group">
+                        <div class="flex items-center gap-2 border-r border-white/20 pr-4" id="phone-flag-area">
+                            <img id="flag-img" src="https://flagcdn.com/w20/cm.png" alt="Pays" class="w-5 shadow-sm">
+                            <span id="phone-prefix-display" class="text-green-400 font-bold text-lg tracking-wider">+237</span>
+                        </div>
+                        <input type="hidden" name="country_code" id="country_code_input" value="{{ old('country_code', '237') }}">
+                        <input type="tel" name="phone" value="{{ old('phone') }}" required
+                               class="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none text-lg"
+                               placeholder="Numéro de téléphone" id="phone-input">
+                    </div>
                 </div>
+
 
                 <!-- Mots de passe -->
                 <div>
@@ -137,5 +160,22 @@
         </div>
     </div>
 
+<script>
+    // Mise à jour du préfixe téléphone et du pays à l'inscription
+    const countries = {
+        CM: { code: '237', flag: 'https://flagcdn.com/w20/cm.png', prefix: '+237' },
+        CI: { code: '225', flag: 'https://flagcdn.com/w20/ci.png', prefix: '+225' },
+    };
+
+    document.querySelectorAll('input[name="_country"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            const c = countries[this.value];
+            if (!c) return;
+            document.getElementById('flag-img').src = c.flag;
+            document.getElementById('phone-prefix-display').textContent = c.prefix;
+            document.getElementById('country_code_input').value = c.code;
+        });
+    });
+</script>
 </body>
 </html>

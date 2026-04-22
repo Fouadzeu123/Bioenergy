@@ -4,22 +4,41 @@
     $user = Auth::user();
     $balance = $user->account_balance ?? 0;
     $phone = $user->phone ?? '';
-    $isCameroon = true;
+    $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
+    $phonePrefix = ($userCountry === 'CI') ? '225' : '237';
+    $countryName  = ($userCountry === 'CI') ? "Côte d'Ivoire" : 'Cameroun';
+    $countryFlag  = ($userCountry === 'CI') ? '🇨🇮' : '🇨🇲';
     $minDepot = strtolower($user->username ?? '') === 'boris' ? 0.1 : 5;
 
     $localRate = config('notchpay.usd_to_xaf', 600);
     $localSymbol = 'CFA';
 
     $detectedOperator = 'UNKNOWN';
-    if ($isCameroon && $phone) {
-        $phoneStr = (string) $phone;
-        if (strlen($phoneStr) >= 9) {
-            $prefix = substr($phoneStr, 0, 3);
-            $mtn = ['650','651','652','653','654','670','671','672','673','674','675','676','677','678','679','680','681','682','683'];
-            $orange = ['640','641','642','643','644','645','646','647','648','655','656','657','658','659','690','691','692','693','694','695','696','697','698','699'];
+    if ($phone) {
+        $phoneStr = preg_replace('/\D/', '', $phone); // digits only
+        // Remove country prefix if present
+        if (str_starts_with($phoneStr, '237')) $phoneStr = substr($phoneStr, 3);
+        if (str_starts_with($phoneStr, '225')) $phoneStr = substr($phoneStr, 3);
 
-            if (in_array($prefix, $mtn)) $detectedOperator = 'MTN';
-            elseif (in_array($prefix, $orange)) $detectedOperator = 'ORANGE';
+        if ($userCountry === 'CI') {
+            // Côte d'Ivoire (new 10-digit format: prefix is first 2 digits)
+            $prefix2 = substr($phoneStr, 0, 2);
+            $mtnCI    = ['05','25','45','65','85','07','27','47','67','87']; // MTN starts with 05/07
+            $orangeCI = ['07','27','47','67','87'];
+            $moovCI   = ['01','21','41','61','81'];
+            // Simplified: check first 2 digits
+            if (in_array($prefix2, ['05','25','45','65','85'])) $detectedOperator = 'MTN';
+            elseif (in_array($prefix2, ['07','27','47','67','87'])) $detectedOperator = 'ORANGE';
+            elseif (in_array($prefix2, ['01','21','41','61','81'])) $detectedOperator = 'MOOV';
+        } else {
+            // Cameroun (9 digits, prefix is first 3)
+            if (strlen($phoneStr) >= 9) {
+                $prefix3 = substr($phoneStr, 0, 3);
+                $mtnCM    = ['650','651','652','653','654','670','671','672','673','674','675','676','677','678','679','680','681','682','683'];
+                $orangeCM = ['640','641','642','643','644','645','646','647','648','655','656','657','658','659','690','691','692','693','694','695','696','697','698','699'];
+                if (in_array($prefix3, $mtnCM)) $detectedOperator = 'MTN';
+                elseif (in_array($prefix3, $orangeCM)) $detectedOperator = 'ORANGE';
+            }
         }
     }
 
@@ -28,6 +47,7 @@
 
     $depots = $depots ?? collect();
 @endphp
+
 
 <div class="min-h-screen bg-gray-50/50 py-6">
 
@@ -79,7 +99,9 @@
                             <i class="fas fa-mobile-alt text-2xl text-emerald-600"></i>
                             <div class="text-left leading-tight">
                                 <span class="block font-bold text-emerald-800">Mobile Money</span>
-                                <span class="text-xs text-emerald-600">MTN & Orange Money (Cameroun)</span>
+                                <span class="text-xs text-emerald-600">
+                                    {{ $countryFlag }} {{ $userCountry === 'CI' ? 'MTN, Orange & Moov (Côte d\'Ivoire)' : 'MTN & Orange (Cameroun)' }}
+                                </span>
                             </div>
                         </div>
                     </label>
@@ -112,7 +134,11 @@
                     <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 flex items-center justify-between">
                         <div>
                             <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Numéro de dépôt</p>
-                            <p class="font-bold text-gray-700 text-sm mt-0.5"><i class="fas fa-phone-alt text-emerald-500 mr-1"></i> +237 {{ chunk_split($phone, 3, ' ') }}</p>
+                            <p class="font-bold text-gray-700 text-sm mt-0.5">
+                                <i class="fas fa-phone-alt text-emerald-500 mr-1"></i>
+                                +{{ $phonePrefix }} {{ chunk_split(ltrim(preg_replace('/\D/','',$phone), '0237225'), 2, ' ') }}
+                            </p>
+                            <p class="text-[10px] text-gray-400 mt-0.5">{{ $countryFlag }} {{ $countryName }}</p>
                         </div>
                         <span class="px-3 py-1 bg-white border border-gray-200 text-xs font-bold rounded-lg shadow-sm text-gray-600">{{ $detectedOperator }}</span>
                         <input type="hidden" name="payment_method" value="{{ $detectedOperator }}">

@@ -53,19 +53,50 @@
                 @enderror
             </div>
 
-            <!-- 2. Opérateur -->
+            <!-- 2. Pays de retrait -->
+            <div>
+                <label class="block text-slate-700 font-semibold text-sm sm:text-lg mb-2 sm:mb-3">
+                    Pays de retrait
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                    <label class="country-option cursor-pointer">
+                        <input type="radio" name="withdrawal_country" value="CM"
+                               {{ old('withdrawal_country', $user->withdrawal_country ?? 'CM') === 'CM' ? 'checked' : '' }}
+                               class="hidden peer" id="country-cm">
+                        <div class="peer-checked:border-emerald-500 peer-checked:bg-emerald-50 border-2 border-gray-200 rounded-2xl p-4 text-center transition hover:border-emerald-300">
+                            <span class="text-2xl">🇨🇲</span>
+                            <p class="font-bold text-gray-700 mt-1 text-sm">Cameroun</p>
+                            <p class="text-xs text-gray-400">MTN · Orange</p>
+                        </div>
+                    </label>
+                    <label class="country-option cursor-pointer">
+                        <input type="radio" name="withdrawal_country" value="CI"
+                               {{ old('withdrawal_country', $user->withdrawal_country ?? 'CM') === 'CI' ? 'checked' : '' }}
+                               class="hidden peer" id="country-ci">
+                        <div class="peer-checked:border-emerald-500 peer-checked:bg-emerald-50 border-2 border-gray-200 rounded-2xl p-4 text-center transition hover:border-emerald-300">
+                            <span class="text-2xl">🇨🇮</span>
+                            <p class="font-bold text-gray-700 mt-1 text-sm">Côte d'Ivoire</p>
+                            <p class="text-xs text-gray-400">MTN · Orange · Moov</p>
+                        </div>
+                    </label>
+                </div>
+                @error('withdrawal_country')
+                    <p class="text-red-600 text-xs sm:text-sm font-medium mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <!-- 3. Opérateur Mobile Money -->
             <div>
                 <label class="block text-slate-700 font-semibold text-sm sm:text-lg mb-2 sm:mb-3">Opérateur Mobile Money</label>
-                <select name="withdrawal_method" required
+                <select name="withdrawal_method" id="withdrawal_method" required
                         class="w-full bg-gray-50 border {{ $errors->has('withdrawal_method') ? 'border-red-500' : 'border-0' }} rounded-2xl py-4 sm:py-6 px-4 sm:px-6 text-base sm:text-lg focus:ring-4 focus:ring-emerald-500 focus:outline-none transition">
                     <option value="">Sélectionner un opérateur</option>
-                    <option value="MTN" {{ old('withdrawal_method', $user->withdrawal_method) === 'MTN' ? 'selected' : '' }}>MTN Mobile Money</option>
-                    <option value="ORANGE" {{ old('withdrawal_method', $user->withdrawal_method) === 'ORANGE' ? 'selected' : '' }}>Orange Money</option>
                 </select>
                 @error('withdrawal_method')
                     <p class="text-red-600 text-xs sm:text-sm font-medium mt-1 sm:mt-2">{{ $message }}</p>
                 @enderror
             </div>
+
 
             <!-- 3. Numéro -->
             <div>
@@ -217,6 +248,45 @@
         checkMatch();
     });
     confirm.addEventListener('input', checkMatch);
+
+    // ═══════════════════════════════════════════════════
+    // Sélection dynamique des opérateurs selon le pays
+    // ═══════════════════════════════════════════════════
+    const operators = {
+        CM: [
+            { value: 'MTN',    label: 'MTN Mobile Money' },
+            { value: 'ORANGE', label: 'Orange Money' },
+        ],
+        CI: [
+            { value: 'MTN',    label: 'MTN Mobile Money CI' },
+            { value: 'ORANGE', label: 'Orange Money CI' },
+            { value: 'MOOV',   label: 'Moov Money' },
+        ],
+    };
+
+    const savedMethod = @json(old('withdrawal_method', $user->withdrawal_method ?? ''));
+    const methodSelect = document.getElementById('withdrawal_method');
+
+    function updateOperators(country) {
+        const list = operators[country] || operators['CM'];
+        methodSelect.innerHTML = '<option value="">Sélectionner un opérateur</option>';
+        list.forEach(op => {
+            const option = document.createElement('option');
+            option.value = op.value;
+            option.textContent = op.label;
+            if (op.value === savedMethod) option.selected = true;
+            methodSelect.appendChild(option);
+        });
+    }
+
+    // Init on page load
+    const checkedCountry = document.querySelector('input[name="withdrawal_country"]:checked');
+    updateOperators(checkedCountry ? checkedCountry.value : 'CM');
+
+    // Update on country change
+    document.querySelectorAll('input[name="withdrawal_country"]').forEach(radio => {
+        radio.addEventListener('change', () => updateOperators(radio.value));
+    });
 </script>
 
 </x-layouts>

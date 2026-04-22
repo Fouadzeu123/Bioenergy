@@ -9,19 +9,34 @@ use Illuminate\Validation\Rule;
 
 class WithdrawalInfoController extends Controller
 {
+    /**
+     * Opérateurs autorisés par pays.
+     */
+    public static function operatorsForCountry(string $country): array
+    {
+        return match(strtoupper($country)) {
+            'CI' => ['MTN', 'ORANGE', 'MOOV'],
+            default => ['MTN', 'ORANGE'], // CM
+        };
+    }
+
     public function index()
     {
-        return view('info_retrait'); // $user est déjà disponible via Auth dans la vue
+        return view('info_retrait');
     }
 
     public function update(Request $request)
     {
         $user = Auth::user();
 
-        // Validation des champs
+        // Validation du pays de retrait
+        $country = strtoupper($request->input('withdrawal_country', 'CM'));
+        $allowedOperators = self::operatorsForCountry($country);
+
         $request->validate([
-            'current_password'           => 'required|string', // OBLIGATOIRE : mot de passe du compte
-            'withdrawal_method'          => 'required|in:MTN,ORANGE',
+            'current_password'           => 'required|string',
+            'withdrawal_country'         => 'required|in:CM,CI',
+            'withdrawal_method'          => ['required', Rule::in($allowedOperators)],
             'withdrawal_account'         => [
                 'required',
                 'string',
@@ -30,11 +45,14 @@ class WithdrawalInfoController extends Controller
                 Rule::unique('users', 'withdrawal_account')->ignore($user->id),
             ],
             'withdrawal_name'            => 'required|string|max:100',
-            'withdrawal_password'        => 'required|min:6|confirmed', // Toujours obligatoire
+            'withdrawal_password'        => 'required|min:6|confirmed',
             'withdrawal_password_confirmation' => 'required',
         ], [
             'current_password.required'           => 'Vous devez confirmer votre mot de passe de connexion.',
+            'withdrawal_country.required'         => 'Veuillez sélectionner votre pays.',
+            'withdrawal_country.in'               => 'Pays non supporté. Choisissez Cameroun ou Côte d\'Ivoire.',
             'withdrawal_method.required'          => 'Veuillez sélectionner un opérateur.',
+            'withdrawal_method.in'                => 'Opérateur invalide pour le pays sélectionné.',
             'withdrawal_account.required'         => 'Le numéro Mobile Money est obligatoire.',
             'withdrawal_account.unique'           => 'Ce numéro est déjà utilisé par un autre compte.',
             'withdrawal_password.required'        => 'Le mot de passe de retrait est obligatoire.',
@@ -49,6 +67,7 @@ class WithdrawalInfoController extends Controller
 
         // Mise à jour des informations
         $user->update([
+            'withdrawal_country'  => strtoupper($request->withdrawal_country),
             'withdrawal_method'   => strtoupper($request->withdrawal_method),
             'withdrawal_account'  => $request->withdrawal_account,
             'withdrawal_name'     => $request->withdrawal_name,

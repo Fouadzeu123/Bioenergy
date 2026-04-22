@@ -29,25 +29,32 @@ class AuthController extends Controller
             'phone'           => 'required|digits_between:8,12|unique:users,phone',
             'password'        => 'required|confirmed|min:6',
             'invitation_code' => 'required|string|exists:users,invitation_code',
+            'country_code'    => 'nullable|in:237,225',
         ], [
-            'invitation_code.exists' => 'Ce code d’invitation est invalide.',
+            'invitation_code.exists' => 'Ce code d\'invitation est invalide.',
             'phone.unique'           => 'Ce numéro est déjà utilisé.',
-            'username.unique'        => 'Ce nom d’utilisateur est déjà pris.',
+            'username.unique'        => 'Ce nom d\'utilisateur est déjà pris.',
+            'country_code.in'        => 'Pays non supporté.',
         ]);
 
         // Recherche du parrain
         $parrain = User::where('invitation_code', $request->invitation_code)->firstOrFail();
 
+        // Pays de l'utilisateur
+        $countryCode = $request->country_code === '225' ? '225' : '237';
+        $withdrawalCountry = $countryCode === '225' ? 'CI' : 'CM';
+
         // Création de l'utilisateur
         $user = User::create([
-            'username'        => $request->username,
-            'country_code'    => $request->country_code ?? '237', // par défaut Cameroun
-            'phone'           => $request->phone,
-            'password'        => Hash::make($request->password),
-            'invited_by'      => $parrain->id,
-            'invitation_code' => strtoupper(Str::random(8)), // ex: X7K9P2M4
-            'account_balance' => 0,
-            'level'           => 0,
+            'username'          => $request->username,
+            'country_code'      => $countryCode,
+            'phone'             => $request->phone,
+            'password'          => Hash::make($request->password),
+            'invited_by'        => $parrain->id,
+            'invitation_code'   => strtoupper(Str::random(8)),
+            'account_balance'   => 0,
+            'level'             => 0,
+            'withdrawal_country'=> $withdrawalCountry,
         ]);
 
         // Notification au parrain
