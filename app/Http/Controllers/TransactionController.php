@@ -349,16 +349,17 @@ class TransactionController extends Controller
             $amountXAF = $this->notchPay->usdToXaf($amount);
             $amountNetXAF = (int) round($amountXAF * 0.90); // 10% de frais appliqués
 
-            // Résoudre le canal (cm.mtn / cm.orange)
-            $channel = config('notchpay.channels.' . strtoupper($user->withdrawal_method), 'cm.mtn');
+            // Pour la création de bénéficiaires Mobile Money au Cameroun, 
+            // NotchPay préfère souvent le canal générique 'cm.mobile'.
+            $beneficiaryChannel = 'cm.mobile';
 
             // Étape 1 : Créer le bénéficiaire
             $beneficiary = $this->notchPay->createBeneficiary(
                 name: $user->withdrawal_name ?? 'Investisseur BioEnergy',
                 phone: $phone,
                 email: $user->email ?? 'no-reply@bioenergy.cm',
-                channel: $channel,
-                country: 'CM'
+                channel: $beneficiaryChannel,
+                country: 'cm'
             );
 
             if (!$beneficiary['success']) {
