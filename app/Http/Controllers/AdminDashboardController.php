@@ -22,20 +22,20 @@ class AdminDashboardController extends Controller
                                          ->count();
 
         // Sommes (seulement les transactions validées)
-        $totalDepotsUsd = (float) Transaction::where('type', 'depot')
+        $totalDepots = (float) Transaction::where('type', 'depot')
                                              ->where('status', 'completed')
                                              ->sum('montant');
 
-        $totalRetraitsUsd = (float) Transaction::where('type', 'retrait')
+        $totalRetraits = (float) Transaction::where('type', 'retrait')
                                                ->where('status', 'completed')
                                                ->sum('montant');
 
-        $totalBonusUsd = (float) Transaction::whereIn('type', ['bonus', 'bonus_vip', 'bonus_parrainage', 'bonus_journalier', 'parrainage'])
+        $totalBonus = (float) Transaction::whereIn('type', ['bonus', 'bonus_vip', 'bonus_parrainage', 'bonus_journalier', 'parrainage'])
                                             ->where('status', 'completed')
                                             ->sum('montant');
 
         // Revenu net de la plateforme
-        $netRevenueUsd = $totalDepotsUsd - $totalRetraitsUsd - $totalBonusUsd;
+        $netRevenue = $totalDepots - $totalRetraits - $totalBonus;
 
         // ===================================================================
         // 2. DONNÉES POUR LE GRAPHIQUE (30 derniers jours)
@@ -98,10 +98,10 @@ class AdminDashboardController extends Controller
             'totalAdmins',
             'activeToday',
             'pendingWithdrawals',
-            'totalDepotsUsd',
-            'totalRetraitsUsd',
-            'totalBonusUsd',
-            'netRevenueUsd',
+            'totalDepots',
+            'totalRetraits',
+            'totalBonus',
+            'netRevenue',
             'chartLabels',
             'chartDepots',
             'chartRetraits',

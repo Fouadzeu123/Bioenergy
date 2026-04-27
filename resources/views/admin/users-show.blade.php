@@ -61,6 +61,12 @@
                 {{ number_format(($user->total_deposits ?? 0) - ($user->total_withdrawals ?? 0), 0, '.', ' ') }} {{ $curr }}
             </p>
         </div>
+        <div class="bg-white rounded-2xl shadow-xl p-6 text-center border-l-4 border-amber-500">
+            <p class="text-gray-600 text-sm font-bold uppercase">Tours Lucky Wheel</p>
+            <p class="text-2xl font-extrabold text-amber-600 mt-2">
+                {{ $user->lucky_spins ?? 0 }}
+            </p>
+        </div>
     </div>
 
     <!-- Actions rapides -->
@@ -75,6 +81,11 @@
             <button type="button" onclick="openBonusModal()" 
                     class="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 transition">
                 Ajouter un bonus
+            </button>
+
+            <button type="button" onclick="openSpinsModal()" 
+                    class="w-full bg-amber-600 text-white py-4 rounded-xl font-bold hover:bg-amber-700 transition">
+                Accorder des tours
             </button>
 
             <form method="POST" action="{{ route('admin.users.reset-password', $user->id) }}" class="inline-block w-full">
@@ -215,12 +226,45 @@
     </div>
 </div>
 
+<!-- Modal Accorder Tours -->
+<div id="spinsModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate__animated animate__zoomIn">
+        <h3 class="text-2xl font-bold mb-6 text-gray-800">Accorder des tours</h3>
+        <form method="POST" action="{{ route('admin.users.lucky_spins', $user->id) }}">
+            @csrf
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Nombre de tours</label>
+                    <input type="number" name="spins" step="1" min="1" required
+                           class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 transition font-bold">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="submit"
+                            class="flex-1 bg-amber-600 text-white py-4 rounded-xl font-bold hover:bg-amber-700 shadow-lg shadow-amber-100">
+                        Ajouter
+                    </button>
+                    <button type="button" onclick="closeSpinsModal()"
+                            class="flex-1 bg-gray-100 py-4 rounded-xl font-bold hover:bg-gray-200 text-gray-600">
+                        Annuler
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
 function openBonusModal() {
     document.getElementById('bonusModal').classList.remove('hidden');
 }
 function closeBonusModal() {
     document.getElementById('bonusModal').classList.add('hidden');
+}
+function openSpinsModal() {
+    document.getElementById('spinsModal').classList.remove('hidden');
+}
+function closeSpinsModal() {
+    document.getElementById('spinsModal').classList.add('hidden');
 }
 </script>
 

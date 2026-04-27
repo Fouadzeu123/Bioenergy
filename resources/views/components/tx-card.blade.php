@@ -52,54 +52,32 @@
     ], JSON_UNESCAPED_UNICODE);
 @endphp
 
-<div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer mb-4" 
+<div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-50 flex items-center justify-between cursor-pointer active:scale-95 transition" 
      data-tx="{{ $txJson }}" 
      onclick="openTxModal(this.getAttribute('data-tx'))">
-    <div class="flex items-center justify-between">
-        
-        <!-- Icon & Info -->
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 flex items-center justify-center rounded-xl {{ $bgIcon }} {{ $iconColor }}">
-                <i class="fas fa-{{ $icon }} text-xl"></i>
-            </div>
-            <div>
-                <p class="font-bold text-gray-800 text-base">{{ $typeLabel }}</p>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="text-xs text-gray-400"><i class="far fa-calendar-alt mr-1"></i>{{ $tx->created_at->format('d M, H:i') }}</span>
-                    @if($tx->method)
-                        <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 uppercase">{{ $tx->method }}</span>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        <!-- Amount & Status -->
-        <div class="text-right">
-            <p class="font-bold {{ $amountColor }} text-lg">
-                {{ $amountSign }}{{ fmtCurrency($montant) }}
-            </p>
-            
-            <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide mt-1
-                @if($statusColor === 'green') bg-green-100 text-green-700
-                @elseif($statusColor === 'red') bg-red-100 text-red-700
-                @elseif($statusColor === 'yellow') bg-yellow-100 text-yellow-700
-                @else bg-gray-100 text-gray-700 @endif
-            ">
-                {{ $statusLabel }}
-            </span>
-        </div>
-
-    </div>
     
-    <!-- Reference (click to copy) -->
-    <div class="mt-4 pt-3 border-t border-gray-50 flex items-center justify-between">
-        <div class="text-xs text-gray-400 font-mono flex items-center gap-2" onclick="event.stopPropagation(); copyText('{{ $tx->reference }}', this)">
-            <i class="far fa-copy cursor-pointer hover:text-gray-700"></i>
-            <span class="truncate max-w-[150px] sm:max-w-none">{{ $tx->reference }}</span>
-            <span class="copy-feedback text-green-500 font-bold hidden ml-2">Copié!</span>
+    <div class="flex items-center gap-4">
+        <div class="w-10 h-10 flex items-center justify-center rounded-xl {{ $bgIcon }} {{ $iconColor }}">
+            <i class="fas fa-{{ $icon }} text-sm"></i>
         </div>
-        <div class="text-xs text-blue-600 font-semibold hover:underline flex items-center gap-1">
-            Détails <i class="fas fa-chevron-right text-[10px]"></i>
+        <div>
+            <p class="text-xs font-black text-gray-800">{{ $typeLabel }}</p>
+            <p class="text-[9px] font-bold text-gray-400 mt-0.5 uppercase tracking-tighter">{{ $tx->created_at->format('d M, H:i') }} @if($tx->method) • {{ $tx->method }} @endif</p>
         </div>
+    </div>
+
+    <div class="text-right">
+        <p class="text-xs font-black {{ $amountColor }}">
+            {{ $amountSign }}{{ fmtCurrency($montant) }}
+        </p>
+        
+        <span class="text-[8px] font-black uppercase tracking-widest mt-1 inline-block
+            @if($statusColor === 'green') text-emerald-600
+            @elseif($statusColor === 'red') text-red-600
+            @elseif($statusColor === 'yellow') text-amber-600
+            @else text-gray-400 @endif
+        ">
+            {{ $statusLabel }}
+        </span>
     </div>
 </div>

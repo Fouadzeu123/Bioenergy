@@ -18,7 +18,10 @@ class UserController extends Controller
         $niveau2 = User::whereIn('invited_by', $niveau1->pluck('id'))->get();
         $niveau3 = User::whereIn('invited_by', $niveau2->pluck('id'))->get();
 
-        return view('link', compact('niveau1', 'niveau2', 'niveau3'));
+        $total = $niveau1->count() + $niveau2->count() + $niveau3->count();
+        $refUrl = route('register.view', ['ref' => $user->invitation_code]);
+
+        return view('link', compact('niveau1', 'niveau2', 'niveau3', 'total', 'refUrl'));
     }
 
     public function team()

@@ -48,6 +48,11 @@
                     <input type="number" name="account_balance" value="{{ old('account_balance', round($user->account_balance ?? 0)) }}" step="1" min="0" required
                            class="w-full border-2 border-gray-100 rounded-xl px-5 py-3 focus:outline-none focus:border-emerald-500 transition text-lg font-bold">
                 </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Tours Lucky Wheel</label>
+                    <input type="number" name="lucky_spins" value="{{ old('lucky_spins', $user->lucky_spins ?? 0) }}" step="1" min="0" required
+                           class="w-full border-2 border-gray-100 rounded-xl px-5 py-3 focus:outline-none focus:border-emerald-500 transition text-lg font-bold">
+                </div>
             </div>
 
             <div class="flex justify-end gap-4 pt-6 border-t">

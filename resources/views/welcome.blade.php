@@ -1,200 +1,136 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription • BioEnergy</title>
-    @vite(["resources/css/app.css","resources/js/app.js"])
-
-    <!-- Tailwind + Animations -->
+    <title>BioEnergy • Inscription</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            min-height: 100vh;
-        }
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        .input-glow:focus {
-            box-shadow: 0 0 20px rgba(16, 194, 85, 0.5);
-            border-color: #16c255;
-        }
-        .btn-hover:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(16, 194, 85, 0.4);
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen px-4">
+<body class="flex items-center justify-center min-h-screen px-6 overflow-x-hidden relative py-12">
 
-    <div class="w-full max-w-md">
+    <!-- Background Decoration -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"></div>
+    </div>
 
-        <!-- Logo + Titre -->
-        <div class="text-center mb-10">
-            <img src="{{ asset('images/logo.png') }}" alt="BioEnergy" class="w-48 mx-auto mb-6">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Inscription</h1>
-            <p class="text-green-300 text-lg">Rejoignez la révolution verte</p>
+    <div class="w-full max-w-sm space-y-10">
+        
+        <!-- Brand Header -->
+        <div class="text-center space-y-4">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-[32px] border border-white/5 shadow-2xl mb-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
+            </div>
+            <div class="space-y-1">
+                <h1 class="text-3xl font-bold text-white tracking-tight leading-none">BioEnergy</h1>
+                <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Nouvel Investisseur</p>
+            </div>
         </div>
 
-        <!-- Messages -->
-        @if(session('success'))
-            <div class="mb-6 glass text-green-300 p-5 rounded-2xl text-center font-medium border border-green-500/30 shadow-lg">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="mb-6 glass text-red-300 p-5 rounded-2xl border border-red-500/30 shadow-lg">
-                <p class="font-bold mb-2">Erreurs détectées :</p>
-                <ul class="text-sm space-y-1">
-                    @foreach($errors->all() as $error)
-                        <li>• {{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <!-- Formulaire Glassmorphism -->
-        <div class="glass rounded-3xl p-8 shadow-2xl border border-white/20">
+        <!-- Form Card -->
+        <div class="glass-card rounded-[48px] p-10 shadow-2xl space-y-8">
             <form method="POST" action="{{ route('register') }}" class="space-y-6">
                 @csrf
 
-                <!-- Nom d'utilisateur -->
-                <div>
-                    <input type="text" name="username" value="{{ old('username') }}" required
-                           class="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none input-glow transition"
-                           placeholder="Nom d'utilisateur">
-                </div>
-
-                <!-- Numéro de téléphone avec sélection de pays -->
-                <div>
-                    <!-- Sélecteur de pays -->
-                    <div class="grid grid-cols-2 gap-3 mb-3">
-                        <label class="cursor-pointer">
+                <div class="space-y-6">
+                    <!-- Pays Selection -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="cursor-pointer group">
                             <input type="radio" name="_country" value="CM" checked class="hidden peer" id="reg-cm">
-                            <div class="peer-checked:border-green-500 peer-checked:bg-green-500/20 border-2 border-white/20 rounded-2xl p-3 text-center transition">
-                                <span class="text-xl">🇨🇲</span>
-                                <p class="text-white text-xs font-bold mt-1">Cameroun</p>
-                                <p class="text-green-300 text-[10px]">+237</p>
+                            <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 border border-white/5 bg-slate-900/30 rounded-2xl p-4 text-center transition active:scale-95">
+                                <span class="text-lg">🇨🇲</span>
+                                <p class="text-[10px] font-bold text-white mt-1">Cameroun</p>
                             </div>
                         </label>
-                        <label class="cursor-pointer">
+                        <label class="cursor-pointer group">
                             <input type="radio" name="_country" value="CI" class="hidden peer" id="reg-ci">
-                            <div class="peer-checked:border-green-500 peer-checked:bg-green-500/20 border-2 border-white/20 rounded-2xl p-3 text-center transition">
-                                <span class="text-xl">🇨🇮</span>
-                                <p class="text-white text-xs font-bold mt-1">Côte d'Ivoire</p>
-                                <p class="text-green-300 text-[10px]">+225</p>
+                            <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 border border-white/5 bg-slate-900/30 rounded-2xl p-4 text-center transition active:scale-95">
+                                <span class="text-lg">🇨🇮</span>
+                                <p class="text-[10px] font-bold text-white mt-1">C. Ivoire</p>
                             </div>
                         </label>
                     </div>
-                    <!-- Champ téléphone avec indicatif dynamique -->
-                    <div class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-white/10 border border-white/30 focus-within:border-green-500 transition-all duration-300 group">
-                        <div class="flex items-center gap-2 border-r border-white/20 pr-4" id="phone-flag-area">
-                            <img id="flag-img" src="https://flagcdn.com/w20/cm.png" alt="Pays" class="w-5 shadow-sm">
-                            <span id="phone-prefix-display" class="text-green-400 font-bold text-lg tracking-wider">+237</span>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 px-2">Pseudo</label>
+                        <input type="text" name="username" value="{{ old('username') }}" required
+                               class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
+                               placeholder="Identifiant public">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 px-2">Téléphone</label>
+                        <div class="flex items-center bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 focus-within:border-emerald-500 transition">
+                            <span id="phone-prefix-display" class="text-emerald-400 font-bold text-sm pr-4 border-r border-white/5">+237</span>
+                            <input type="hidden" name="country_code" id="country_code_input" value="237">
+                            <input type="tel" name="phone" value="{{ old('phone') }}" required
+                                   class="flex-1 bg-transparent text-white text-sm font-semibold pl-4 focus:outline-none"
+                                   placeholder="000000000">
                         </div>
-                        <input type="hidden" name="country_code" id="country_code_input" value="{{ old('country_code', '237') }}">
-                        <input type="tel" name="phone" value="{{ old('phone') }}" required
-                               class="flex-1 bg-transparent text-white placeholder-gray-400 focus:outline-none text-lg"
-                               placeholder="Numéro de téléphone" id="phone-input">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 px-2">Sécurité</label>
+                        <div class="space-y-3">
+                            <input type="password" name="password" required
+                                   class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
+                                   placeholder="Mot de passe">
+                            <input type="password" name="password_confirmation" required
+                                   class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
+                                   placeholder="Confirmer mot de passe">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 px-2">Parrainage</label>
+                        <input type="text" name="invitation_code" value="{{ old('invitation_code', request('ref', session('referral_code'))) }}" required
+                               class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
+                               placeholder="Code d'invitation">
                     </div>
                 </div>
 
-
-                <!-- Mots de passe -->
-                <div>
-                    <input type="password" name="password" required
-                           class="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none input-glow"
-                           placeholder="Mot de passe">
-                </div>
-
-                <div>
-                    <input type="password" name="password_confirmation" required
-                           class="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none input-glow"
-                           placeholder="Confirmer le mot de passe">
-                </div>
-
-                <!-- Code d'invitation -->
-                <div>
-                    <input type="text" name="invitation_code" 
-                           value="{{ old('invitation_code', request('ref', session('referral_code'))) }}" 
-                           required
-                           class="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none input-glow"
-                           placeholder="Code d'invitation (obligatoire)">
-                </div>
-
-                <!-- Connexion -->
-                <div class="text-center pt-4">
-                    <p class="text-gray-300 text-sm mb-6">
-                        Déjà membre ? 
-                        <a href="{{ route('login') }}" class="text-green-400 font-bold hover:text-green-300 transition">
-                            Se connecter
-                        </a>
-                    </p>
-
-                    <button type="submit"
-                            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-extrabold text-xl py-5 rounded-2xl shadow-xl btn-hover transition transform">
-                        S'inscrire maintenant
-                    </button>
-                </div>
+                <button type="submit" class="w-full py-6 bg-emerald-600 text-white text-[12px] font-bold rounded-2xl shadow-xl active:scale-95 transition shadow-emerald-500/20">
+                    Créer mon compte
+                </button>
             </form>
+
+            <div class="text-center pt-2">
+                <p class="text-[11px] font-bold text-gray-500">
+                    Déjà inscrit ? 
+                    <a href="{{ route('login') }}" class="text-emerald-400 hover:text-emerald-300 transition">Se connecter</a>
+                </p>
+            </div>
         </div>
 
-        <!-- Texte final -->
-        <div class="text-center mt-8 text-green-200 text-sm opacity-80">
-            <p>En vous inscrivant, vous acceptez nos <a href="#" class="underline hover:text-white">conditions d'utilisation</a></p>
-        </div>
+        <!-- Footer Info -->
+        <p class="text-center text-[10px] font-medium text-gray-600 px-8">
+            En continuant, vous acceptez nos conditions générales de service et d'investissement.
+        </p>
     </div>
 
-<script>
-    // Mise à jour du préfixe téléphone et du pays à l'inscription
-    const countries = {
-        CM: { code: '237', flag: 'https://flagcdn.com/w20/cm.png', prefix: '+237' },
-        CI: { code: '225', flag: 'https://flagcdn.com/w20/ci.png', prefix: '+225' },
-    };
+    <script>
+        const countries = {
+            CM: { code: '237', prefix: '+237' },
+            CI: { code: '225', prefix: '+225' },
+        };
 
-    document.querySelectorAll('input[name="_country"]').forEach(radio => {
-        radio.addEventListener('change', function () {
-            const c = countries[this.value];
-            if (!c) return;
-            document.getElementById('flag-img').src = c.flag;
-            document.getElementById('phone-prefix-display').textContent = c.prefix;
-            document.getElementById('country_code_input').value = c.code;
+        document.querySelectorAll('input[name="_country"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                const c = countries[this.value];
+                document.getElementById('phone-prefix-display').textContent = c.prefix;
+                document.getElementById('country_code_input').value = c.code;
+            });
         });
-    });
-
-    // Détection automatique du pays basée sur le fuseau horaire
-    window.addEventListener('DOMContentLoaded', () => {
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (timezone.includes('Abidjan')) {
-            const ciRadio = document.getElementById('reg-ci');
-            if (ciRadio) {
-                ciRadio.checked = true;
-                ciRadio.dispatchEvent(new Event('change'));
-            }
-        } else if (timezone.includes('Douala') || timezone.includes('Lagos') || timezone.includes('Brazzaville')) {
-            // Par défaut c'est déjà CM, mais on peut forcer pour la clarté
-            const cmRadio = document.getElementById('reg-cm');
-            if (cmRadio) {
-                cmRadio.checked = true;
-                cmRadio.dispatchEvent(new Event('change'));
-            }
-        }
-    });
-</script>
+    </script>
 </body>
 </html>

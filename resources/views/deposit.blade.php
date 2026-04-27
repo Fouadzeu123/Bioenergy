@@ -5,28 +5,24 @@
     $balance = $user->account_balance ?? 0;
     $phone = $user->phone ?? '';
     $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
-    $phonePrefix = ($userCountry === 'CI') ? '225' : '237';
+    $phonePrefix = ($userCountry === 'CI') ? '225' : '237'; 
     $countryName  = ($userCountry === 'CI') ? "Côte d'Ivoire" : 'Cameroun';
     $countryFlag  = ($userCountry === 'CI') ? '🇨🇮' : '🇨🇲';
     $minDepot = 1000;
-
     $currency = $user->currency;
 
     $detectedOperator = 'UNKNOWN';
     if ($phone) {
-        $phoneStr = preg_replace('/\D/', '', $phone); // digits only
-        // Remove country prefix if present
+        $phoneStr = preg_replace('/\D/', '', $phone);
         if (str_starts_with($phoneStr, '237')) $phoneStr = substr($phoneStr, 3);
         if (str_starts_with($phoneStr, '225')) $phoneStr = substr($phoneStr, 3);
 
         if ($userCountry === 'CI') {
-            // Côte d'Ivoire (new 10-digit format: prefix is first 2 digits)
             $prefix2 = substr($phoneStr, 0, 2);
             if (in_array($prefix2, ['05','25','45','65','85'])) $detectedOperator = 'MTN';
             elseif (in_array($prefix2, ['07','27','47','67','87'])) $detectedOperator = 'ORANGE';
             elseif (in_array($prefix2, ['01','21','41','61','81'])) $detectedOperator = 'MOOV';
         } else {
-            // Cameroun (9 digits, prefix is first 3)
             if (strlen($phoneStr) >= 9) {
                 $prefix3 = substr($phoneStr, 0, 3);
                 $mtnCM    = ['650','651','652','653','654','670','671','672','673','674','675','676','677','678','679','680','681','682','683'];
@@ -36,163 +32,119 @@
             }
         }
     }
-
     $depots = $depots ?? collect();
 @endphp
 
+<div class="max-w-xl mx-auto pt-6 px-4 space-y-8 pb-20">
 
-<div class="min-h-screen bg-gray-50/50 py-6">
-
-<div class="px-4 md:px-0 max-w-2xl mx-auto space-y-6">
-
-        <!-- Flash messages -->
-        @if(session('success'))
-            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-center font-medium shadow-sm">
-                {{ session('success') }}
+    <!-- Card Solde Sleeker -->
+    <div class="relative overflow-hidden rounded-[40px] bg-slate-900 p-10 text-white shadow-2xl">
+        <div class="relative z-10 flex justify-between items-end">
+            <div class="space-y-1">
+                <p class="text-[10px] font-bold text-gray-400">Liquidités disponibles</p>
+                <h2 class="text-4xl font-bold tracking-tight">{{ fmtCurrency($balance) }}</h2>
             </div>
-        @endif
-        @if(session('error'))
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-center font-medium shadow-sm">
-                {{ session('error') }}
-            </div>
-        @endif
-
-        <!-- Card Solde -->
-        <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 flex items-center justify-between">
-            <div>
-                <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Solde Actuel</p>
-                <div class="flex items-baseline gap-2 mt-1">
-                    <p class="text-3xl font-extrabold text-gray-800">{{ fmtCurrency($balance) }}</p>
-                </div>
-            </div>
-            <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
-                <i class="fas fa-wallet text-xl"></i>
+            <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/5">
+                <i class="fas fa-wallet text-emerald-400"></i>
             </div>
         </div>
+        <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
 
-        <!-- Formulaire Dépôt -->
-        <div class="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
-            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 px-6 py-5">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fas fa-arrow-down bg-white/20 p-2 rounded-lg"></i> Faire un dépôt
-                </h3>
-            </div>
+    <!-- Formulaire Dépôt Sleeker -->
+    <form id="depositForm" action="{{ route('depot.store') }}" method="POST" class="space-y-8">
+        @csrf
 
-            <form id="depositForm" action="{{ route('depot.store') }}" method="POST" class="p-6 md:p-8 space-y-8">
-                @csrf
-
-                <!-- Choix Méthode Simplifié -->
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-3 text-sm">Mode de paiement</label>
-                    <label class="cursor-pointer block border-2 border-emerald-500 bg-emerald-50 rounded-2xl p-4 transition text-center shadow-sm">
-                        <input type="radio" name="canal" value="notchpay" checked class="hidden peer">
-                        <div class="flex items-center justify-center gap-3">
-                            <i class="fas fa-mobile-alt text-2xl text-emerald-600"></i>
-                            <div class="text-left leading-tight">
-                                <span class="block font-bold text-emerald-800">Mobile Money</span>
-                                <span class="text-xs text-emerald-600">
-                                    {{ $countryFlag }} {{ $userCountry === 'CI' ? 'MTN, Orange & Moov' : 'MTN & Orange' }}
-                                </span>
-                            </div>
+        <div class="bg-white rounded-[32px] p-8 shadow-sm border border-gray-50 space-y-8">
+            <div class="space-y-4 text-center">
+                <h3 class="text-xs font-bold text-gray-400">Passerelle de Paiement</h3>
+                <div class="p-6 rounded-[24px] border-2 border-emerald-500 bg-emerald-50/30">
+                    <div class="flex items-center justify-center gap-4">
+                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                            <i class="fas fa-mobile-screen text-emerald-600"></i>
                         </div>
-                    </label>
-                </div>
-
-                <!-- Saisie Montant -->
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-3 text-sm flex justify-between">
-                        Montant à déposer ({{ $currency }})
-                        <span class="text-xs text-gray-400 font-normal">Min. {{ number_format($minDepot, 0, '.', ' ') }} {{ $currency }}</span>
-                    </label>
-                    <div class="relative">
-                        <input type="number" name="amount" id="amount" step="1" min="{{ $minDepot }}" required
-                               class="w-full px-6 py-4 text-2xl font-bold bg-gray-50 border border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition"
-                               placeholder="{{ $minDepot }}" value="{{ old('amount') }}">
-                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xl">{{ $currency }}</span>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-3 mt-4">
-                        <button type="button" data-amount="5000" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">5 000</button>
-                        <button type="button" data-amount="10000" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">10 000</button>
-                        <button type="button" data-amount="50000" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">50 000</button>
+                        <div class="text-left">
+                            <p class="text-[11px] font-bold text-gray-800">NotchPay Gateway</p>
+                            <p class="text-[9px] font-medium text-gray-400">{{ $countryFlag }} Momo, Orange & Moov</p>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Info opérateur -->
-                @if($detectedOperator !== 'UNKNOWN')
-                    <div class="bg-gray-50 border border-gray-100 rounded-2xl p-4 flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Numéro de dépôt</p>
-                            <p class="font-bold text-gray-700 text-sm mt-0.5">
-                                <i class="fas fa-phone-alt text-emerald-500 mr-1"></i>
-                                +{{ $phonePrefix }} {{ chunk_split(ltrim(preg_replace('/\D/','',$phone), '0237225'), 2, ' ') }}
-                            </p>
-                            <p class="text-[10px] text-gray-400 mt-0.5">{{ $countryFlag }} {{ $countryName }}</p>
-                        </div>
-                        <span class="px-3 py-1 bg-white border border-gray-200 text-xs font-bold rounded-lg shadow-sm text-gray-600">{{ $detectedOperator }}</span>
-                        <input type="hidden" name="payment_method" value="{{ $detectedOperator }}">
-                    </div>
-                @else
-                    <div class="bg-amber-50 border border-amber-100 text-amber-800 text-xs px-4 py-3 rounded-xl flex items-center gap-2 font-medium">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Veuillez ajouter un numéro valide dans votre profil.
-                    </div>
-                @endif
-
-                <button type="submit" class="w-full font-bold text-white bg-emerald-600 hover:bg-emerald-700 py-4 rounded-2xl shadow-lg shadow-emerald-200 transition">
-                    Déposer maintenant
-                </button>
-            </form>
-        </div>
-
-        <!-- Historique abrégé -->
-        <div class="mt-8 text-sm">
-            <div class="flex items-center justify-between mb-4 px-2">
-                <h3 class="font-bold text-gray-700">Derniers dépôts</h3>
-                <a href="{{ route('transaction') }}" class="text-emerald-600 hover:underline">Voir tout</a>
             </div>
 
-            @if($depots->count() > 0)
-                <div class="space-y-3">
-                    @foreach($depots->take(3) as $depot)
-                        <div class="bg-white rounded-2xl p-4 flex items-center justify-between border border-gray-100 shadow-sm hover:shadow-md transition">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><i class="fas fa-arrow-down"></i></div>
-                                <div>
-                                    <p class="font-bold text-gray-800">{{ fmtCurrency($depot->montant) }}</p>
-                                    <p class="text-xs text-gray-400">{{ $depot->created_at->format('d M, H:i') }}</p>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-xs font-medium text-gray-500 mb-1">{{ $depot->operator ?? 'Mobile Money' }}</p>
-                                @if($depot->status === 'completed')
-                                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-green-100 text-green-700">Crédité</span>
-                                @elseif(in_array($depot->status, ['failed', 'canceled', 'rejected']))
-                                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-red-100 text-red-700">Échoué</span>
-                                @else
-                                    <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-yellow-100 text-yellow-700">En cours</span>
-                                @endif
-                            </div>
-                        </div>
+            <div class="space-y-4">
+                <label class="block text-[11px] font-bold text-gray-400 text-center">Montant de l'approvisionnement</label>
+                <div class="relative">
+                    <input type="number" name="amount" id="amount" step="1" min="{{ $minDepot }}" required
+                           class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-6 text-3xl font-bold text-center focus:bg-white focus:border-emerald-500 transition outline-none tracking-tight"
+                           placeholder="0">
+                    <span class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 font-black text-sm italic">{{ $currency }}</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    @foreach([5000, 10000, 50000] as $amt)
+                        <button type="button" onclick="setAmount({{ $amt }})" class="py-3 rounded-xl bg-gray-50 text-[10px] font-black text-gray-400 hover:bg-slate-900 hover:text-white transition uppercase tracking-wider border border-gray-100">
+                            {{ number_format($amt, 0, '.', ' ') }}
+                        </button>
                     @endforeach
                 </div>
-            @else
-                <div class="text-center bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-gray-500">
-                    Aucun dépôt récent
+            </div>
+
+            @if($detectedOperator !== 'UNKNOWN')
+                <div class="bg-slate-50 rounded-2xl p-4 flex items-center justify-between border border-gray-100">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-xs text-gray-400">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">Numéro détecté</p>
+                            <p class="text-[10px] font-black text-gray-800">+{{ $phonePrefix }} {{ chunk_split(ltrim(preg_replace('/\D/','',$phone), '0237225'), 2, ' ') }}</p>
+                        </div>
+                    </div>
+                    <span class="text-[9px] font-black uppercase text-emerald-600 px-2 py-1 bg-emerald-50 rounded-md">{{ $detectedOperator }}</span>
+                    <input type="hidden" name="payment_method" value="{{ $detectedOperator }}">
                 </div>
             @endif
-        </div>
 
+            <button type="submit" class="w-full py-6 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl active:scale-95 transition">
+                Confirmer le dépôt
+            </button>
+        </div>
+    </form>
+
+    <!-- Historique Mini -->
+    @if($depots->count() > 0)
+    <div class="space-y-4">
+        <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2 italic">Dernières opérations</h3>
+        <div class="space-y-3">
+            @foreach($depots->take(3) as $depot)
+                <div class="bg-white rounded-[24px] p-5 border border-gray-50 flex items-center justify-between shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+                            <i class="fas fa-arrow-down text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-gray-800 italic">{{ fmtCurrency($depot->montant) }}</p>
+                            <p class="text-[9px] font-bold text-gray-400 uppercase">{{ $depot->created_at->format('d M, H:i') }}</p>
+                        </div>
+                    </div>
+                    @php
+                        $statusClass = 'bg-gray-100 text-gray-400';
+                        if($depot->status === 'completed') $statusClass = 'bg-emerald-50 text-emerald-600';
+                        elseif(in_array($depot->status, ['failed', 'canceled', 'rejected'])) $statusClass = 'bg-red-50 text-red-600';
+                    @endphp
+                    <span class="text-[8px] font-black uppercase px-3 py-1.5 rounded-full {{ $statusClass }}">
+                        {{ $depot->status }}
+                    </span>
+                </div>
+            @endforeach
+        </div>
     </div>
+    @endif
 </div>
 
 <script>
-    document.querySelectorAll('.quick-amount').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.getElementById('amount').value = btn.dataset.amount;
-        });
-    });
+    function setAmount(amt) {
+        document.getElementById('amount').value = amt;
+    }
 </script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </x-layouts>

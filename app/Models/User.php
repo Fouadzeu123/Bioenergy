@@ -37,6 +37,7 @@ protected $fillable = [
     'withdrawal_method',
     'withdrawal_country',
     'email',
+    'lucky_spins',
     ];
 
     /**

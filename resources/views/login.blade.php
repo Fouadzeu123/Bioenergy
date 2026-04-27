@@ -1,134 +1,98 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion • BioEnergy</title>
-    @vite(["resources/css/app.css","resources/js/app.js"])
-
+    <title>BioEnergy • Connexion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            min-height: 100vh;
-        }
-        @keyframes gradient {
-            0%   { background-position: 0% 50%; }
-            50%  { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .glass {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-        .input-glow:focus {
-            box-shadow: 0 0 20px rgba(16, 194, 85, 0.6);
-            border-color: #16c255;
-        }
-        .btn-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(16, 194, 85, 0.5);
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen px-4">
+<body class="flex items-center justify-center min-h-screen px-6 overflow-hidden relative">
 
-    <div class="w-full max-w-md">
+    <!-- Background Decoration -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"></div>
+    </div>
 
-        <!-- Logo + Titre -->
-        <div class="text-center mb-10">
-            <img src="{{ asset('images/logo.png') }}" alt="BioEnergy" class="w-48 mx-auto mb-6 drop-shadow-2xl">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-2">Connexion</h1>
-            <p class="text-green-300 text-lg">Bienvenue à nouveau investisseur</p>
+    <div class="w-full max-w-sm space-y-10">
+        
+        <!-- Brand Header -->
+        <div class="text-center space-y-4">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-[32px] border border-white/5 shadow-2xl mb-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
+            </div>
+            <div class="space-y-1">
+                <h1 class="text-3xl font-bold text-white tracking-tight">BioEnergy</h1>
+                <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-widest">Accès Investisseur</p>
+            </div>
         </div>
 
-        <!-- Messages -->
-        @if(session('success'))
-            <div class="mb-6 glass text-green-300 p-5 rounded-2xl text-center font-medium border border-green-500/30 shadow-lg">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if(session('error') || $errors->any())
-            <div class="mb-6 glass text-red-300 p-5 rounded-2xl border border-red-500/30 shadow-lg">
-                <p class="font-bold mb-2">Connexion impossible</p>
-                <p class="text-sm">
-                    {{ session('error') ?? 'Vérifiez vos identifiants et réessayez.' }}
-                </p>
-                @if($errors->any())
-                    <ul class="text-xs mt-2 space-y-1">
-                        @foreach($errors->all() as $error)
-                            <li>• {{ $error }}</li>
-                        @endforeach
-                    </ul>
-                @endif
-            </div>
-        @endif
-
-        <!-- Formulaire Glassmorphism -->
-        <div class="glass rounded-3xl p-8 shadow-2xl border border-white/20">
+        <!-- Form Card -->
+        <div class="glass-card rounded-[48px] p-10 shadow-2xl space-y-8">
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
 
-                <!-- Nom d'utilisateur / Téléphone -->
-                <div>
-                    <input type="text" name="login" value="{{ old('login') }}" required autofocus
-                           class="w-full px-6 py-5 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 text-lg focus:outline-none input-glow transition"
-                           placeholder="Nom d'utilisateur ou téléphone">
+                <div class="space-y-6">
+                    <!-- Login Input -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 px-2">Identifiant</label>
+                        <input type="text" name="login" value="{{ old('login') }}" required autofocus
+                               class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-5 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
+                               placeholder="Utilisateur ou Mobile">
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 px-2">Mot de passe</label>
+                        <div class="relative">
+                            <input type="password" id="password" name="password" required
+                                   class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-5 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
+                                   placeholder="••••••••">
+                            <button type="button" onclick="togglePassword()" class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition">
+                                <i id="eyeIcon" class="fas fa-eye-slash text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Mot de passe -->
-                <div class="relative">
-                    <input type="password" name="password" required
-                           class="w-full px-6 py-5 rounded-2xl bg-white/10 border border-white/30 text-white placeholder-gray-300 text-lg focus:outline-none input-glow transition pr-14"
-                           placeholder="Mot de passe">
-                    <button type="button" onclick="togglePassword()" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white">
-                        <i id="eyeIcon" class="fas fa-eye-slash"></i>
-                    </button>
+                <!-- Remember Me -->
+                <div class="flex items-center gap-3 px-2">
+                    <input type="checkbox" name="remember" id="remember" class="w-4 h-4 rounded-lg bg-slate-900 border-white/5 text-emerald-500">
+                    <label for="remember" class="text-[11px] font-bold text-gray-400 cursor-pointer">Rester connecté</label>
                 </div>
 
-                <!-- Se souvenir + Mot de passe oublié -->
-                <div class="flex items-center justify-between text-sm">
-                    <label class="flex items-center gap-2 text-gray-300">
-                        <input type="checkbox" name="remember" class="w-5 h-5 text-emerald-500 rounded" value="{{ true }}">
-                        <span>Rester connecté</span>
-                    </label>
-                </div>
-
-                <!-- Bouton Connexion -->
-                <button type="submit"
-                        class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-extrabold text-xl py-6 rounded-2xl shadow-2xl btn-hover transition transform">
+                <button type="submit" class="w-full py-6 bg-emerald-600 text-white text-[12px] font-bold rounded-2xl shadow-xl active:scale-95 transition shadow-emerald-500/20">
                     Se connecter
                 </button>
-
-                <!-- Lien Inscription -->
-                <div class="text-center pt-6 border-t border-white/20">
-                    <p class="text-gray-300 text-sm">
-                        Pas encore de compte ?
-                        <a href="{{ route('index') }}" class="text-green-400 font-bold hover:text-green-300 transition">
-                            S'inscrire gratuitement
-                        </a>
-                    </p>
-                </div>
             </form>
+
+            <div class="text-center pt-4">
+                <p class="text-[11px] font-bold text-gray-500">
+                    Nouveau membre ? 
+                    <a href="{{ route('index') }}" class="text-emerald-400 hover:text-emerald-300 transition">Créer un compte</a>
+                </p>
+            </div>
         </div>
 
-        <!-- Texte final -->
-        <div class="text-center mt-10 text-green-200 text-sm opacity-80">
-            <p>Connectez-vous et commencez à gagner tous les jours avec BioEnergy</p>
-        </div>
+        <!-- Footer Info -->
+        <p class="text-center text-[10px] font-medium text-gray-600">
+            &copy; {{ date('Y') }} BioEnergy Corporation • Sécurisé AES-256
+        </p>
     </div>
 
     <script>
         function togglePassword() {
-            const input = document.querySelector('input[name="password"]');
+            const input = document.getElementById('password');
             const icon = document.getElementById('eyeIcon');
             if (input.type === 'password') {
                 input.type = 'text';
@@ -139,6 +103,5 @@
             }
         }
     </script>
-
 </body>
 </html>

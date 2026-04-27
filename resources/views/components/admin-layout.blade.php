@@ -65,6 +65,12 @@
                     <span>Codes Bonus</span>
                 </a>
 
+                <a href="{{ route('admin.emploi.index') }}"
+                   class="sidebar-link flex items-center gap-4 py-4 px-5 rounded-xl {{ request()->routeIs('admin.emploi*') ? 'active' : '' }}">
+                    <i class="fas fa-briefcase text-xl"></i>
+                    <span>Gestion Emploi</span>
+                </a>
+
                 <div class="border-t border-gray-200 my-6"></div>
 
                 <form action="{{ route('logout') }}" method="POST" class="px-5">

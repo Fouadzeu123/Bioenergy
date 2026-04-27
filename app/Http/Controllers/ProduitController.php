@@ -64,6 +64,7 @@ class ProduitController extends Controller
         // Mise à jour VIP
         if ($user->level < $produit->level) {
             $user->level = $produit->level;
+            $user->increment('lucky_spins', 1); // +1 Tour de roue pour montée en VIP
             $user->save();
         }
         if (is_null($user->vip_activated_at)) {
@@ -96,12 +97,35 @@ class ProduitController extends Controller
             'description' => "Investissement {$produit->name} : " . fmtCurrency($amount),
         ]);
 
-        // Bonus parrainage (premier achat du produit)
+        // Bonus parrainage (premier achat du produit spécifique)
         if ($userPurchases === 0) {
             $this->attribuerBonusParrainage($user, $amount, $produit->name);
         }
 
-        return back()->with('success', 'Investissement effectué avec succès !');
+        // Bonus de bienvenue (après le tout premier achat global)
+        $totalOrders = $user->orders()->count();
+        if ($totalOrders === 1) {
+            $bonusAmount = 500; // Montant du bonus
+            $user->increment('account_balance', $bonusAmount);
+            $user->increment('lucky_spins', 1); // +1 Tour de roue pour le 1er achat
+
+            Transaction::create([
+                'user_id'     => $user->id,
+                'type'        => 'bonus',
+                'montant'     => $bonusAmount,
+                'status'      => 'completed',
+                'reference'   => 'WELCOME-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                'description' => 'Bonus de bienvenue offert après votre premier investissement',
+            ]);
+
+            Notification::create([
+                'user_id' => $user->id,
+                'type'    => 'bonus',
+                'content' => "Félicitations ! Vous avez reçu un bonus de " . fmtCurrency($bonusAmount) . " et 1 tour de roue gratuit après votre premier investissement.",
+            ]);
+        }
+
+        return back()->with('success', 'Investissement effectué avec succès !' . ($totalOrders === 1 ? ' Vous avez reçu un bonus de bienvenue et un tour de roue !' : ''));
     }
 
     private function attribuerBonusParrainage(User $filleul, float $amount, string $productName): void
@@ -115,6 +139,11 @@ class ProduitController extends Controller
 
             if ($bonusAmount > 0) {
                 $parrain->increment('account_balance', $bonusAmount);
+                
+                // +1 Tour de roue pour le parrain de niveau 1 lors du 1er achat du filleul
+                if ($level === 1) {
+                    $parrain->increment('lucky_spins', 1);
+                }
 
                 Transaction::create([
                     'user_id'     => $parrain->id,
@@ -129,7 +158,7 @@ class ProduitController extends Controller
                 Notification::create([
                     'user_id' => $parrain->id,
                     'type'    => 'bonus',
-                    'content' => "Bonus de parrainage reçu : +" . fmtCurrency($bonusAmount, $parrain->currency),
+                    'content' => "Bonus de parrainage reçu : +" . fmtCurrency($bonusAmount, $parrain->currency) . ($level === 1 ? " + 1 Tour de roue gratuit !" : ""),
                 ]);
             }
 

@@ -1,114 +1,95 @@
-<x-layouts :title="'Contact & Support'" :level="'Public'">
+<x-layouts :title="'Assistance'">
+<div class="max-w-xl mx-auto pt-6 px-4 space-y-10 pb-20">
 
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900">
+    <!-- Header Support Sleeker -->
+    <div class="relative overflow-hidden rounded-[40px] bg-slate-900 p-10 text-white shadow-2xl">
+        <div class="relative z-10 text-center">
+            <div class="w-16 h-16 bg-emerald-500/20 rounded-3xl flex items-center justify-center mx-auto mb-6 backdrop-blur-md border border-white/10">
+                <i class="fas fa-headset text-2xl text-emerald-400"></i>
+            </div>
+            <h1 class="text-2xl font-bold">Assistance Client</h1>
+            <p class="text-[10px] font-semibold text-gray-400 mt-2">Réponse moyenne en moins de 15min</p>
+        </div>
+        <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
 
-    <!-- Hero premium -->
-    <div class="relative h-96 overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-10 text-center text-white">
-            <h1 class="text-6xl md:text-8xl font-extrabold mb-4 tracking-tight">
-                Besoin d’aide ?
-            </h1>
-            <p class="text-2xl md:text-3xl opacity-90">Notre équipe est là pour vous 24/7</p>
+    <!-- Social Hub Sleeker -->
+    <div class="space-y-4">
+        <h3 class="text-[10px] font-bold text-gray-400 px-2">Canaux Officiels</h3>
+        <div class="grid grid-cols-2 gap-4">
+            <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank" 
+               class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50 flex flex-col items-center text-center hover:bg-slate-50 transition active:scale-95">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
+                    <i class="fab fa-telegram-plane text-xl"></i>
+                </div>
+                <p class="text-[10px] font-bold text-gray-800">Telegram</p>
+                <p class="text-[9px] font-medium text-gray-400 mt-1">Communauté</p>
+            </a>
+            <a href="https://chat.whatsapp.com/JHIsnbvCzw43KssWzSJ1Qr?mode=gi_t" target="_blank"
+               class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50 flex flex-col items-center text-center hover:bg-slate-50 transition active:scale-95">
+                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mb-4">
+                    <i class="fab fa-whatsapp text-xl"></i>
+                </div>
+                <p class="text-[10px] font-bold text-gray-800">WhatsApp</p>
+                <p class="text-[9px] font-medium text-gray-400 mt-1">Canal Info</p>
+            </a>
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 py-16 space-y-16">
-
-        <!-- Groupes officiels -->
-        <div class="text-center">
-            <h2 class="text-4xl font-extrabold text-white mb-12">Rejoignez nos communautés officielles</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank"
-                   class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-3xl p-12 text-white shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
-                    <i class="fab fa-telegram-plane text-8xl mb-6"></i>
-                    <h3 class="text-3xl font-extrabold mb-3">Groupe Telegram</h3>
-                    <p class="text-lg opacity-90">Annonces, support rapide et échanges communautaires</p>
-                    <span class="inline-block mt-6 bg-white/20 px-8 py-4 rounded-full font-bold text-xl">
-                        Rejoindre maintenant
-                    </span>
-                </a>
-
-                <a href="https://chat.whatsapp.com/JHIsnbvCzw43KssWzSJ1Qr?mode=gi_t" target="_blank"
-                   class="bg-gradient-to-br from-green-600 to-emerald-700 rounded-3xl p-12 text-white shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
-                    <i class="fab fa-whatsapp text-8xl mb-6"></i>
-                    <h3 class="text-3xl font-extrabold mb-3">Groupe WhatsApp</h3>
-                    <p class="text-lg opacity-90">Support instantané et actualités en temps réel</p>
-                    <span class="inline-block mt-6 bg-white/20 px-8 py-4 rounded-full font-bold text-xl">
-                        Rejoindre maintenant
-                    </span>
+    <!-- Direct Support Sleeker -->
+    <div class="space-y-4">
+        <h3 class="text-[10px] font-bold text-gray-400 px-2">Assistance Directe</h3>
+        
+        <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 space-y-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center">
+                        <i class="fas fa-user-tie text-xs text-gray-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-gray-800">Service Client</p>
+                        <p class="text-[9px] font-medium text-gray-400">Support Général & Aide</p>
+                    </div>
+                </div>
+                <a href="https://wa.me/2376686812801" target="_blank" class="bg-slate-900 text-white text-[10px] font-bold px-4 py-2 rounded-xl active:scale-95 transition">
+                    Contact 1
                 </a>
             </div>
-        </div>
 
-        <!-- Support WhatsApp direct -->
-        <div>
-            <h2 class="text-5xl font-extrabold text-white text-center mb-16">Service Client WhatsApp</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                <!-- Service Client Général -->
-                <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-10 text-center shadow-2xl hover:shadow-3xl transition-all">
-                    <div class="w-28 h-28 mx-auto bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white text-5xl font-bold mb-6 shadow-2xl">
-                        SC
+            <div class="flex items-center justify-between pt-2">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center">
+                        <i class="fas fa-receipt text-xs text-gray-400"></i>
                     </div>
-                    <h3 class="text-3xl font-extrabold text-white mb-4">Service Client</h3>
-                    <p class="text-green-200 text-lg mb-8">Questions générales, suivi de compte, aide</p>
-                    <p class="text-sm text-gray-300 mb-4">Lun–Sam • 08:00 – 18:00</p>
-                    <a href="https://wa.me/2376686812801" target="_blank"
-                       class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xl px-10 py-6 rounded-2xl shadow-xl transform hover:scale-110 transition">
-                        <i class="fab fa-whatsapp text-3xl"></i>
-                        Service 1
-                    </a>
-                </div>
-
-                <!-- Paiements & Facturation -->
-                <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-10 text-center shadow-2xl hover:shadow-3xl transition-all">
-                    <div class="w-28 h-28 mx-auto bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-5xl font-bold mb-6 shadow-2xl">
-                        PA
+                    <div>
+                        <p class="text-xs font-bold text-gray-800">Service RH & Finance</p>
+                        <p class="text-[9px] font-medium text-gray-400">Questions de recrutement</p>
                     </div>
-                    <h3 class="text-3xl font-extrabold text-white mb-4">Paiements</h3>
-                    <p class="text-blue-200 text-lg mb-8">Dépôts, retraits, facturation, vérifications</p>
-                    <p class="text-sm text-gray-300 mb-4">Lun–Ven • 09:00 – 17:00</p>
-                    <a href="https://wa.me/237689910071" target="_blank"
-                       class="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xl px-10 py-6 rounded-2xl shadow-xl transform hover:scale-110 transition">
-                        <i class="fab fa-whatsapp text-3xl"></i>
-                        Service RH
-                    </a>
                 </div>
+                <a href="https://wa.me/237689910071" target="_blank" class="bg-emerald-600 text-white text-[10px] font-bold px-4 py-2 rounded-xl active:scale-95 transition">
+                    Contact 2
+                </a>
             </div>
         </div>
+    </div>
 
-        <!-- Infos complémentaires -->
-        <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-12 text-center">
-            <h3 class="text-3xl font-extrabold text-white mb-8">Autres moyens de contact</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-white">
-                <div>
-                    <i class="fas fa-envelope text-5xl mb-4 text-yellow-400"></i>
-                    <p class="font-bold text-xl">Email</p>
-                    <p class="text-lg">contact@bioenergy01.com</p>
-                </div>
-                <div>
-                    <i class="fas fa-map-marker-alt text-5xl mb-4 text-red-400"></i>
-                    <p class="font-bold text-xl">Siège social</p>
-                    <p class="text-lg">Delaware</p>
-                </div>
-                <div>
-                    <i class="fas fa-clock text-5xl mb-4 text-blue-400"></i>
-                    <p class="font-bold text-xl">Support 24/7</p>
-                    <p class="text-lg">WhatsApp & Telegram</p>
-                </div>
+    <!-- Meta Info Sleeker -->
+    <div class="bg-slate-50 rounded-[32px] p-8 border border-gray-100">
+        <div class="grid grid-cols-2 gap-8">
+            <div class="space-y-1">
+                <p class="text-[9px] font-bold text-gray-400">Email</p>
+                <p class="text-[10px] font-bold text-gray-800">contact@bioenergy01.com</p>
+            </div>
+            <div class="space-y-1 text-right">
+                <p class="text-[9px] font-bold text-gray-400">Siège Social</p>
+                <p class="text-[10px] font-bold text-gray-800">Delaware, USA</p>
             </div>
         </div>
-
-        <!-- Message final -->
-        <div class="text-center">
-            <p class="text-3xl font-bold text-white mb-6">
-                Votre satisfaction est notre priorité
-            </p>
-            <p class="text-xl text-green-300">
-                L’équipe BioEnergy
+        <div class="mt-8 pt-8 border-t border-gray-200 text-center">
+            <p class="text-[9px] font-medium text-gray-300 leading-relaxed">
+                BioEnergy • Tech for good • Sustainable investment
             </p>
         </div>
     </div>
 </div>
-
 </x-layouts>

@@ -21,134 +21,108 @@
     $autres = $transactions->whereNotIn('type', ['depot', 'retrait']);
 @endphp
 
-<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 space-y-8">
+<div class="max-w-xl mx-auto pt-6 px-4 space-y-8 pb-20">
 
-    <!-- En-tête -->
-    <div class="bg-gradient-to-r from-blue-700 to-blue-900 rounded-3xl shadow-xl p-6 sm:p-8 text-white relative overflow-hidden">
-        <div class="relative z-10">
-            <h1 class="text-2xl sm:text-4xl font-extrabold mb-2">Historique des transactions</h1>
-            <p class="text-blue-100 text-sm sm:text-base opacity-90 max-w-lg">Consultez tous vos mouvements financiers.</p>
-        </div>
-        <i class="fas fa-file-invoice-dollar absolute -right-6 -bottom-6 text-8xl text-white opacity-20"></i>
+    <!-- Header Historique Sleeker -->
+    <div class="text-center space-y-1">
+        <h1 class="text-2xl font-bold text-gray-800">Historique</h1>
+        <p class="text-[11px] font-semibold text-gray-400">Flux financiers sécurisés</p>
     </div>
 
-    <!-- Navigation Filtres / Tabs -->
-    <div class="flex gap-2 p-1.5 bg-gray-100 rounded-2xl overflow-x-auto whitespace-nowrap shadow-inner w-full md:w-max">
-        <button onclick="showTab('depots')" id="btn-depots" class="tab-btn py-3 px-6 rounded-xl font-bold text-sm transition-all bg-white shadow-sm text-blue-600 flex items-center gap-2">
-            Dépôts <span class="bg-gray-100 text-gray-600 py-1 px-2.5 rounded-full text-xs">{{ $depots->count() }}</span>
+    <!-- Navigation Filtres Sleeker -->
+    <div class="flex gap-2 p-1.5 bg-gray-100 rounded-[20px] backdrop-blur-md">
+        <button onclick="showTab('depots')" id="btn-depots" class="tab-btn flex-1 py-3 rounded-[15px] font-bold text-[10px] transition-all bg-white shadow-sm text-emerald-600">
+            Dépôts
         </button>
-        <button onclick="showTab('retraits')" id="btn-retraits" class="tab-btn py-3 px-6 rounded-xl font-bold text-sm transition-all text-gray-500 hover:bg-white/50 flex items-center gap-2">
-            Retraits <span class="bg-gray-200 text-gray-600 py-1 px-2.5 rounded-full text-xs">{{ $retraits->count() }}</span>
+        <button onclick="showTab('retraits')" id="btn-retraits" class="tab-btn flex-1 py-3 rounded-[15px] font-bold text-[10px] transition-all text-gray-400">
+            Retraits
         </button>
-        <button onclick="showTab('autres')" id="btn-autres" class="tab-btn py-3 px-6 rounded-xl font-bold text-sm transition-all text-gray-500 hover:bg-white/50 flex items-center gap-2">
-            Autres <span class="bg-gray-200 text-gray-600 py-1 px-2.5 rounded-full text-xs">{{ $autres->count() }}</span>
+        <button onclick="showTab('autres')" id="btn-autres" class="tab-btn flex-1 py-3 rounded-[15px] font-bold text-[10px] transition-all text-gray-400">
+            Revenus
         </button>
     </div>
 
-    <!-- Conteneur des listes -->
-    <div class="relative min-h-[400px]">
-        
+    <!-- Conteneur des listes Sleeker -->
+    <div class="space-y-4">
         <!-- Tab Dépôts -->
-        <div id="tab-depots" class="tab-content block animate__animated animate__fadeIn">
+        <div id="tab-depots" class="tab-content space-y-3">
             @forelse($depots as $tx)
                 <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" />
             @empty
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 text-center">
-                    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
-                        <i class="fas fa-arrow-down text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-700">Aucun dépôt</h3>
-                    <p class="text-gray-500 mt-2">Vous n'avez effectué aucun dépôt pour le moment.</p>
+                <div class="text-center py-20 bg-gray-50/50 rounded-[40px] border border-dashed border-gray-100">
+                    <p class="text-[11px] font-bold text-gray-300">Aucun dépôt</p>
                 </div>
             @endforelse
         </div>
 
         <!-- Tab Retraits -->
-        <div id="tab-retraits" class="tab-content hidden animate__animated animate__fadeIn">
+        <div id="tab-retraits" class="tab-content hidden space-y-3">
             @forelse($retraits as $tx)
                 <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" />
             @empty
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 text-center">
-                    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
-                        <i class="fas fa-arrow-up text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-700">Aucun retrait</h3>
-                    <p class="text-gray-500 mt-2">Vous n'avez effectué aucun retrait pour le moment.</p>
+                <div class="text-center py-20 bg-gray-50/50 rounded-[40px] border border-dashed border-gray-100">
+                    <p class="text-[11px] font-bold text-gray-300">Aucun retrait</p>
                 </div>
             @endforelse
         </div>
 
         <!-- Tab Autres -->
-        <div id="tab-autres" class="tab-content hidden animate__animated animate__fadeIn">
+        <div id="tab-autres" class="tab-content hidden space-y-3">
             @forelse($autres as $tx)
                 <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" />
             @empty
-                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 text-center">
-                    <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
-                        <i class="fas fa-exchange-alt text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-700">Aucune autre transaction</h3>
-                    <p class="text-gray-500 mt-2">Votre historique est vide pour cette catégorie.</p>
+                <div class="text-center py-20 bg-gray-50/50 rounded-[40px] border border-dashed border-gray-100">
+                    <p class="text-[11px] font-bold text-gray-300">Aucun revenu</p>
                 </div>
             @endforelse
         </div>
     </div>
 </div>
 
-<!-- Modal transaction -->
-<div id="txModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate__animated animate__zoomIn">
-        
-        <div class="bg-gray-50 border-b border-gray-100 px-6 py-5 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                <i class="fas fa-receipt text-blue-600"></i> Détail de la transaction
-            </h3>
-            <button type="button" onclick="closeTxModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition">✕</button>
+<!-- Modal Détails TX Sleeker -->
+<div id="txModal" class="fixed inset-0 z-[110] hidden flex items-end sm:items-center justify-center bg-slate-900/80 backdrop-blur-sm p-0 sm:p-4">
+    <div class="bg-white rounded-t-[40px] sm:rounded-[40px] shadow-2xl max-w-lg w-full p-8 space-y-8 animate__animated animate__slideInUp">
+        <div class="flex justify-between items-center">
+            <h4 class="text-xl font-bold text-gray-800">Détails Transaction</h4>
+            <button onclick="closeTxModal()" class="text-gray-400 text-2xl hover:text-gray-800">×</button>
         </div>
 
-        <div class="p-6 space-y-5">
-            <!-- Header modal -->
-            <div class="text-center">
-                <p id="txModalType" class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Type</p>
-                <div class="flex items-end justify-center gap-2">
-                    <span id="txModalAmount" class="text-4xl font-black text-gray-800"></span>
-                    <span id="txModalCurrency" class="text-xl font-bold text-gray-400 mb-1"></span>
-                </div>
-                <div class="mt-3">
-                    <span id="txModalStatus" class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide"></span>
-                </div>
+        <div class="text-center space-y-2">
+            <p id="txModalType" class="text-[11px] font-bold text-gray-400"></p>
+            <div class="flex items-center justify-center gap-1">
+                <span id="txModalAmount" class="text-4xl font-bold text-gray-800 tracking-tight"></span>
+                <span id="txModalCurrency" class="text-lg font-bold text-gray-300"></span>
             </div>
-
-            <div class="bg-gray-50 rounded-2xl p-4 space-y-4">
-                <div class="flex justify-between items-center text-sm border-b border-gray-200 pb-3">
-                    <span class="text-gray-500 font-medium">Référence</span>
-                    <span id="txModalRef" class="font-bold text-gray-800 font-mono"></span>
-                </div>
-                <div class="flex justify-between items-center text-sm border-b border-gray-200 pb-3">
-                    <span class="text-gray-500 font-medium">Moyen de paiement</span>
-                    <span id="txModalMethod" class="font-bold text-gray-800 uppercase bg-white px-2 py-1 rounded border border-gray-200 shadow-sm text-[10px]"></span>
-                </div>
-                <div class="flex justify-between items-center text-sm">
-                    <span class="text-gray-500 font-medium">Date</span>
-                    <span id="txModalDate" class="font-bold text-gray-800"></span>
-                </div>
-            </div>
-
-            <div class="text-sm">
-                <p class="text-gray-500 font-medium mb-1">Motif / Description</p>
-                <p id="txModalDesc" class="text-gray-800 font-medium bg-gray-50 p-3 rounded-xl border border-gray-100"></p>
+            <div class="pt-2">
+                <span id="txModalStatus" class="text-[10px] font-bold px-4 py-1.5 rounded-full"></span>
             </div>
         </div>
 
-        <div class="bg-gray-50 p-4 border-t border-gray-100">
-            <button type="button" onclick="closeTxModal()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 transition">
-                Fermer
-            </button>
+        <div class="bg-gray-50 rounded-2xl p-6 space-y-4">
+            <div class="flex justify-between items-center px-1">
+                <p class="text-[10px] font-bold text-gray-400">Référence</p>
+                <p id="txModalRef" class="text-[11px] font-bold text-gray-800 font-mono"></p>
+            </div>
+            <div class="flex justify-between items-center px-1">
+                <p class="text-[10px] font-bold text-gray-400">Moyen</p>
+                <p id="txModalMethod" class="text-[11px] font-bold text-gray-800"></p>
+            </div>
+            <div class="flex justify-between items-center px-1">
+                <p class="text-[10px] font-bold text-gray-400">Date</p>
+                <p id="txModalDate" class="text-[11px] font-bold text-gray-800"></p>
+            </div>
         </div>
+
+        <div class="px-2">
+            <p class="text-[10px] font-bold text-gray-400 mb-2">Description</p>
+            <p id="txModalDesc" class="text-[12px] font-medium text-gray-600 leading-relaxed italic"></p>
+        </div>
+
+        <button onclick="closeTxModal()" class="w-full py-5 bg-slate-900 text-white text-[11px] font-bold rounded-2xl active:scale-95 transition">
+            Fermer
+        </button>
     </div>
 </div>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
 <script>
     const CURRENCY = "{{ $currency }}";
@@ -156,51 +130,38 @@
     function showTab(id) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('bg-white', 'shadow-sm', 'text-blue-600');
-            btn.classList.add('text-gray-500', 'hover:bg-white/50');
+            btn.classList.remove('bg-white', 'shadow-sm', 'text-emerald-600');
+            btn.classList.add('text-gray-400');
         });
 
         document.getElementById('tab-' + id).classList.remove('hidden');
         const activeBtn = document.getElementById('btn-' + id);
-        activeBtn.classList.remove('text-gray-500', 'hover:bg-white/50');
-        activeBtn.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
+        activeBtn.classList.remove('text-gray-400');
+        activeBtn.classList.add('bg-white', 'shadow-sm', 'text-emerald-600');
     }
 
     function openTxModal(tx) {
-        if(typeof tx === 'string') {
-            tx = JSON.parse(tx);
-        }
-        
-        const modal = document.getElementById('txModal');
+        if(typeof tx === 'string') tx = JSON.parse(tx);
         
         document.getElementById('txModalRef').textContent = tx.reference || '—';
         document.getElementById('txModalType').textContent = (tx.type || '—').replace(/_/g, ' ');
-        
-        const montant = tx.montant || 0;
-        document.getElementById('txModalAmount').textContent = Number(montant).toLocaleString('fr-FR');
+        document.getElementById('txModalAmount').textContent = Number(tx.montant || 0).toLocaleString('fr-FR');
         document.getElementById('txModalCurrency').textContent = CURRENCY;
-        
-        document.getElementById('txModalMethod').textContent = tx.method ? tx.method : 'Mobile Money';
+        document.getElementById('txModalMethod').textContent = tx.method || 'Momo/Om';
         
         const statusEl = document.getElementById('txModalStatus');
-        let statusText = '—', statusClass = 'bg-gray-200 text-gray-800';
-        if(tx.status === 'completed') {
-            statusText = 'Validé';
-            statusClass = 'bg-green-100 text-green-700';
-        } else if(tx.status === 'pending') {
-            statusText = 'En attente';
-            statusClass = 'bg-yellow-100 text-yellow-700';
-        } else if(tx.status === 'rejected' || tx.status === 'failed') {
-            statusText = 'Rejeté / Échoué';
-            statusClass = 'bg-red-100 text-red-700';
-        }
-        statusEl.textContent = statusText;
-        statusEl.className = `inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase ${statusClass}`;
+        let statusClass = 'bg-gray-100 text-gray-400';
+        if(tx.status === 'completed') statusClass = 'bg-emerald-50 text-emerald-600';
+        else if(tx.status === 'pending') statusClass = 'bg-amber-50 text-amber-600';
+        else if(tx.status === 'rejected' || tx.status === 'failed') statusClass = 'bg-red-50 text-red-600';
+        
+        statusEl.textContent = tx.status || 'Inconnu';
+        statusEl.className = `text-[10px] font-bold px-4 py-1.5 rounded-full ${statusClass}`;
         
         document.getElementById('txModalDate').textContent = tx.created_at ? new Date(tx.created_at).toLocaleString('fr-FR') : '—';
         document.getElementById('txModalDesc').textContent = tx.description || 'Aucune description';
 
-        modal.classList.remove('hidden');
+        document.getElementById('txModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
 
@@ -208,9 +169,5 @@
         document.getElementById('txModal').classList.add('hidden');
         document.body.style.overflow = '';
     }
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeTxModal();
-    });
 </script>
 </x-layouts>

@@ -23,7 +23,7 @@
                     <p class="text-sm opacity-90">Validées aujourd'hui</p>
                 </div>
                 <div class="bg-white/20 backdrop-blur rounded-2xl p-5 text-center">
-                    <p class="text-xl font-bold">{{ number_format($stats['total_amount_usd'], 0, ',', ' ') }}</p>
+                    <p class="text-xl font-bold">{{ number_format($stats['total_amount'], 0, ',', ' ') }}</p>
                     <p class="text-sm opacity-90">Volume total</p>
                 </div>
             </div>

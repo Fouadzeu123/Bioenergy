@@ -171,11 +171,11 @@ class NotchPayWebhookController extends Controller
         if ($updated) {
             // ── Créditer l'utilisateur (dépôts seulement) ─────────────────────────
             if ($transaction->type === 'depot') {
-                $montantUSD = $this->notchPay->xafToUsd($amountXAF > 0 ? $amountXAF : $this->notchPay->usdToXaf($transaction->montant));
-
                 $user = User::find($transaction->user_id);
                 if ($user) {
-                    $user->increment('account_balance', $montantUSD > 0 ? $montantUSD : $transaction->montant);
+                    // NotchPay envoie le montant en unité locale (XAF/XOF). On utilise directement ce montant.
+                    $finalAmount = ($amountXAF > 0) ? $amountXAF : $transaction->montant;
+                    $user->increment('account_balance', $finalAmount);
                 }
                 Log::info('NotchPay Webhook: dépôt crédité avec succès', ['ref' => $transaction->reference]);
             }
@@ -311,7 +311,7 @@ class NotchPayWebhookController extends Controller
 
         Log::info('NotchPay Webhook: retrait échoué (remboursement effetué)', [
             'ref' => $transaction->reference,
-            'montant_usd' => $transaction->montant
+            'montant' => $transaction->montant
         ]);
     }
 }

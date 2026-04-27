@@ -97,17 +97,30 @@ class AdminUserController extends Controller
             'phone'           => 'nullable|string|max:20',
             'email'           => 'required|email|max:255',
             'account_balance' => 'required|numeric|min:0',
+            'lucky_spins'     => 'required|integer|min:0',
             'role'            => 'required|in:user,admin',
-            'level'           => 'required|integer|min:1|max:10',
+            'level'           => 'required|integer|min:0|max:10',
         ]);
 
         $user = User::findOrFail($id);
         $user->update($request->only([
-            'username', 'phone', 'email', 'account_balance', 'role', 'level'
+            'username', 'phone', 'email', 'account_balance', 'lucky_spins', 'role', 'level'
         ]));
 
         return redirect()->route('admin.users.index')
                          ->with('success', 'Utilisateur mis à jour avec succès');
+    }
+
+    public function addLuckySpins(Request $request, $id)
+    {
+        $request->validate([
+            'spins' => 'required|integer|min:1',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->increment('lucky_spins', $request->spins);
+
+        return back()->with('success', "{$request->spins} tours de roue ajoutés à {$user->username}");
     }
 
     public function addBonus(Request $request, $id)

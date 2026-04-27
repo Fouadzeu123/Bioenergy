@@ -10,7 +10,12 @@ class BonusController extends Controller
 {
     public function index()
     {
-        return view('bonus');
+        $historique = Transaction::where('user_id', Auth::id())
+            ->where('type', 'cadeau')
+            ->orderByDesc('created_at')
+            ->get();
+            
+        return view('bonus', compact('historique'));
     }
 
 public function reclamer(Request $request)

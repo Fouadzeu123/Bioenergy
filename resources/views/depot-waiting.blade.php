@@ -1,4 +1,4 @@
-<x-layouts :title="'Validation du Dépôt - BioEnergy'" :level="Auth::user()->level">
+<x-layouts :title="'Validation du Dépôt'" :level="Auth::user()->level">
     <div class="min-h-screen bg-[#fcfdfe] flex flex-col items-center justify-center p-6 relative overflow-hidden">
         <!-- Background Decorations -->
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-50 rounded-full blur-[100px] opacity-60"></div>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
 
-                <h2 class="text-2xl font-black text-slate-800 mb-2">Validation Requise</h2>
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Validation Requise</h2>
                 <p class="text-slate-500 font-medium mb-8 leading-relaxed">
                     Un message de confirmation a été envoyé sur votre téléphone.<br>
                     <span class="text-emerald-600 font-bold">Veuillez valider l'opération via votre PIN.</span>
@@ -28,15 +28,15 @@
                 <div class="bg-slate-50/50 backdrop-blur-sm rounded-3xl p-6 mb-8 border border-slate-100 text-left space-y-4">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 mt-1">Montant à valider</p>
+                            <p class="text-[10px] font-bold text-slate-400 mb-1">Montant à valider</p>
                             <div class="flex items-baseline gap-1">
-                                <span class="text-2xl font-black text-slate-900">{{ number_format($transaction->montant, 2) }}</span>
+                                <span class="text-2xl font-bold text-slate-900">{{ number_format($transaction->montant, 2) }}</span>
                                 <span class="text-sm font-bold text-emerald-600">$</span>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 mt-1">Opérateur</p>
-                            <p class="text-xs font-black text-slate-700 uppercase">{{ $transaction->operator ?: 'Mobile Money' }}</p>
+                            <p class="text-[10px] font-bold text-slate-400 mb-1">Opérateur</p>
+                            <p class="text-xs font-bold text-slate-700">{{ $transaction->operator ?: 'Mobile Money' }}</p>
                         </div>
                     </div>
                 </div>
@@ -47,8 +47,8 @@
                         <div class="absolute top-0 left-0 h-full bg-emerald-500 rounded-full transition-all duration-300" id="progressBar" style="width: 5%"></div>
                     </div>
                     <div class="flex justify-between items-center px-1">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Initialisation</span>
-                        <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest animate-pulse" id="statusText">En attente de validation...</span>
+                        <span class="text-[10px] font-bold text-slate-400">Initialisation</span>
+                        <span class="text-[10px] font-bold text-emerald-600 animate-pulse" id="statusText">En attente de validation...</span>
                     </div>
                 </div>
 

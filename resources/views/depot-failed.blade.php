@@ -1,4 +1,4 @@
-<x-layouts :title="'Dépôt Échoué - BioEnergy'" :level="Auth::user()->level">
+<x-layouts :title="'Dépôt Échoué'" :level="Auth::user()->level">
     <div class="min-h-screen bg-[#fffafa] flex flex-col items-center justify-center p-6 relative overflow-hidden">
         <!-- Background Decorations -->
         <div class="absolute top-[-10%] right-[-10%] w-[45%] h-[45%] bg-rose-50 rounded-full blur-[100px] opacity-70"></div>
@@ -16,7 +16,7 @@
                     </div>
                 </div>
 
-                <h2 class="text-3xl font-black text-slate-800 mb-2">Paiement Échoué</h2>
+                <h2 class="text-3xl font-bold text-slate-800 mb-2">Paiement Échoué</h2>
                 <p class="text-slate-500 font-medium mb-8 leading-relaxed">
                     Nous n'avons pas pu finaliser votre transaction. Ne vous inquiétez pas, aucun montant n'a été débité de votre compte.
                 </p>
@@ -25,18 +25,18 @@
                 <div class="bg-rose-50/50 backdrop-blur-sm rounded-3xl p-6 mb-8 border border-rose-100/50 text-left space-y-4">
                     <div class="flex justify-between items-start border-b border-rose-100 pb-4">
                         <div>
-                            <p class="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-1 mt-1">Status de la Tentative</p>
-                            <p class="text-sm font-black text-rose-600 uppercase">{{ $transaction->status }}</p>
+                            <p class="text-[10px] font-bold text-rose-400 mb-1 mt-1">Status de la Tentative</p>
+                            <p class="text-sm font-bold text-rose-600 uppercase">{{ $transaction->status }}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 mt-1">Montant Visé</p>
-                            <p class="text-sm font-black text-slate-700">{{ number_format($transaction->montant, 2) }} $</p>
+                            <p class="text-[10px] font-bold text-slate-400 mb-1 mt-1">Montant Visé</p>
+                            <p class="text-sm font-bold text-slate-700">{{ number_format($transaction->montant, 2) }} $</p>
                         </div>
                     </div>
 
                     <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">ID Transaction</p>
-                        <p class="text-[11px] font-mono font-bold text-slate-500 break-all bg-white/50 p-2 rounded-xl border border-slate-100 leading-none">
+                        <p class="text-[10px] font-bold text-slate-400 mb-1">ID Transaction</p>
+                        <p class="text-[10px] font-mono font-bold text-slate-500 break-all bg-white/50 p-2 rounded-xl border border-slate-100 leading-none">
                             {{ $transaction->reference }}
                         </p>
                     </div>
@@ -68,10 +68,9 @@
             <!-- Support -->
             <p class="mt-8 text-center text-slate-400 text-[11px] font-medium leading-relaxed">
                 Besoin d'aide ? Contactez notre support via <br>
-                <a href="#" class="text-rose-400 font-bold hover:underline">Telegram</a> ou <a href="#" class="text-rose-400 font-bold hover:underline">WhatsApp</a>
+                <a href="{{ route('contact') }}" class="text-rose-400 font-bold hover:underline">Support Technique</a>
             </p>
         </div>
     </div>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </x-layouts>

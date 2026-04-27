@@ -141,141 +141,123 @@
     </div>
 
     <!-- CONTENU PRINCIPAL -->
-    <div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 pt-6 pb-24 px-4">
+    <div class="max-w-xl mx-auto pt-6 px-4 space-y-8">
 
-        <!-- Bienvenue -->
-        <div class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent">
-                Bonjour, {{ Auth::user()->username ?? 'Cher membre' }} !
-            </h1>
-            <p class="text-xl text-gray-700 mt-3">Construisons un avenir plus vert ensemble</p>
-        </div>
-
-        <!-- Carousel -->
-        <div class="max-w-2xl mx-auto mb-12">
-            <div class="relative rounded-3xl overflow-hidden shadow-2xl">
-                <div id="carousel" class="flex transition-transform duration-1000 ease-in-out">
-                    <img src="{{ asset('images/slide1.jpg') }}" class="w-full h-64 md:h-96 object-cover flex-shrink-0">
-                    <img src="{{ asset('images/slide2.jpg') }}" class="w-full h-64 md:h-96 object-cover flex-shrink-0">
-                    <img src="{{ asset('images/slide3.jpg') }}" class="w-full h-64 md:h-96 object-cover flex-shrink-0">
-                    <img src="{{ asset('images/slide1.jpg') }}" class="w-full h-64 md:h-96 object-cover flex-shrink-0">
+        <!-- Hero Section Premium -->
+        <div class="relative overflow-hidden rounded-3xl bg-emerald-600 p-6 text-white shadow-xl">
+            <div class="relative z-10">
+                <h1 class="text-sm font-medium opacity-90">Bonjour,</h1>
+                <p class="text-2xl font-bold">{{ Auth::user()->username }}</p>
+                
+                <div class="mt-6 grid grid-cols-2 gap-4">
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                        <p class="text-[11px] font-medium opacity-70 mb-1">Solde disponible</p>
+                        <p class="text-xl font-bold">{{ fmtCurrency(Auth::user()->account_balance) }}</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                        <p class="text-[11px] font-medium opacity-70 mb-1">Gains du jour</p>
+                        <p class="text-xl font-bold text-emerald-300">+{{ fmtCurrency(0) }}</p>
+                    </div>
                 </div>
             </div>
+            <!-- Décoration -->
+            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
         </div>
 
-      <!-- GRILLE D'ICÔNES – CORRIGÉE : PLUS JAMAIS DE DÉBORDEMENT -->
-<div class="max-w-5xl mx-auto grid grid-cols-3 md:grid-cols-4 gap-5 md:gap-8 mb-12 px-2">
-
-    <a href="{{ route('presentation') }}" class="group">
-        <div class="bg-white rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex flex-col justify-between h-full">
-            <i class="fas fa-info-circle text-blue-600 text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-blue-700 text-xs md:text-base leading-tight">Présentation</p>
-        </div>
-    </a>
-
-    <a href="{{ route('team') }}" class="group">
-        <div class="bg-white rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex flex-col justify-between h-full">
-            <i class="fas fa-users text-green-600 text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-green-700 text-xs md:text-base leading-tight">Équipes</p>
-        </div>
-    </a>
-
-    <a href="{{ route('share') }}" class="group">
-        <div class="bg-white rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex flex-col justify-between h-full">
-            <i class="fas fa-link text-blue-600 text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-blue-700 text-xs md:text-base leading-tight">Mon lien</p>
-        </div>
-    </a>
-
-    <a href="{{ route('deposit') }}" class="group">
-        <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 text-white flex flex-col justify-between h-full">
-            <i class="fas fa-wallet text-white text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-white text-sm md:text-lg leading-tight">Dépôt</p>
-        </div>
-    </a>
-
-    <a href="{{ route('retrait') }}" class="group">
-        <div class="bg-white rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex flex-col justify-between h-full">
-            <i class="fas fa-hand-holding-usd text-blue-600 text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-blue-700 text-xs md:text-base leading-tight">Retrait</p>
-        </div>
-    </a>
-
-    <a href="{{ route('fond.index') }}" class="group">
-        <div class="bg-white rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex flex-col justify-between h-full">
-            <i class="fas fa-leaf text-green-600 text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-green-700 text-xs md:text-base leading-tight break-words">Fond préservation</p>
-        </div>
-    </a>
-
-    <a href="{{ route('bonus.code') }}" class="group">
-        <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 text-white flex flex-col justify-between h-full">
-            <i class="fas fa-gift text-white text-4xl md:text-5xl mb-3 group-hover:rotate-12 transition"></i>
-            <p class="font-bold text-white text-sm md:text-lg leading-tight">Bonus</p>
-        </div>
-    </a>
-
-    <a href="{{ route('contact') }}" class="group">
-        <div class="bg-white rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 flex flex-col justify-between h-full">
-            <i class="fas fa-phone text-pink-600 text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-pink-700 text-xs md:text-base leading-tight">Contact</p>
-        </div>
-    </a>
-
-    <a href="{{ route('emploi') }}" class="group">
-        <div class="bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl p-5 md:p-7 text-center shadow-xl hover:shadow-2xl hover:-translate-y-3 transition-all duration-300 text-white flex flex-col justify-between h-full">
-            <i class="fas fa-briefcase text-white text-4xl md:text-5xl mb-3 group-hover:scale-110 transition"></i>
-            <p class="font-bold text-white text-xs md:text-base leading-tight">Emploi</p>
-        </div>
-    </a>
-</div>
-
-        <!-- Impact & Avantages -->
-        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 mb-12">
-            <div class="bg-gradient-to-br from-green-600 to-emerald-700 rounded-3xl p-8 text-white shadow-2xl">
-                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <span class="text-4xl">Lightning</span> Notre impact
-                </h3>
-                <ul class="space-y-4 text-lg">
-                    <li>+12 000 GWh produits</li>
-                    <li>300 arbres plantés</li>
-                    <li>210 tonnes de CO₂ évitées</li>
-                </ul>
+        <!-- Carousel Sleeker -->
+        <div class="relative rounded-2xl overflow-hidden shadow-lg aspect-[16/7]">
+            <div id="carousel" class="flex transition-transform duration-700 ease-in-out h-full">
+                <img src="{{ asset('images/slide1.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
+                <img src="{{ asset('images/slide2.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
+                <img src="{{ asset('images/slide3.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
             </div>
-
-            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white shadow-2xl">
-                <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
-                    <span class="text-4xl">Gift</span> Vos avantages
-                </h3>
-                <ul class="space-y-4 text-lg">
-                    <li>Bonus de bienvenue 6 000 {{ Auth::user()->currency }}</li>
-                    <li>Des récompenses exclusives allant de 1 000 à 1 000 000 {{ Auth::user()->currency }} pour nos investisseurs</li>
-                    <li>Parrainage 3 niveaux & Multi rémunération</li>
-                    <li>Retrait instantané</li>
-                    <li>Un suivi par nos experts financier</li>
-                </ul>
+            <!-- Indicateurs -->
+            <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                <div class="w-3 h-1.5 rounded-full bg-white"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
             </div>
         </div>
 
-        <!-- VIDÉO ÉNERGIE BIO – 100% FONCTIONNELLE -->
-        <div class="max-w-5xl mx-auto">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-center text-gray-800 mb-8">
-                L'énergie biomasse expliquée
-            </h2>
+        <!-- Grille d'actions rapide - Version 2025 Mobile First -->
+        <div class="grid grid-cols-4 gap-3">
+            <a href="{{ route('deposit') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-emerald-600 border border-gray-50">
+                    <i class="fas fa-plus-circle text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Dépôt</span>
+            </a>
+            <a href="{{ route('retrait') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-blue-600 border border-gray-50">
+                    <i class="fas fa-paper-plane text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Retrait</span>
+            </a>
+            <a href="{{ route('fond.index') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-orange-600 border border-gray-50">
+                    <i class="fas fa-leaf text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Fonds</span>
+            </a>
+            <a href="{{ route('team') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-purple-600 border border-gray-50">
+                    <i class="fas fa-users text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Équipes</span>
+            </a>
+            
+            <a href="{{ route('share') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-indigo-600 border border-gray-50">
+                    <i class="fas fa-link text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Lien</span>
+            </a>
+            <a href="{{ route('bonus.code') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-amber-500 border border-gray-50">
+                    <i class="fas fa-gift text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Bonus</span>
+            </a>
+            <a href="{{ route('emploi') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-emerald-600 border border-gray-50">
+                    <i class="fas fa-briefcase text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Emploi</span>
+            </a>
+            <a href="{{ route('presentation') }}" class="flex flex-col items-center gap-2">
+                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-gray-600 border border-gray-50">
+                    <i class="fas fa-info-circle text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-gray-600">Infos</span>
+            </a>
+        </div>
 
-            <div class="relative w-full overflow-hidden rounded-3xl shadow-2xl bg-black" style="padding-top: 56.25%;">
-                <iframe class="absolute inset-0 w-full h-full"
-                        src="https://www.youtube.com/embed/yHWcddUZ35s"
-                        title="Biomass 101 - What is Biomass Energy?"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                </iframe>
+        <!-- Section Impact & Vidéo Sleeker -->
+        <div class="space-y-6 pb-10">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+                <h3 class="text-xs font-bold text-gray-400 mb-4">Notre impact</h3>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-xl font-bold text-emerald-600">+12k</p>
+                        <p class="text-[10px] font-medium text-gray-400">GWh produits</p>
+                    </div>
+                    <div>
+                        <p class="text-xl font-bold text-emerald-600">210t</p>
+                        <p class="text-[10px] font-medium text-gray-400">CO₂ évitées</p>
+                    </div>
+                </div>
             </div>
 
-            <p class="text-center text-gray-600 text-lg mt-6 max-w-3xl mx-auto leading-relaxed">
-                La biomasse transforme les déchets organiques en énergie propre. Une solution simple et durable pour un avenir vert.
-            </p>
+            <div class="relative rounded-3xl overflow-hidden shadow-lg bg-black group">
+                <div class="aspect-video relative">
+                    <iframe class="absolute inset-0 w-full h-full opacity-80"
+                            src="https://www.youtube.com/embed/yHWcddUZ35s?controls=0"
+                            title="BioEnergy" frameborder="0"></iframe>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
+                        <p class="text-white font-bold text-sm">Comprendre la biomasse en 2 minutes</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -333,7 +315,7 @@ function showNotif() {
             const prefixes = ['01','05','07'];
             p = prefixes[Math.floor(Math.random() * prefixes.length)];
         }
-        
+
         const mid = Math.floor(Math.random() * 90) + 10;
         const last = Math.floor(Math.random() * 900) + 100;
         return `${country}${p}**${mid}**${last}`;

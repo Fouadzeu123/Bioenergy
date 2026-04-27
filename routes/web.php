@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\WithdrawalInfoController;
 use App\Http\Controllers\AdminTransactionController;
 use App\Http\Controllers\EmploiController;
+use App\Http\Controllers\LuckyWheelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,6 +124,10 @@ Route::post('/bonus/reclamer', [BonusController::class, 'reclamer'])->name('bonu
 
 Route::get('/emploi', [EmploiController::class, 'index'])->name('emploi');
 
+    // Lucky Wheel
+    Route::get('/lucky-wheel', [LuckyWheelController::class, 'index'])->name('luckywheel');
+    Route::post('/lucky-wheel/spin', [LuckyWheelController::class, 'spin'])->name('luckywheel.spin');
+
 Route::prefix('admin')->middleware(['admin' => \App\Http\Middleware\IsAdmin::class])->group(function () {
     Route::get('/bonus', [AdminBonusController::class, 'index'])->name('admin.bonus.index');
     Route::get('/bonus/create', [AdminBonusController::class, 'create'])->name('admin.bonus.create');
@@ -144,7 +149,10 @@ Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function 
 
 Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/emploi', [\App\Http\Controllers\AdminEmploiController::class, 'index'])->name('admin.emploi.index');
+    Route::post('/emploi/pay', [\App\Http\Controllers\AdminEmploiController::class, 'payAll'])->name('admin.emploi.pay');
     Route::post('/users/{id}/bonus', [AdminUserController::class, 'addBonus'])->name('admin.users.bonus');
+    Route::post('/users/{id}/lucky-spins', [AdminUserController::class, 'addLuckySpins'])->name('admin.users.lucky_spins');
     Route::patch('/users/{id}/ban', [AdminUserController::class, 'ban'])->name('admin.users.ban');
     Route::patch('/users/{id}/unban', [AdminUserController::class, 'unban'])->name('admin.users.unban');
 });

@@ -50,7 +50,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Dépôts totaux</p>
-                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalDepotsUsd) }}</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalDepots) }}</p>
                 </div>
                 <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-arrow-trend-up text-2xl text-blue-600"></i>
@@ -62,7 +62,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Retraits totaux</p>
-                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalRetraitsUsd) }}</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalRetraits) }}</p>
                     <p class="text-xs text-red-600">{{ $pendingWithdrawals }} en attente</p>
                 </div>
                 <div class="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center">
@@ -75,7 +75,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Bonus distribués</p>
-                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalBonusUsd) }}</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalBonus) }}</p>
                 </div>
                 <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-gift text-2xl text-amber-600"></i>
@@ -87,7 +87,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Revenus nets</p>
-                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($netRevenueUsd) }}</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($netRevenue) }}</p>
                 </div>
                 <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-sack-dollar text-2xl text-purple-600"></i>

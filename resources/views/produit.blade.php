@@ -1,175 +1,132 @@
-<x-layouts :title="'Produits'" :level="'Vip1'">
+<x-layouts :title="'Produits'" :level="Auth::user()->level">
 
 <!-- Messages -->
 @if(session('success'))
-<div class="max-w-lg mx-auto mt-6 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-md text-center font-bold">
+<div class="max-w-lg mx-auto mt-6 bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest animate__animated animate__fadeInDown">
     {{ session('success') }}
 </div>
 @endif
 @if(session('error'))
-<div class="max-w-lg mx-auto mt-6 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg shadow-md text-center font-bold">
+<div class="max-w-lg mx-auto mt-6 bg-red-500 text-white px-6 py-4 rounded-2xl shadow-lg text-center font-black text-[10px] uppercase tracking-widest animate__animated animate__shakeX">
     {{ session('error') }}
 </div>
 @endif
 
 <!-- Main Container -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<div class="max-w-xl mx-auto pt-6 px-4 space-y-8 pb-32">
 
-    <!-- Hero + CTA -->
-    <div class="w-full">
-        <img src="{{ asset('images/biomasse.jpg') }}" alt="BioEnergy" class="w-full h-48 sm:h-64 object-cover rounded-2xl shadow-xl">
-    </div>
-
-    <div class="text-center my-6 sm:my-8">
-        <a href="{{ route('Mesproduits') }}" class="inline-block w-full sm:w-auto bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg px-8 py-4 sm:py-5 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition">
-            Voir mes produits actifs
-        </a>
-    </div>
-
-    <!-- Intro -->
-    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 sm:p-10 text-center shadow-inner mb-8 sm:mb-12 border border-green-100">
-        <h2 class="text-2xl sm:text-4xl font-bold text-green-800 mb-3">Investissez dans l'énergie verte</h2>
-        <p class="text-lg sm:text-xl text-gray-700 leading-relaxed max-w-5xl mx-auto">
-            Rendement journalier de <strong>4% à 7%</strong> selon le produit.<br class="hidden sm:block">
-            Revenus journaliers pendant <strong>180 jours</strong>.
-        </p>
-    </div>
-
-    <!-- Grille produits -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-@foreach($produits as $produit)
-    @php
-        $purchases = Auth::user()->orders()->where('produit_id', $produit->id)->count();
-        $canBuy = $purchases < $produit->limit_order;
-        $balanceOk = Auth::user()->account_balance >= ($produit->min_amount ?? 0);
-    @endphp
-
-    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transform hover:-translate-y-3 transition-all duration-300">
-        <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 text-center">
-            <h3 class="text-2xl font-bold">{{ $produit->name }}</h3>
-            <div class="text-4xl font-bold mt-2">{{ $produit->rate }}% / jour</div>
-            <span class="inline-block mt-2 bg-white/20 px-4 py-1 rounded-full text-sm">Niveau {{ $produit->level }}</span>
+    <!-- Hero Marketplace Sleeker -->
+    <div class="relative overflow-hidden rounded-[40px] bg-slate-900 p-10 text-white shadow-2xl">
+        <div class="relative z-10 space-y-2">
+            <h1 class="text-3xl font-bold tracking-tight leading-none">Marché</h1>
+            <p class="text-[10px] font-semibold text-emerald-400">Infrastructures BioÉnergétiques</p>
         </div>
+        <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+    </div>
 
-        <img src="{{ asset('images/produits/produit' . $produit->id . '.jpg') }}"
-             alt="{{ $produit->name }}"
-             class="w-full h-56 object-cover">
-
-        <div class="p-6 space-y-5">
-            <p class="text-gray-700 line-clamp-3">{{ $produit->description }}</p>
-
-            <div class="space-y-3 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Minimum :</span>
-                    <strong class="text-green-600">{{ fmtCurrency($produit->min_amount) }}</strong>
-                </div>
-                @if($produit->max_amount)
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Maximum :</span>
-                    <strong class="text-blue-600">{{ fmtCurrency($produit->max_amount) }}</strong>
-                </div>
-                @endif
-                <div class="flex justify-between">
-                    <span class="text-gray-600">Achats :</span>
-                    <strong class="{{ $canBuy ? 'text-green-600' : 'text-red-600' }}">
-                        {{ $purchases }} / {{ $produit->limit_order }}
-                    </strong>
-                </div>
-            </div>
-
-            <!-- Barre progression -->
-            <div class="w-full bg-gray-200 rounded-full h-3">
-                <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full transition-all duration-700"
-                     style="width: {{ $produit->limit_order > 0 ? ($purchases / $produit->limit_order) * 100 : 0 }}%"></div>
-            </div>
-
-            <!-- Boutons -->
-            <div class="grid grid-cols-2 gap-4 pt-4">
-                <button onclick="openProductModal({{ $produit->id }})"
-                        class="bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">
-                    Détails
-                </button>
-
-                @if($canBuy && $balanceOk)
-                    <button onclick="openProductModal({{ $produit->id }})"
-                            class="bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition">
-                        Investir
-                    </button>
-                @elseif(!$canBuy)
-                    <button disabled class="bg-gray-500 text-white py-3 rounded-lg cursor-not-allowed">Limite atteinte</button>
-                @else
-                    <button disabled class="bg-orange-500 text-white py-3 rounded-lg cursor-not-allowed">Solde insuffisant</button>
-                @endif
-            </div>
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50">
+            <p class="text-[10px] font-bold text-gray-400 mb-1">Rendement Max</p>
+            <p class="text-lg font-bold text-emerald-600">7.2% <span class="text-[10px] font-medium text-gray-300">/ jour</span></p>
+        </div>
+        <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 flex items-center justify-center">
+            <a href="{{ route('Mesproduits') }}" class="text-[10px] font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                Mes Actifs <i class="fas fa-chevron-right text-[8px]"></i>
+            </a>
         </div>
     </div>
-@endforeach
+
+    <!-- Grille produits Sleeker -->
+    <div class="space-y-6">
+        @foreach($produits as $produit)
+            @php
+                $purchases = Auth::user()->orders()->where('produit_id', $produit->id)->count();
+                $canBuy = $purchases < $produit->limit_order;
+            @endphp
+
+            <div class="bg-white rounded-[40px] shadow-sm border border-gray-50 overflow-hidden">
+                <div class="relative h-48">
+                    <img src="{{ asset('images/produits/produit' . $produit->id . '.jpg') }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+                    <div class="absolute top-4 left-4">
+                        <span class="bg-slate-900 text-white text-[9px] font-bold px-4 py-1.5 rounded-full shadow-xl">VIP {{ $produit->level }}</span>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 flex justify-between items-end">
+                        <div class="space-y-1">
+                            <h3 class="text-lg font-black text-gray-800 italic leading-tight">{{ $produit->name }}</h3>
+                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Contrat 180 Jours</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-bold text-emerald-600">{{ $produit->rate }}%</p>
+                            <p class="text-[9px] font-bold text-gray-300">Par jour</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 pt-0 space-y-6">
+                    <p class="text-[11px] text-gray-500 font-medium leading-relaxed px-2">
+                        {{ $produit->description }}
+                    </p>
+
+                    <div class="flex items-center justify-between bg-gray-50 rounded-2xl p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-emerald-600 shadow-sm">
+                                <i class="fas fa-wallet text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-bold text-gray-400">Invest. Min.</p>
+                                <p class="text-[11px] font-bold text-gray-800">{{ fmtCurrency($produit->min_amount) }}</p>
+                            </div>
+                        </div>
+                        <button onclick="openProductModal({{ $produit->id }})" 
+                                class="bg-slate-900 text-white text-[10px] font-bold px-6 py-2.5 rounded-xl active:scale-95 transition shadow-lg shadow-slate-200">
+                            {{ $canBuy ? 'Investir' : 'Complet' }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endforeach
     </div>
 </div>
 
-<!-- Modal -->
-<div id="productModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 p-2 sm:p-4">
-    <div class="bg-white rounded-2xl shadow-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b p-4 sm:p-6 flex justify-between items-center z-10">
-            <h3 id="modalTitle" class="text-xl sm:text-3xl font-bold text-gray-800 truncate pr-4"></h3>
-            <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-800 text-3xl sm:text-4xl">&times;</button>
+<!-- Modal Produit Sleeker -->
+<div id="productModal" class="fixed inset-0 z-[110] hidden flex items-end sm:items-center justify-center bg-slate-900/80 backdrop-blur-sm p-0 sm:p-4">
+    <div class="bg-white rounded-t-[40px] sm:rounded-[40px] shadow-2xl max-w-lg w-full overflow-hidden animate__animated animate__slideInUp">
+        <div class="relative h-56">
+            <img id="modalImage" src="" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+            <button onclick="closeProductModal()" class="absolute top-6 right-6 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+            <div class="absolute bottom-0 left-0 right-0 p-8">
+                <h3 id="modalTitle" class="text-2xl font-black text-gray-800 italic"></h3>
+                <p id="modalRate" class="text-emerald-600 font-black text-[10px] uppercase tracking-[0.2em] mt-1"></p>
+            </div>
         </div>
 
-        <div class="p-4 sm:p-8 space-y-6 sm:space-y-8">
-            <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
-                <img id="modalImage" src="" alt="" class="w-full h-48 sm:h-80 object-cover rounded-2xl shadow-xl">
-                <div class="space-y-4 sm:space-y-6">
-                    <p id="modalDescription" class="text-base sm:text-lg text-gray-600 leading-relaxed"></p>
-                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 sm:p-6 rounded-2xl space-y-3 sm:space-y-4 border border-green-100">
-                        <div class="flex justify-between items-center text-lg sm:text-xl">
-                            <span class="text-gray-600">Taux Journalier :</span>
-                            <span id="modalRate" class="text-green-600 font-bold"></span>
-                        </div>
-                        <div class="flex justify-between items-center text-lg sm:text-xl">
-                            <span class="text-gray-600">Durée :</span>
-                            <span class="font-bold text-gray-800">180 jours</span>
-                        </div>
-                        <div class="flex justify-between items-center text-lg sm:text-xl">
-                            <span class="text-gray-600">Minimum :</span>
-                            <span id="modalMin" class="text-green-600 font-bold"></span>
-                        </div>
-                        <div id="maxRow" class="flex justify-between items-center text-lg sm:text-xl hidden">
-                            <span class="text-gray-600">Maximum :</span>
-                            <span id="modalMax" class="text-blue-600 font-bold"></span>
-                        </div>
-                    </div>
-                </div>
+        <div class="p-8 space-y-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
+            <div class="bg-slate-50 rounded-3xl p-6 border border-gray-100">
+                <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Informations Projet</h4>
+                <p id="modalInformation" class="text-[11px] text-gray-600 leading-relaxed font-medium italic"></p>
             </div>
 
-            <div class="bg-gray-50 p-5 sm:p-8 rounded-2xl border border-gray-100">
-                <h4 class="text-lg sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">Informations détaillées</h4>
-                <div id="modalInformation" class="text-gray-600 whitespace-pre-line text-sm sm:text-lg leading-relaxed"></div>
-            </div>
-
-            <!-- Formulaire -->
-            <form id="investForm" method="POST" class="bg-green-600/5 p-5 sm:p-8 rounded-2xl border border-green-200/50 space-y-5 sm:space-y-6">
+            <form id="investForm" method="POST" class="space-y-6">
                 @csrf
-                <div>
-                    <label class="block text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-3">Montant à investir ({{ Auth::user()->currency }})</label>
+                <div class="space-y-4">
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Montant de l'engagement</label>
                     <div class="relative">
                         <input type="number" name="amount" id="investAmount" step="1" required
-                               class="w-full px-6 py-4 text-lg sm:text-xl border-2 border-green-100 rounded-xl focus:border-green-600 focus:outline-none transition bg-white"
-                               placeholder="10 000">
-                        <span class="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">{{ Auth::user()->currency }}</span>
+                               class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-4 text-2xl font-black text-center focus:bg-white focus:border-emerald-500 transition outline-none"
+                               placeholder="0">
+                        <span class="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-gray-300 italic">{{ Auth::user()->currency }}</span>
                     </div>
-                    <div class="mt-3">
-                        <p id="amountHelp" class="text-sm sm:text-lg text-gray-500"></p>
-                    </div>
+                    <p id="modalMin" class="text-[9px] font-black text-center text-emerald-600 uppercase tracking-widest"></p>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    <button type="submit" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg sm:text-xl py-4 sm:py-5 rounded-xl hover:shadow-lg transition transform hover:-translate-y-1">
-                        Confirmer l'investissement
-                    </button>
-                    <button type="button" onclick="closeProductModal()" class="w-full sm:w-auto px-8 py-4 bg-white border-2 border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition font-bold">
-                        Annuler
-                    </button>
-                </div>
+                <button type="submit" class="w-full py-5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl active:scale-95 transition">
+                    Confirmer l'Investissement
+                </button>
             </form>
         </div>
     </div>
@@ -185,31 +142,15 @@
 
         document.getElementById('modalTitle').textContent = p.name;
         document.getElementById('modalImage').src = `/images/produits/produit${p.id}.jpg`;
-        document.getElementById('modalDescription').textContent = p.description;
-        document.getElementById('modalInformation').textContent = p.information || 'Aucune information supplémentaire.';
-        document.getElementById('modalRate').textContent = p.rate + '%';
-        document.getElementById('modalMin').textContent = Number(p.min_amount).toLocaleString('fr-FR') + ' ' + CURRENCY;
-
-        const maxRow = document.getElementById('maxRow');
-        const maxSpan = document.getElementById('modalMax');
-        if (p.max_amount) {
-            maxRow.classList.remove('hidden');
-            maxSpan.textContent = Number(p.max_amount).toLocaleString('fr-FR') + ' ' + CURRENCY;
-        } else {
-            maxRow.classList.add('hidden');
-        }
+        document.getElementById('modalInformation').textContent = p.information || 'Innovation durable pour un avenir énergétique autonome.';
+        document.getElementById('modalRate').textContent = `Rendement Journalier: ${p.rate}%`;
+        document.getElementById('modalMin').textContent = `Min. requis: ${Number(p.min_amount).toLocaleString('fr-FR')} ${CURRENCY}`;
 
         document.getElementById('investForm').action = `/products/${id}`;
         const input = document.getElementById('investAmount');
         input.value = p.min_amount;
         input.min = p.min_amount;
         if (p.max_amount) input.max = p.max_amount;
-        else input.removeAttribute('max');
-
-        document.getElementById('amountHelp').textContent =
-            p.max_amount
-                ? `Montant accepté : ${Number(p.min_amount).toLocaleString('fr-FR')} ${CURRENCY} → ${Number(p.max_amount).toLocaleString('fr-FR')} ${CURRENCY}`
-                : `Minimum : ${Number(p.min_amount).toLocaleString('fr-FR')} ${CURRENCY}`;
 
         document.getElementById('productModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -222,5 +163,4 @@
 
     document.addEventListener('keydown', e => e.key === 'Escape' && closeProductModal());
 </script>
-
 </x-layouts>

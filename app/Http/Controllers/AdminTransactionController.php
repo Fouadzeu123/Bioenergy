@@ -53,7 +53,7 @@ class AdminTransactionController extends Controller
             'total'            => Transaction::count(),
             'pending_retraits' => Transaction::where('type', 'retrait')->where('status', 'pending')->count(),
             'today_completed'  => Transaction::whereDate('created_at', today())->where('status', 'completed')->count(),
-            'total_amount_usd' => Transaction::where('status', 'completed')->sum('montant'),
+            'total_amount' => Transaction::where('status', 'completed')->sum('montant'),
         ];
 
         return view('admin.transaction-index', compact('transactions', 'stats'));

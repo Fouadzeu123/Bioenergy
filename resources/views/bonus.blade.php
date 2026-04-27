@@ -1,129 +1,98 @@
-<x-layouts :title="'Réclamer un Bonus'" :level="Auth::user()->level">
+<x-layouts :title="'Bonus et Récompenses'" :level="Auth::user()->level">
+<div class="max-w-xl mx-auto pt-6 px-4 space-y-8 pb-20">
 
-<div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-8 sm:py-12">
-    <div class="max-w-lg mx-auto">
-
-        <!-- Carte principale -->
-        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-green-100">
-
-            <!-- Header coloré -->
-            <div class="bg-gradient-to-r from-green-600 to-emerald-700 px-6 py-10 sm:py-12 text-center relative">
-                <div class="absolute inset-0 bg-black/10"></div>
-                <div class="relative z-10">
-                    <div class="text-5xl sm:text-6xl mb-3 animate-bounce inline-block">Gift</div>
-                    <h1 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
-                        Réclamez<br class="sm:hidden"> Votre Bonus !
-                    </h1>
-                    <p class="text-green-100 text-sm sm:text-base mt-3 font-medium px-4">
-                        Code secret = récompense instantanée
-                    </p>
-                </div>
-            </div>
-
-            <div class="p-6 sm:p-10">
-
-                <!-- Message succès avec confettis -->
-                @if(session('success'))
-                    <div class="mb-8 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-5 rounded-2xl shadow-xl text-center font-bold text-lg sm:text-xl flex items-center justify-center gap-3 animate-pulse">
-                        <svg class="w-8 h-8 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                @endif
-
-                <!-- Message erreur -->
-                @if(session('error'))
-                    <div class="mb-8 bg-gradient-to-r from-red-500 to-pink-600 text-white px-5 py-5 rounded-2xl shadow-xl text-center font-bold text-lg flex items-center justify-center gap-3">
-                        <svg class="w-8 h-8 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                        </svg>
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                <!-- Formulaire -->
-                <form action="{{ route('bonus.reclamer') }}" method="POST" class="space-y-8">
-                    @csrf
-
-                    <div>
-                        <label class="block text-gray-700 font-bold text-lg text-center mb-5">
-                            Votre code bonus
-                        </label>
-
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                                <svg class="w-7 h-7 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                </svg>
-                            </div>
-
-                            <input type="text"
-                                   name="code"
-                                   required
-                                   autocomplete="off"
-                                   class="w-full pl-14 pr-6 py-5 sm:py-6 text-2xl sm:text-3xl font-mono tracking-widest text-center uppercase placeholder-gray-400
-                                          border-4 border-green-200 rounded-2xl focus:outline-none focus:border-green-600 focus:ring-4 focus:ring-green-100 transition-all duration-300 bg-gray-50 shadow-inner"
-                                   placeholder="BONUS2025"
-                                   maxlength="20">
-                        </div>
-
-                        <p class="text-center text-xs sm:text-sm text-gray-500 mt-4">
-                            Sensible à la casse • Ex: <code class="bg-gray-200 px-2 py-1 rounded font-mono text-xs">WELCOME50</code>
-                        </p>
-                    </div>
-
-                    <!-- Bouton principal -->
-                    <button type="submit"
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 
-                                   text-white font-extrabold text-xl sm:text-2xl py-5 sm:py-6 rounded-2xl 
-                                   shadow-2xl transform hover:scale-105 active:scale-95 transition-all duration-300 
-                                   flex items-center justify-center gap-3">
-                        <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m5-4a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        RÉCLAMER LE BONUS
-                    </button>
-                </form>
-
-                <!-- Mini-badges -->
-                <div class="mt-10 grid grid-cols-3 gap-3 text-center">
-                    <div class="bg-yellow-100 rounded-xl py-3 px-2 border-2 border-yellow-300">
-                        <div class="text-2xl sm:text-3xl">Fast</div>
-                        <p class="text-[10px] sm:text-xs font-bold text-yellow-800">Instantané</p>
-                    </div>
-                    <div class="bg-purple-100 rounded-xl py-3 px-2 border-2 border-purple-300">
-                        <div class="text-2xl sm:text-3xl">Secure</div>
-                        <p class="text-[10px] sm:text-xs font-bold text-purple-800">Sécurisé</p>
-                    </div>
-                    <div class="bg-pink-100 rounded-xl py-3 px-2 border-2 border-pink-300">
-                        <div class="text-2xl sm:text-3xl">Gift</div>
-                        <p class="text-[10px] sm:text-xs font-bold text-pink-800">Exclusif</p>
-                    </div>
-                </div>
-
-                <p class="text-center text-gray-400 text-xs mt-8 leading-relaxed">
-                    Une question ? WhatsApp au +1(203)01289123<br>
-                    Bonus soumis aux conditions générales
-                </p>
-            </div>
+    <!-- Message succès -->
+    @if(session('success'))
+        <div class="bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-lg text-center font-bold text-[10px] animate__animated animate__fadeInDown">
+            {{ session('success') }}
         </div>
+    @endif
+
+    <!-- Message erreur -->
+    @if(session('error'))
+        <div class="bg-red-500 text-white px-6 py-4 rounded-2xl shadow-lg text-center font-bold text-[10px] animate__animated animate__shakeX">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <!-- Hero Bonus Sleeker -->
+    <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
+        <div class="relative z-10">
+            <h1 class="text-xl font-bold">Centre de Récompenses</h1>
+            <p class="text-[11px] font-semibold text-gray-400 mt-1">Échangez vos codes cadeaux</p>
+            
+            <form action="{{ route('bonus.reclamer') }}" method="POST" class="mt-8 relative">
+                @csrf
+                <input type="text" name="code" required 
+                       class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:bg-white/10 focus:border-emerald-500 transition outline-none"
+                       placeholder="Saisir votre code ici...">
+                <button type="submit" class="absolute right-2 top-2 bottom-2 bg-emerald-600 text-white px-6 rounded-xl text-[11px] font-bold active:scale-95 transition">
+                    Valider
+                </button>
+            </form>
+        </div>
+        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- Stats Bonus Sleeker -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50">
+            <p class="text-[10px] font-bold text-gray-400 mb-1">Total Reçu</p>
+            <p class="text-sm font-bold text-gray-800">{{ fmtCurrency($historique->sum('montant')) }}</p>
+        </div>
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50 text-right">
+            <p class="text-[10px] font-bold text-gray-400 mb-1">Bonus Réclamés</p>
+            <p class="text-sm font-bold text-emerald-600">{{ $historique->count() }} <span class="text-[10px] font-medium opacity-30">Codes</span></p>
+        </div>
+    </div>
+
+    <!-- Historique Sleeker -->
+    <div class="space-y-4">
+        <h3 class="text-[11px] font-bold text-gray-400 px-2">Dernières Récompenses</h3>
+        
+        @forelse($historique as $tx)
+            <div class="bg-white rounded-2xl p-4 flex items-center justify-between border border-gray-50 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <i class="fas fa-gift text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold text-gray-800">Code Cadeau</p>
+                        <p class="text-[10px] font-medium text-gray-400">{{ $tx->created_at->format('d/m/y • H:i') }}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs font-bold text-emerald-600">+{{ fmtCurrency($tx->montant) }}</p>
+                </div>
+            </div>
+        @empty
+            <div class="text-center py-12 bg-gray-50/50 rounded-3xl border border-dashed border-gray-100">
+                <p class="text-[11px] font-bold text-gray-300">Aucun bonus reçu</p>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- CTA Support Sleeker -->
+    <div class="bg-emerald-600/5 rounded-[32px] p-8 border border-emerald-100 text-center">
+        <p class="text-[10px] font-bold text-emerald-700 mb-4">Besoin d'un code ?</p>
+        <p class="text-[11px] font-medium text-emerald-800/60 leading-relaxed mb-6">Suivez notre canal officiel ou contactez votre parrain pour obtenir des codes cadeaux exclusifs.</p>
+        <a href="{{ route('contact') }}" class="inline-block text-[11px] font-bold text-emerald-700 border-b-2 border-emerald-200 pb-1 hover:text-emerald-900 transition">
+            Contacter le support
+        </a>
     </div>
 </div>
 
-<!-- Confettis uniquement sur mobile quand succès -->
 @if(session('success'))
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         setTimeout(() => {
             confetti({
-                particleCount: 120,
-                spread: 80,
-                origin: { y: 0.65 },
-                colors: ['#10b981', '#059669', '#34d399', '#6ee7b7']
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#10b981', '#059669', '#34d399']
             });
-        }, 300);
+        }, 200);
     </script>
 @endif
-
 </x-layouts>
