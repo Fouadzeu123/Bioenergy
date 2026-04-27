@@ -9,9 +9,10 @@ class ProduitSeeder extends Seeder
 {
     public function run()
     {
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         // Supprimer les produits existants pour repartir sur de bonnes bases
         Produit::truncate();
-
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
         // Pack Solaire
         Produit::create([
             'name' => 'Pack Solaire',

@@ -9,8 +9,10 @@ class PreservationSeeder extends Seeder
 {
     public function run(): void
     {
-        // Nettoyer la table avant de re-seeder
+        // Nettoyer la table avant de re-seeder (désactivation des contraintes de clés étrangères)
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
         DB::table('preservations')->truncate();
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
 
         Preservation::create([
             'name' => 'Épargne 7 jours',
