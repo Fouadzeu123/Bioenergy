@@ -176,6 +176,25 @@
             document.getElementById('country_code_input').value = c.code;
         });
     });
+
+    // Détection automatique du pays basée sur le fuseau horaire
+    window.addEventListener('DOMContentLoaded', () => {
+        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (timezone.includes('Abidjan')) {
+            const ciRadio = document.getElementById('reg-ci');
+            if (ciRadio) {
+                ciRadio.checked = true;
+                ciRadio.dispatchEvent(new Event('change'));
+            }
+        } else if (timezone.includes('Douala') || timezone.includes('Lagos') || timezone.includes('Brazzaville')) {
+            // Par défaut c'est déjà CM, mais on peut forcer pour la clarté
+            const cmRadio = document.getElementById('reg-cm');
+            if (cmRadio) {
+                cmRadio.checked = true;
+                cmRadio.dispatchEvent(new Event('change'));
+            }
+        }
+    });
 </script>
 </body>
 </html>
