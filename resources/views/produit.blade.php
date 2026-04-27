@@ -1,17 +1,13 @@
 <x-layouts :title="'Produits'" :level="'Vip1'">
 
-@php
-    $USD_TO_F = 600;
-@endphp
-
 <!-- Messages -->
 @if(session('success'))
-<div class="max-w-lg mx-auto mt-6 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-md text-center">
+<div class="max-w-lg mx-auto mt-6 bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-lg shadow-md text-center font-bold">
     {{ session('success') }}
 </div>
 @endif
 @if(session('error'))
-<div class="max-w-lg mx-auto mt-6 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg shadow-md text-center">
+<div class="max-w-lg mx-auto mt-6 bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg shadow-md text-center font-bold">
     {{ session('error') }}
 </div>
 @endif
@@ -60,17 +56,17 @@
              class="w-full h-56 object-cover">
 
         <div class="p-6 space-y-5">
-            <p class="text-gray-700,700 line-clamp-3">{{ $produit->description }}</p>
+            <p class="text-gray-700 line-clamp-3">{{ $produit->description }}</p>
 
             <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
                     <span class="text-gray-600">Minimum :</span>
-                    <strong class="text-green-600">{{ fmtUsd($produit->min_amount) }}</strong>
+                    <strong class="text-green-600">{{ fmtCurrency($produit->min_amount) }}</strong>
                 </div>
                 @if($produit->max_amount)
                 <div class="flex justify-between">
                     <span class="text-gray-600">Maximum :</span>
-                    <strong class="text-blue-600">{{ fmtUsd($produit->max_amount) }}</strong>
+                    <strong class="text-blue-600">{{ fmtCurrency($produit->max_amount) }}</strong>
                 </div>
                 @endif
                 <div class="flex justify-between">
@@ -131,7 +127,7 @@
                         </div>
                         <div class="flex justify-between items-center text-lg sm:text-xl">
                             <span class="text-gray-600">Durée :</span>
-                            <span class="font-bold text-gray-800">365 jours</span>
+                            <span class="font-bold text-gray-800">180 jours</span>
                         </div>
                         <div class="flex justify-between items-center text-lg sm:text-xl">
                             <span class="text-gray-600">Minimum :</span>
@@ -154,15 +150,14 @@
             <form id="investForm" method="POST" class="bg-green-600/5 p-5 sm:p-8 rounded-2xl border border-green-200/50 space-y-5 sm:space-y-6">
                 @csrf
                 <div>
-                    <label class="block text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-3">Montant à investir (en $)</label>
+                    <label class="block text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-3">Montant à investir ({{ Auth::user()->currency }})</label>
                     <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">$</span>
-                        <input type="number" name="amount" id="investAmount" step="0.01" required
-                               class="w-full pl-8 pr-6 py-3 sm:py-4 text-lg sm:text-xl border-2 border-green-100 rounded-xl focus:border-green-600 focus:outline-none transition bg-white"
-                               placeholder="100.00">
+                        <input type="number" name="amount" id="investAmount" step="1" required
+                               class="w-full px-6 py-4 text-lg sm:text-xl border-2 border-green-100 rounded-xl focus:border-green-600 focus:outline-none transition bg-white"
+                               placeholder="10 000">
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">{{ Auth::user()->currency }}</span>
                     </div>
-                    <div class="mt-3 flex flex-wrap items-baseline gap-2">
-                        <p id="amountInF" class="text-xl sm:text-2xl font-black text-green-700"></p>
+                    <div class="mt-3">
                         <p id="amountHelp" class="text-sm sm:text-lg text-gray-500"></p>
                     </div>
                 </div>
@@ -181,38 +176,30 @@
 </div>
 
 <script>
-    const USD_TO_F = 600;
-
-    // On passe les produits proprement depuis Laravel
+    const CURRENCY = "{{ Auth::user()->currency }}";
     const produits = @json($produits->mapWithKeys(fn($p) => [$p->id => $p])->toArray());
 
     function openProductModal(id) {
         const p = produits[id];
         if (!p) return;
 
-        // Titre + image
         document.getElementById('modalTitle').textContent = p.name;
         document.getElementById('modalImage').src = `/images/produits/produit${p.id}.jpg`;
-
-        // Contenu
         document.getElementById('modalDescription').textContent = p.description;
         document.getElementById('modalInformation').textContent = p.information || 'Aucune information supplémentaire.';
-
         document.getElementById('modalRate').textContent = p.rate + '%';
-        document.getElementById('modalMin').textContent = Number(p.min_amount).toLocaleString() + ' $';
+        document.getElementById('modalMin').textContent = Number(p.min_amount).toLocaleString('fr-FR') + ' ' + CURRENCY;
 
         const maxRow = document.getElementById('maxRow');
         const maxSpan = document.getElementById('modalMax');
         if (p.max_amount) {
             maxRow.classList.remove('hidden');
-            maxSpan.textContent = Number(p.max_amount).toLocaleString() + ' $';
+            maxSpan.textContent = Number(p.max_amount).toLocaleString('fr-FR') + ' ' + CURRENCY;
         } else {
             maxRow.classList.add('hidden');
         }
 
-        // Formulaire
         document.getElementById('investForm').action = `/products/${id}`;
-
         const input = document.getElementById('investAmount');
         input.value = p.min_amount;
         input.min = p.min_amount;
@@ -221,18 +208,9 @@
 
         document.getElementById('amountHelp').textContent =
             p.max_amount
-                ? `Montant accepté : ${p.min_amount}$ → ${p.max_amount}$`
-                : `Minimum : ${p.min_amount}$`;
+                ? `Montant accepté : ${Number(p.min_amount).toLocaleString('fr-FR')} ${CURRENCY} → ${Number(p.max_amount).toLocaleString('fr-FR')} ${CURRENCY}`
+                : `Minimum : ${Number(p.min_amount).toLocaleString('fr-FR')} ${CURRENCY}`;
 
-        // Conversion en temps réel
-        input.oninput = function() {
-            const val = parseFloat(this.value) || 0;
-            document.getElementById('amountInF').textContent =
-                val > 0 ? `≈ ${val.toLocaleString()} $ = ${(val * USD_TO_F).toLocaleString()} F` : '';
-        };
-        input.oninput(); // trigger initial
-
-        // Afficher modal
         document.getElementById('productModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
@@ -242,7 +220,6 @@
         document.body.style.overflow = '';
     }
 
-    // Fermer avec Échap
     document.addEventListener('keydown', e => e.key === 'Escape' && closeProductModal());
 </script>
 

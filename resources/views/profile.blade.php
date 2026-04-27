@@ -1,29 +1,5 @@
 <x-layouts :title="'Mon Compte'" :level="Auth::user()->level">
 
-@php
-    $rate = $rateFCFAperUSD ?? 650;
-
-    // Toutes tes variables (inchangées)
-    $revenus = $revenus ?? ['journalier' => 0, 'mensuel' => 0, 'annuel' => 0];
-    $solde_total_usd = $solde_total_usd ?? 0;
-    $solde_total_fcfa = $solde_total_fcfa ?? 0;
-    $total_retraits_usd = $total_retraits_usd ?? 0;
-    $total_retraits_fcfa = $total_retraits_fcfa ?? 0;
-    $taille_equipe = $taille_equipe ?? 0;
-    $revenu_total_usd = $revenu_total_usd ?? 0;
-    $revenu_total_fcfa = $revenu_total_fcfa ?? 0;
-    $revenu_equipe_usd = $revenu_equipe_usd ?? 0;
-    $revenu_equipe_fcfa = $revenu_equipe_fcfa ?? 0;
-    $capturer_benefices_usd = $capturer_benefices_usd ?? 0;
-    $capturer_benefices_fcfa = $capturer_benefices_fcfa ?? 0;
-    $fonds_recharge_usd = $fonds_recharge_usd ?? 0;
-    $fonds_recharge_fcfa = $fonds_recharge_fcfa ?? 0;
-    $revenu_epargne_usd = $revenu_epargne_usd ?? 0;
-    $revenu_epargne_fcfa = $revenu_epargne_fcfa ?? 0;
-    $total_epargne_usd = $total_epargne_usd ?? 0;
-    $total_epargne_fcfa = $total_epargne_fcfa ?? 0;
-@endphp
-
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900">
 
     <!-- Carte principale premium -->
@@ -60,18 +36,15 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mb-10 sm:mb-12">
                     <div class="bg-white/10 rounded-3xl p-6 sm:p-8 text-center border border-white/20">
                         <p class="text-green-300 text-sm sm:text-lg mb-2 sm:mb-4">Solde disponible</p>
-                        <p class="text-2xl sm:text-4xl font-extrabold text-emerald-400">{{ fmtUSD($solde_total_usd) }}</p>
-                        <p class="text-lg sm:text-2xl opacity-80 mt-1 sm:mt-3">{{ fmtFCFA($solde_total_fcfa) }}</p>
+                        <p class="text-3xl sm:text-4xl font-extrabold text-emerald-400">{{ fmtCurrency($solde_total) }}</p>
                     </div>
                     <div class="bg-white/10 rounded-3xl p-6 sm:p-8 text-center border border-white/20">
                         <p class="text-green-300 text-sm sm:text-lg mb-2 sm:mb-4">Revenu total</p>
-                        <p class="text-2xl sm:text-4xl font-extrabold text-yellow-400">{{ fmtUSD($revenu_total_usd) }}</p>
-                        <p class="text-lg sm:text-2xl opacity-80 mt-1 sm:mt-3">{{ fmtFCFA($revenu_total_fcfa) }}</p>
+                        <p class="text-3xl sm:text-4xl font-extrabold text-yellow-400">{{ fmtCurrency($revenu_total) }}</p>
                     </div>
                     <div class="bg-white/10 rounded-3xl p-6 sm:p-8 text-center border border-white/20">
                         <p class="text-red-300 text-sm sm:text-lg mb-2 sm:mb-4">Total retiré</p>
-                        <p class="text-2xl sm:text-3xl font-extrabold text-red-400">{{ fmtUSD($total_retraits_usd) }}</p>
-                        <p class="text-lg sm:text-2xl opacity-80 mt-1 sm:mt-3">{{ fmtFCFA($total_retraits_fcfa) }}</p>
+                        <p class="text-3xl sm:text-4xl font-extrabold text-red-400">{{ fmtCurrency($total_retraits) }}</p>
                     </div>
                 </div>
 
@@ -79,7 +52,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
                     <div class="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/5">
                         <p class="text-green-200 text-[10px] sm:text-sm uppercase tracking-wide">Gain fixe / jour</p>
-                        <p class="text-lg sm:text-3xl font-bold text-emerald-400">{{ fmtUSD($capturer_benefices_usd) }}</p>
+                        <p class="text-lg sm:text-3xl font-bold text-emerald-400">{{ fmtCurrency($capturer_benefices) }}</p>
                     </div>
                     <div class="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/5">
                         <p class="text-blue-200 text-[10px] sm:text-sm uppercase tracking-wide">Taille équipe</p>
@@ -87,11 +60,11 @@
                     </div>
                     <div class="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/5">
                         <p class="text-yellow-200 text-[10px] sm:text-sm uppercase tracking-wide">Revenu équipe</p>
-                        <p class="text-lg sm:text-3xl font-bold text-yellow-400">{{ fmtUSD($revenu_equipe_usd) }}</p>
+                        <p class="text-lg sm:text-3xl font-bold text-yellow-400">{{ fmtCurrency($revenu_equipe) }}</p>
                     </div>
                     <div class="bg-white/10 rounded-2xl p-4 sm:p-6 border border-white/5">
                         <p class="text-purple-200 text-[10px] sm:text-sm uppercase tracking-wide">Fonds recharge</p>
-                        <p class="text-lg sm:text-3xl font-bold text-purple-400">{{ fmtUSD($fonds_recharge_usd) }}</p>
+                        <p class="text-lg sm:text-3xl font-bold text-purple-400">{{ fmtCurrency($fonds_recharge) }}</p>
                     </div>
                 </div>
 
@@ -114,23 +87,19 @@
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-white">
                 <div class="text-center">
                     <p class="text-green-300 text-xs sm:text-sm mb-1 sm:mb-3">Équilibre</p>
-                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtUSD($solde_total_usd) }}</p>
-                    <p class="text-sm sm:text-lg opacity-80">{{ fmtFCFA($solde_total_fcfa) }}</p>
+                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtCurrency($solde_total) }}</p>
                 </div>
                 <div class="text-center">
                     <p class="text-yellow-300 text-xs sm:text-sm mb-1 sm:mb-3">Revenu épargne</p>
-                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtUSD($revenu_epargne_usd) }}</p>
-                    <p class="text-sm sm:text-lg opacity-80">{{ fmtFCFA($revenu_epargne_fcfa) }}</p>
+                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtCurrency($revenu_epargne) }}</p>
                 </div>
                 <div class="text-center">
                     <p class="text-purple-300 text-xs sm:text-sm mb-1 sm:mb-3">Total épargne</p>
-                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtUSD($total_epargne_usd) }}</p>
-                    <p class="text-sm sm:text-lg opacity-80">{{ fmtFCFA($total_epargne_fcfa) }}</p>
+                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtCurrency($total_epargne) }}</p>
                 </div>
                 <div class="text-center">
                     <p class="text-blue-300 text-xs sm:text-sm mb-1 sm:mb-3">Fonds recharge</p>
-                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtUSD($fonds_recharge_usd) }}</p>
-                    <p class="text-sm sm:text-lg opacity-80">{{ fmtFCFA($fonds_recharge_fcfa) }}</p>
+                    <p class="text-xl sm:text-3xl font-extrabold">{{ fmtCurrency($fonds_recharge) }}</p>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <x-layouts :title="'Mes Transactions'" :level="Auth::user()->level">
 @php
-    $rate = $rateFCFAperUSD ?? 600;
+    $currency = Auth::user()->currency;
     $types = [
         'depot' => 'Dépôt',
         'retrait' => 'Retrait',
@@ -27,7 +27,7 @@
     <div class="bg-gradient-to-r from-blue-700 to-blue-900 rounded-3xl shadow-xl p-6 sm:p-8 text-white relative overflow-hidden">
         <div class="relative z-10">
             <h1 class="text-2xl sm:text-4xl font-extrabold mb-2">Historique des transactions</h1>
-            <p class="text-blue-100 text-sm sm:text-base opacity-90 max-w-lg">Consultez tous vos mouvements financiers. Basculez entre vos dépôts, vos retraits et vos autres transactions.</p>
+            <p class="text-blue-100 text-sm sm:text-base opacity-90 max-w-lg">Consultez tous vos mouvements financiers.</p>
         </div>
         <i class="fas fa-file-invoice-dollar absolute -right-6 -bottom-6 text-8xl text-white opacity-20"></i>
     </div>
@@ -51,7 +51,7 @@
         <!-- Tab Dépôts -->
         <div id="tab-depots" class="tab-content block animate__animated animate__fadeIn">
             @forelse($depots as $tx)
-                <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" :rate="$rate" />
+                <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" />
             @empty
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 text-center">
                     <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
@@ -66,7 +66,7 @@
         <!-- Tab Retraits -->
         <div id="tab-retraits" class="tab-content hidden animate__animated animate__fadeIn">
             @forelse($retraits as $tx)
-                <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" :rate="$rate" />
+                <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" />
             @empty
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 text-center">
                     <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
@@ -81,7 +81,7 @@
         <!-- Tab Autres -->
         <div id="tab-autres" class="tab-content hidden animate__animated animate__fadeIn">
             @forelse($autres as $tx)
-                <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" :rate="$rate" />
+                <x-tx-card :tx="$tx" :types="$types" :statuses="$statuses" />
             @empty
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-10 text-center">
                     <div class="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-300">
@@ -111,10 +111,9 @@
             <div class="text-center">
                 <p id="txModalType" class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-1">Type</p>
                 <div class="flex items-end justify-center gap-2">
-                    <span id="txModalAmountUsd" class="text-4xl font-black text-gray-800"></span>
-                    <span class="text-xl font-bold text-gray-400 mb-1">$</span>
+                    <span id="txModalAmount" class="text-4xl font-black text-gray-800"></span>
+                    <span id="txModalCurrency" class="text-xl font-bold text-gray-400 mb-1"></span>
                 </div>
-                <p id="txModalAmountFcfa" class="text-sm font-semibold text-gray-500 mt-1"></p>
                 <div class="mt-3">
                     <span id="txModalStatus" class="inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide"></span>
                 </div>
@@ -130,7 +129,7 @@
                     <span id="txModalMethod" class="font-bold text-gray-800 uppercase bg-white px-2 py-1 rounded border border-gray-200 shadow-sm text-[10px]"></span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
-                    <span class="text-gray-500 font-medium">Date du système</span>
+                    <span class="text-gray-500 font-medium">Date</span>
                     <span id="txModalDate" class="font-bold text-gray-800"></span>
                 </div>
             </div>
@@ -149,12 +148,10 @@
     </div>
 </div>
 
-<!-- Add Animate.css if not already present in layouts -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-<!-- Scripts -->
 <script>
-    const RATE = {{ $rate }};
+    const CURRENCY = "{{ $currency }}";
 
     function showTab(id) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -169,18 +166,6 @@
         activeBtn.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
     }
 
-    function copyText(text, element) {
-        navigator.clipboard.writeText(text).then(() => {
-            const feedback = element.querySelector('.copy-feedback');
-            if(feedback) {
-                feedback.classList.remove('hidden');
-                setTimeout(() => feedback.classList.add('hidden'), 1500);
-            }
-        }).catch(() => {
-            alert('Impossible de copier la référence.');
-        });
-    }
-
     function openTxModal(tx) {
         if(typeof tx === 'string') {
             tx = JSON.parse(tx);
@@ -191,13 +176,11 @@
         document.getElementById('txModalRef').textContent = tx.reference || '—';
         document.getElementById('txModalType').textContent = (tx.type || '—').replace(/_/g, ' ');
         
-        const montant_fcfa = (tx.montant_fcfa !== undefined && tx.montant_fcfa !== null) ? tx.montant_fcfa : (tx.montant || 0);
-        const montant_usd = (tx.montant_usd !== undefined && tx.montant_usd !== null) ? tx.montant_usd : Math.round((montant_fcfa / RATE) * 100) / 100;
+        const montant = tx.montant || 0;
+        document.getElementById('txModalAmount').textContent = Number(montant).toLocaleString('fr-FR');
+        document.getElementById('txModalCurrency').textContent = CURRENCY;
         
-        document.getElementById('txModalAmountUsd').textContent = montant_usd.toFixed(2);
-        document.getElementById('txModalAmountFcfa').textContent = new Intl.NumberFormat('fr-FR').format(montant_fcfa) + ' FCFA';
-        
-        document.getElementById('txModalMethod').textContent = tx.method ? tx.method : 'N/A';
+        document.getElementById('txModalMethod').textContent = tx.method ? tx.method : 'Mobile Money';
         
         const statusEl = document.getElementById('txModalStatus');
         let statusText = '—', statusClass = 'bg-gray-200 text-gray-800';
@@ -215,15 +198,14 @@
         statusEl.className = `inline-block px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase ${statusClass}`;
         
         document.getElementById('txModalDate').textContent = tx.created_at ? new Date(tx.created_at).toLocaleString('fr-FR') : '—';
-        document.getElementById('txModalDesc').textContent = tx.description || 'Acune description';
+        document.getElementById('txModalDesc').textContent = tx.description || 'Aucune description';
 
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
 
     function closeTxModal() {
-        const modal = document.getElementById('txModal');
-        modal.classList.add('hidden');
+        document.getElementById('txModal').classList.add('hidden');
         document.body.style.overflow = '';
     }
 

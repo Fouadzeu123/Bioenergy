@@ -1,9 +1,5 @@
 <x-layouts :title="'Mon Équipe'" :level="Auth::user()->level">
 
-@php
-    $USD_TO_XAF = env('USD_TO_XAF', 600);
-@endphp
-
 <div class="max-w-7xl mx-auto px-5 py-10">
 
     <!-- Bannière premium -->
@@ -20,9 +16,9 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mb-8 sm:mb-12">
         @php
             $gainCards = [
-                ['label' => 'Parrainage VIP', 'usd' => $gainsParrainageVip, 'from' => 'emerald', 'to' => 'emerald', 'icon' => 'crown'],
-                ['label' => 'Revenus journaliers', 'usd' => $gainsJournalier, 'from' => 'blue', 'to' => 'blue', 'icon' => 'chart-line'],
-                ['label' => 'Gains totaux réseau', 'usd' => $gainsTotaux, 'from' => 'amber', 'to' => 'amber', 'icon' => 'trophy'],
+                ['label' => 'Parrainage VIP', 'amount' => $gainsParrainageVip, 'from' => 'emerald', 'to' => 'emerald', 'icon' => 'crown'],
+                ['label' => 'Revenus journaliers', 'amount' => $gainsJournalier, 'from' => 'blue', 'to' => 'blue', 'icon' => 'chart-line'],
+                ['label' => 'Gains totaux réseau', 'amount' => $gainsTotaux, 'from' => 'amber', 'to' => 'amber', 'icon' => 'trophy'],
             ];
         @endphp
         @foreach($gainCards as $card)
@@ -31,10 +27,9 @@
                     <div class="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center">
                         <i class="fas fa-{{$card['icon']}} text-xl sm:text-3xl"></i>
                     </div>
-                    <span class="text-2xl sm:text-4xl font-bold">{{ fmtUsd($card['usd'] ?? 0) }}</span>
                 </div>
                 <p class="{{$card['from']}}-100 text-[10px] sm:text-sm uppercase tracking-wider opacity-80">{{ $card['label'] }}</p>
-                <p class="text-xl sm:text-3xl font-black mt-1 sm:mt-2">{{ fmtXaf(($card['usd'] ?? 0) * $USD_TO_XAF) }}</p>
+                <p class="text-2xl sm:text-4xl font-black mt-1 sm:mt-2">{{ fmtCurrency($card['amount'] ?? 0) }}</p>
             </div>
         @endforeach
     </div>
@@ -60,7 +55,7 @@
         </div>
     </div>
 
-    <!-- Tableaux par niveau avec Bonus généré -->
+    <!-- Tableaux par niveau -->
     <div class="space-y-12">
         @foreach([1 => $niveau1 ?? collect(), 2 => $niveau2 ?? collect(), 3 => $niveau3 ?? collect()] as $level => $membres)
             <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
@@ -118,11 +113,11 @@
                                             <span class="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-bold">{{ $filleul->level ?? 0 }}</span>
                                         </td>
                                         <td class="px-6 py-5 text-center text-slate-600">{{ $filleul->created_at->format('d/m/Y') }}</td>
-                                        <td class="px-6 py-5 text-right">
-                                            <p class="font-bold text-slate-800">{{ fmtUsd($deposits) }}</p>
+                                        <td class="px-6 py-5 text-right font-bold text-slate-800">
+                                            {{ fmtCurrency($deposits) }}
                                         </td>
-                                        <td class="px-6 py-5 text-right">
-                                            <p class="font-bold text-emerald-600">{{ fmtUsd($bonusGenere) }}</p>
+                                        <td class="px-6 py-5 text-right font-bold text-emerald-600">
+                                            {{ fmtCurrency($bonusGenere) }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -134,7 +129,6 @@
                     <div class="md:hidden divide-y divide-slate-100">
                         @foreach($membres as $filleul)
                             @php
-                                $deposits = $filleul->deposits_sum ?? 0;
                                 $bonusGenere = App\Models\Transaction::where('user_id', Auth::id())
                                     ->where('type', 'bonus_vip')
                                     ->where('from_user_id', $filleul->id)
@@ -152,7 +146,7 @@
                                 </div>
                                 <div class="text-right">
                                     <p class="text-[10px] text-gray-400 uppercase">Commission</p>
-                                    <p class="font-bold text-emerald-600 text-sm">{{ fmtUsd($bonusGenere) }}</p>
+                                    <p class="font-bold text-emerald-600 text-sm">{{ fmtCurrency($bonusGenere) }}</p>
                                 </div>
                             </div>
                         @endforeach
@@ -161,7 +155,6 @@
                     <div class="p-16 text-center text-slate-400">
                         <i class="fas fa-users text-6xl mb-4 opacity-20"></i>
                         <p class="text-lg">Aucun membre à ce niveau pour le moment</p>
-                        <p class="text-sm mt-2">Continuez à partager votre lien !</p>
                     </div>
                 @endif
             </div>
@@ -211,12 +204,10 @@
         document.getElementById('modalDate').textContent = new Date(m.created_at).toLocaleDateString('fr-FR');
 
         document.getElementById('memberModal').classList.remove('hidden');
-        document.getElementById('memberModal').classList.add('flex');
     }
 
     function closeMemberModal() {
         document.getElementById('memberModal').classList.add('hidden');
-        document.getElementById('memberModal').classList.remove('flex');
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMemberModal(); });

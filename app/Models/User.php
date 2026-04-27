@@ -99,4 +99,11 @@ public function transactions()
     return $this->hasMany(Transaction::class);
 }
 
+    /**
+     * Retourne la devise de l'utilisateur (XAF pour CM, XOF pour CI).
+     */
+    public function getCurrencyAttribute(): string
+    {
+        return ($this->withdrawal_country === 'CI' || $this->country_code === '225') ? 'XOF' : 'XAF';
+    }
 }

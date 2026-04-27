@@ -1,11 +1,10 @@
 <x-layouts :title="'Retrait'" :level="Auth::user()->level">
 
 @php
-    $USD_TO_XAF = config('notchpay.usd_to_xaf', 600);
     $user = Auth::user();
-    $MIN_WITHDRAWAL_USD = strtolower($user->username ?? '') === 'boris' ? 0.1 : 5;
+    $currency = $user->currency;
+    $MIN_WITHDRAWAL = 1000;
     $FEE_PERCENT = 10;
-
     $balance = $user->account_balance ?? 0;
 @endphp
 
@@ -22,7 +21,7 @@
 
     @if(session('error'))
         <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-center font-medium shadow-sm">
-            {{ session('error') }}
+            {!! session('error') !!}
         </div>
     @endif
 
@@ -33,8 +32,7 @@
             <div>
                 <p class="text-gray-400 text-sm tracking-wider uppercase font-semibold">Solde disponible</p>
                 <div class="flex items-baseline gap-2 mt-1">
-                    <p class="text-3xl font-extrabold text-gray-800">{{ fmtUsd($balance) }}</p>
-                    <p class="text-sm font-medium text-gray-400">≈ {{ fmtXaf($balance * $USD_TO_XAF) }}</p>
+                    <p class="text-3xl font-extrabold text-gray-800">{{ fmtCurrency($balance) }}</p>
                 </div>
             </div>
             <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
@@ -46,7 +44,7 @@
         <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
             <div>
                 <p class="text-gray-400 text-sm tracking-wider uppercase font-semibold">Total Retiré</p>
-                <p class="text-2xl font-bold text-gray-800 mt-1">{{ fmtUsd($totalRetraits) }}</p>
+                <p class="text-2xl font-bold text-gray-800 mt-1">{{ fmtCurrency($totalRetraits) }}</p>
             </div>
             <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center">
                 <i class="fas fa-hand-holding-usd text-xl"></i>
@@ -58,7 +56,7 @@
     <div class="mt-6 bg-amber-50 border border-amber-100 rounded-2xl p-4 shadow-sm">
         <h4 class="text-amber-800 font-bold mb-2 flex items-center gap-2 text-sm"><i class="fas fa-info-circle"></i> Conditions de retrait</h4>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs text-amber-900/80 font-medium">
-            <div class="flex items-start gap-2"><i class="fas fa-check mt-0.5 text-amber-600"></i> Minimum de retrait : <strong>{{ $MIN_WITHDRAWAL_USD }} $</strong></div>
+            <div class="flex items-start gap-2"><i class="fas fa-check mt-0.5 text-amber-600"></i> Minimum de retrait : <strong>{{ number_format($MIN_WITHDRAWAL, 0, '.', ' ') }} {{ $currency }}</strong></div>
             <div class="flex items-start gap-2"><i class="fas fa-check mt-0.5 text-amber-600"></i> Frais appliqués : <strong>{{ $FEE_PERCENT }}%</strong></div>
             <div class="flex items-start gap-2"><i class="fas fa-clock mt-0.5 text-amber-600"></i> Horaires : <strong>Lun. au Ven. de 09:00 à 18:00</strong></div>
             <div class="flex items-start gap-2"><i class="fas fa-exclamation-triangle mt-0.5 text-amber-600"></i> Limite : <strong>1 retrait par jour</strong></div>
@@ -103,19 +101,19 @@
 
         <!-- Montant -->
         <div>
-            <label class="block font-semibold text-gray-700 mb-3 text-sm">Montant à retirer (USD)</label>
+            <label class="block font-semibold text-gray-700 mb-3 text-sm">Montant à retirer ({{ $currency }})</label>
             <div class="relative">
-                <span class="absolute left-4 py-4 text-gray-400 font-bold text-xl">$</span>
-                <input type="number" name="amount" id="amountInput" step="0.01" min="{{ $MIN_WITHDRAWAL_USD }}" max="{{ $balance }}"
-                       required placeholder="50.00"
-                       class="w-full pl-10 pr-4 py-4 text-2xl font-bold bg-gray-50 border border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition">
+                <input type="number" name="amount" id="amountInput" step="1" min="{{ $MIN_WITHDRAWAL }}" max="{{ $balance }}"
+                       required placeholder="{{ $MIN_WITHDRAWAL }}"
+                       class="w-full px-6 py-4 text-2xl font-bold bg-gray-50 border border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xl">{{ $currency }}</span>
             </div>
 
             <!-- Boutons rapides -->
             <div class="grid grid-cols-4 gap-2 mt-4">
-                <button type="button" data-amount="20"  class="quick-btn bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition text-sm">20 $</button>
-                <button type="button" data-amount="50"  class="quick-btn bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition text-sm">50 $</button>
-                <button type="button" data-amount="100" class="quick-btn bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition text-sm">100 $</button>
+                <button type="button" data-amount="5000"  class="quick-btn bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition text-sm">5 000</button>
+                <button type="button" data-amount="10000"  class="quick-btn bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition text-sm">10 000</button>
+                <button type="button" data-amount="50000" class="quick-btn bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition text-sm">50 000</button>
                 <button type="button" data-amount="{{ $balance }}" class="quick-btn bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 hover:border-emerald-300 text-emerald-700 font-bold py-2 rounded-xl transition text-sm">MAX</button>
             </div>
         </div>
@@ -125,7 +123,6 @@
             <div>
                 <p class="text-sm font-semibold text-gray-500">Vous recevrez <span class="bg-red-100 text-red-600 px-1.5 py-0.5 rounded text-[10px]">-{{ $FEE_PERCENT }}% frais</span></p>
                 <p class="text-2xl font-extrabold text-emerald-600 mt-1" id="netAmount">—</p>
-                <p class="text-xs font-semibold text-emerald-800/60" id="netXaf">—</p>
             </div>
             <i class="fas fa-hand-holding-usd text-4xl text-emerald-200"></i>
         </div>
@@ -134,52 +131,6 @@
             Continuer
         </button>
     </form>
-
-    <!-- MODAL CONFIRMATION -->
-    <div id="confirmModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 shadow-2xl backdrop-blur-sm px-4">
-        <div class="bg-white rounded-3xl shadow-xl max-w-sm w-full overflow-hidden animate__animated animate__zoomIn">
-            <div class="bg-gray-50 border-b border-gray-100 px-6 py-5 flex items-center justify-between">
-                <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <i class="fas fa-shield-alt text-emerald-500"></i> Vérification
-                </h3>
-                <button type="button" onclick="closeConfirmModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition">✕</button>
-            </div>
-
-            <div class="p-6">
-                <div class="space-y-3 font-medium text-sm border-b border-gray-100 pb-5 mb-5">
-                    <div class="flex justify-between items-center"><span class="text-gray-500">Montant demandé</span> <strong id="finalAmount" class="text-gray-800 text-base">—</strong></div>
-                    <div class="flex justify-between items-center"><span class="text-gray-500">Frais ({{ $FEE_PERCENT }}%)</span> <strong class="text-red-500" id="finalFee">—</strong></div>
-                    <div class="flex justify-between items-center bg-emerald-50 p-3 rounded-xl border border-emerald-100">
-                        <span class="text-emerald-800 font-bold block">Net à recevoir</span>
-                        <strong class="text-emerald-600 text-xl" id="finalNet">—</strong>
-                    </div>
-                </div>
-
-                <div class="text-center mb-5 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Versation vers</p>
-                    <p class="text-sm font-bold text-gray-800 mt-1">
-                        {{ strtoupper($user->withdrawal_method ?? '') }} • {{ $user->withdrawal_account }}
-                    </p>
-                </div>
-
-                <form action="{{ route('retrait.store') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="amount" id="confirmedAmount">
-
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Mot de passe de retrait</label>
-                        <input type="password" name="withdrawal_password" required autocomplete="off"
-                               class="w-full text-center tracking-widest text-lg font-mono bg-white border border-gray-200 rounded-xl py-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition shadow-inner"
-                               placeholder="••••••">
-                    </div>
-
-                    <button type="submit" class="mt-6 w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 transition">
-                        Valider le retrait
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Historique abrégé -->
     <div class="mt-8 text-sm">
@@ -195,7 +146,7 @@
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><i class="fas fa-arrow-up"></i></div>
                             <div>
-                                <p class="font-bold text-gray-800">{{ number_format($retrait->montant, 2) }} $</p>
+                                <p class="font-bold text-gray-800">{{ fmtCurrency($retrait->montant) }}</p>
                                 <p class="text-xs text-gray-400">{{ $retrait->created_at->format('d M, H:i') }}</p>
                             </div>
                         </div>
@@ -220,9 +171,55 @@
     </div>
 </div>
 
+<!-- MODAL CONFIRMATION -->
+<div id="confirmModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 shadow-2xl backdrop-blur-sm px-4">
+    <div class="bg-white rounded-3xl shadow-xl max-w-sm w-full overflow-hidden animate__animated animate__zoomIn">
+        <div class="bg-gray-50 border-b border-gray-100 px-6 py-5 flex items-center justify-between">
+            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <i class="fas fa-shield-alt text-emerald-500"></i> Vérification
+            </h3>
+            <button type="button" onclick="closeConfirmModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition">✕</button>
+        </div>
+
+        <div class="p-6">
+            <div class="space-y-3 font-medium text-sm border-b border-gray-100 pb-5 mb-5">
+                <div class="flex justify-between items-center"><span class="text-gray-500">Montant demandé</span> <strong id="finalAmount" class="text-gray-800 text-base">—</strong></div>
+                <div class="flex justify-between items-center"><span class="text-gray-500">Frais ({{ $FEE_PERCENT }}%)</span> <strong class="text-red-500" id="finalFee">—</strong></div>
+                <div class="flex justify-between items-center bg-emerald-50 p-3 rounded-xl border border-emerald-100">
+                    <span class="text-emerald-800 font-bold block">Net à recevoir</span>
+                    <strong class="text-emerald-600 text-xl" id="finalNet">—</strong>
+                </div>
+            </div>
+
+            <div class="text-center mb-5 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Versement vers</p>
+                <p class="text-sm font-bold text-gray-800 mt-1">
+                    {{ strtoupper($user->withdrawal_method ?? '') }} • {{ $user->withdrawal_account }}
+                </p>
+            </div>
+
+            <form action="{{ route('retrait.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="amount" id="confirmedAmount">
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2 text-center">Mot de passe de retrait</label>
+                    <input type="password" name="withdrawal_password" required autocomplete="off"
+                           class="w-full text-center tracking-widest text-lg font-mono bg-white border border-gray-200 rounded-xl py-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition shadow-inner"
+                           placeholder="••••••">
+                </div>
+
+                <button type="submit" class="mt-6 w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 transition">
+                    Valider le retrait
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
     const FEE = {{ $FEE_PERCENT / 100 }};
-    const XAF = {{ $USD_TO_XAF }};
+    const CURRENCY = "{{ $currency }}";
 
     document.querySelectorAll('.quick-btn').forEach(b => b.addEventListener('click', () => {
         document.getElementById('amountInput').value = b.dataset.amount;
@@ -233,10 +230,9 @@
 
     function updatePreview() {
         const val = parseFloat(document.getElementById('amountInput').value) || 0;
-        const net = val * (1 - FEE);
-        if (val >= {{ $MIN_WITHDRAWAL_USD }}) {
-            document.getElementById('netAmount').textContent = net.toFixed(2) + ' $';
-            document.getElementById('netXaf').textContent = '≈ ' + Math.round(net * XAF).toLocaleString('fr-FR') + ' FCFA';
+        const net = Math.round(val * (1 - FEE));
+        if (val >= {{ $MIN_WITHDRAWAL }}) {
+            document.getElementById('netAmount').textContent = net.toLocaleString('fr-FR') + ' ' + CURRENCY;
             document.getElementById('feePreview').classList.remove('hidden');
         } else {
             document.getElementById('feePreview').classList.add('hidden');
@@ -247,12 +243,14 @@
     document.getElementById('withdrawForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const amount = parseFloat(document.getElementById('amountInput').value);
-        if (amount < {{ $MIN_WITHDRAWAL_USD }}) return alert('Minimum {{ $MIN_WITHDRAWAL_USD }} $');
+        if (amount < {{ $MIN_WITHDRAWAL }}) return alert('Minimum ' + {{ $MIN_WITHDRAWAL }} + ' ' + CURRENCY);
 
-        const net = amount * (1 - FEE);
-        document.getElementById('finalAmount').textContent = amount.toFixed(2) + ' $';
-        document.getElementById('finalFee').textContent = '-' + (amount * FEE).toFixed(2) + ' $';
-        document.getElementById('finalNet').textContent = net.toFixed(2) + ' $';
+        const net = Math.round(amount * (1 - FEE));
+        const feeAmount = Math.round(amount * FEE);
+        
+        document.getElementById('finalAmount').textContent = amount.toLocaleString('fr-FR') + ' ' + CURRENCY;
+        document.getElementById('finalFee').textContent = '-' + feeAmount.toLocaleString('fr-FR') + ' ' + CURRENCY;
+        document.getElementById('finalNet').textContent = net.toLocaleString('fr-FR') + ' ' + CURRENCY;
         document.getElementById('confirmedAmount').value = amount;
 
         document.getElementById('confirmModal').classList.remove('hidden');
@@ -263,6 +261,5 @@
     }
 </script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </x-layouts>

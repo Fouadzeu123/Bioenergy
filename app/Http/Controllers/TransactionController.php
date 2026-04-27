@@ -59,7 +59,7 @@ class TransactionController extends Controller
 
         $amount = (float) $request->amount;
         $operator = strtoupper($request->payment_method);
-        $amountXAF = $this->notchPay->usdToXaf($amount);
+        $amountFCFA = $amount;
 
         $internalRef = 'DEP-' . $user->id . '-' . time() . '-' . Str::random(4);
 
@@ -80,12 +80,12 @@ class TransactionController extends Controller
             'user_id'      => $user->id,
             'type'         => 'depot',
             'montant'      => $amount,
-            'montant_fcfa' => $amountXAF,
+            'montant_fcfa' => $amountFCFA,
             'status'       => 'pending',
             'reference'    => $internalRef,
             'operator'     => $operator,
             'gateway'      => 'notchpay',
-            'description'  => "Dépôt de {$amount}$ via {$operator} (" . config('notchpay.country_names.' . $userCountry, $userCountry) . ")",
+            'description'  => "Dépôt de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " via {$operator} (" . config('notchpay.country_names.' . $userCountry, $userCountry) . ")",
         ]);
 
         // ── MODE SIMULATION / TEST ─────────────────────────────────────────────
@@ -264,7 +264,7 @@ class TransactionController extends Controller
         $minRetrait   = strtolower($user->username ?? '') === 'boris' ? 1 : 5;
 
         $request->validate([
-            'amount'              => "required|numeric|min:{$minRetrait}|max:10000",
+            'amount'              => "required|numeric|min:1000|max:1000000",
             'withdrawal_password' => 'required|string',
         ]);
 
@@ -330,7 +330,7 @@ class TransactionController extends Controller
             'reference' => $reference,
             'operator' => strtoupper($user->withdrawal_method),
             'gateway' => 'notchpay',
-            'description' => "Retrait de {$amount}$ via " . strtoupper($user->withdrawal_method),
+            'description' => "Retrait de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " via " . strtoupper($user->withdrawal_method),
         ]);
 
         // =============================================
@@ -342,7 +342,7 @@ class TransactionController extends Controller
             $user->decrement('account_balance', $amount);
             $transaction->update(['status' => 'completed']);
 
-            return back()->with('success', "Retrait de {$amount}$ SIMULÉ avec succès ! (mode test)");
+            return back()->with('success', "Retrait de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " SIMULÉ avec succès ! (mode test)");
         }
 
         // =============================================
@@ -361,8 +361,8 @@ class TransactionController extends Controller
                 $phone = '+' . $phonePrefix . ltrim($phone, '0');
             }
 
-            $amountXAF = $this->notchPay->usdToXaf($amount);
-            $amountNetXAF = (int) round($amountXAF * 0.90); // 10% de frais appliqués
+            $amountFCFA = $amount;
+            $amountNetFCFA = (int) round($amountFCFA * 0.90); // 10% de frais appliqués
 
             // Canal générique pour la création du bénéficiaire (cm.mobile ou ci.mobile)
             $beneficiaryChannel = config('notchpay.beneficiary_channels.' . $withdrawalCountry, 'cm.mobile');
@@ -383,10 +383,11 @@ class TransactionController extends Controller
 
             // Étape 2 : Initier le transfert (Payout)
             $transfer = $this->notchPay->transfer(
-                amountXAF: $amountNetXAF,
+                amountFCFA: $amountNetFCFA,
                 beneficiaryId: $beneficiary['beneficiary_id'],
                 description: "Retrait BioEnergy",
-                reference: $reference
+                reference: $reference,
+                currency: $user->currency
             );
 
             if (!$transfer['success']) {
@@ -406,14 +407,8 @@ class TransactionController extends Controller
                 'gateway_reference' => $transfer['notch_reference'] ?? null,
             ]);
 
-            Log::info('NotchPay: Retrait API initié', [
-                'user_id' => $user->id,
-                'amount_usd' => $amount,
-                'amount_xaf' => $amountNetXAF,
-                'ref' => $reference,
-            ]);
 
-            return back()->with('success', "Votre retrait de {$amount}$ a été pris en compte. Il est en cours d'envoi vers votre compte Mobile Money.");
+            return back()->with('success', "Votre retrait de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " a été pris en compte. Il est en cours d'envoi vers votre compte Mobile Money.");
 
         } catch (Exception $e) {
             Log::error('Retrait NotchPay: exception', [

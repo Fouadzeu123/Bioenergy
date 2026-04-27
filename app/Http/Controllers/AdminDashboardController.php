@@ -11,11 +11,8 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        // Taux de conversion configurable (1 USD → X FCFA)
-        $rateFCFAperUSD = env('USD_TO_XAF', 600);
-
         // ===================================================================
-        // 1. STATISTIQUES GLOBALES (tout en USD)
+        // 1. STATISTIQUES GLOBALES (en unité locale brute)
         // ===================================================================
         $totalUsers       = User::count();
         $totalAdmins      = User::where('role', 'admin')->count();
@@ -24,7 +21,7 @@ class AdminDashboardController extends Controller
                                          ->where('status', 'pending')
                                          ->count();
 
-        // Sommes en USD (seulement les transactions validées)
+        // Sommes (seulement les transactions validées)
         $totalDepotsUsd = (float) Transaction::where('type', 'depot')
                                              ->where('status', 'completed')
                                              ->sum('montant');
@@ -33,18 +30,12 @@ class AdminDashboardController extends Controller
                                                ->where('status', 'completed')
                                                ->sum('montant');
 
-        $totalBonusUsd = (float) Transaction::whereIn('type', ['bonus', 'bonus_vip', 'bonus_parrainage'])
+        $totalBonusUsd = (float) Transaction::whereIn('type', ['bonus', 'bonus_vip', 'bonus_parrainage', 'bonus_journalier', 'parrainage'])
                                             ->where('status', 'completed')
                                             ->sum('montant');
 
         // Revenu net de la plateforme
         $netRevenueUsd = $totalDepotsUsd - $totalRetraitsUsd - $totalBonusUsd;
-
-        // Conversions en FCFA (arrondi propre)
-        $totalDepotsFcfa   = (int) round($totalDepotsUsd * $rateFCFAperUSD);
-        $totalRetraitsFcfa = (int) round($totalRetraitsUsd * $rateFCFAperUSD);
-        $totalBonusFcfa    = (int) round($totalBonusUsd * $rateFCFAperUSD);
-        $netRevenueFcfa    = (int) round($netRevenueUsd * $rateFCFAperUSD);
 
         // ===================================================================
         // 2. DONNÉES POUR LE GRAPHIQUE (30 derniers jours)
@@ -76,9 +67,8 @@ class AdminDashboardController extends Controller
 
         $vipChartLabels = [];
         $vipChartData   = [];
-        $colors = ['#e5e7eb', '#d1fae5', '#86efac', '#34d399', '#10b981', '#059669', '#047857'];
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 0; $i <= 10; $i++) {
             $count = $vipDistribution[$i] ?? 0;
             if ($count > 0 || $i <= 5) {
                 $vipChartLabels[] = "VIP $i";
@@ -92,60 +82,32 @@ class AdminDashboardController extends Controller
         $recentUsers = User::select('id', 'username', 'level', 'created_at', 'account_balance')
             ->latest()
             ->take(8)
-            ->get()
-            ->map(function ($user) use ($rateFCFAperUSD) {
-                $balanceUsd = (float) ($user->account_balance ?? 0);
-                $user->balance_usd  = $balanceUsd;
-                $user->balance_fcfa = (int) round($balanceUsd * $rateFCFAperUSD);
-                return $user;
-            });
+            ->get();
 
         $recentTransactions = Transaction::with(['user:id,username'])
             ->select('id', 'user_id', 'type', 'montant', 'status', 'created_at')
             ->latest()
             ->take(10)
-            ->get()
-            ->map(function ($tx) use ($rateFCFAperUSD) {
-                $amountUsd = round((float) $tx->montant, 2);
-                $tx->montant_usd  = $amountUsd;
-                $tx->montant_fcfa = (int) round($amountUsd * $rateFCFAperUSD);
-                return $tx;
-            });
+            ->get();
 
         // ===================================================================
         // 5. RETOUR VUE
         // ===================================================================
         return view('admin.dashboard', compact(
-            // Stats principales
             'totalUsers',
             'totalAdmins',
             'activeToday',
             'pendingWithdrawals',
-
-            // Montants USD
             'totalDepotsUsd',
             'totalRetraitsUsd',
             'totalBonusUsd',
             'netRevenueUsd',
-
-            // Montants FCFA
-            'totalDepotsFcfa',
-            'totalRetraitsFcfa',
-            'totalBonusFcfa',
-            'netRevenueFcfa',
-
-            // Taux
-            'rateFCFAperUSD',
-
-            // Graphiques
             'chartLabels',
             'chartDepots',
             'chartRetraits',
             'chartBonus',
             'vipChartLabels',
             'vipChartData',
-
-            // Listes
             'recentUsers',
             'recentTransactions'
         ));

@@ -1,5 +1,9 @@
 <x-admin-layout :title="'Profil de ' . $user->username" :level="'admin'">
 
+@php
+    $curr = $user->currency;
+@endphp
+
 <div class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
     <!-- Header avec avatar + infos principales -->
@@ -13,6 +17,7 @@
                 <div class="flex flex-wrap gap-4 justify-center md:justify-start text-sm opacity-90">
                     <span><i class="fas fa-phone"></i> {{ $user->phone ?? 'Non renseigné' }}</span>
                     <span><i class="fas fa-envelope"></i> {{ $user->email }}</span>
+                    <span><i class="fas fa-globe"></i> Pays: {{ $user->withdrawal_country }}</span>
                     <span><i class="fas fa-calendar"></i> Inscrit le {{ $user->created_at->format('d/m/Y') }}</span>
                 </div>
                 <div class="flex flex-wrap gap-3 mt-6 justify-center md:justify-start">
@@ -33,27 +38,27 @@
     <!-- Cartes de statistiques rapides -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white rounded-2xl shadow-xl p-6 text-center border-l-4 border-emerald-500">
-            <p class="text-gray-600 text-sm">Solde actuel</p>
-            <p class="text-3xl font-extrabold text-emerald-600 mt-2">
-                {{ number_format($user->account_balance ?? 0, 2) }} $
+            <p class="text-gray-600 text-sm font-bold uppercase">Solde actuel</p>
+            <p class="text-2xl font-extrabold text-emerald-600 mt-2">
+                {{ number_format($user->account_balance ?? 0, 0, '.', ' ') }} {{ $curr }}
             </p>
         </div>
         <div class="bg-white rounded-2xl shadow-xl p-6 text-center border-l-4 border-blue-500">
-            <p class="text-gray-600 text-sm">Total dépôts</p>
-            <p class="text-3xl font-extrabold text-blue-600 mt-2">
-                {{ number_format($user->total_deposits ?? 0, 0) }} $
+            <p class="text-gray-600 text-sm font-bold uppercase">Total dépôts</p>
+            <p class="text-2xl font-extrabold text-blue-600 mt-2">
+                {{ number_format($user->total_deposits ?? 0, 0, '.', ' ') }} {{ $curr }}
             </p>
         </div>
         <div class="bg-white rounded-2xl shadow-xl p-6 text-center border-l-4 border-red-500">
-            <p class="text-gray-600 text-sm">Total retraits</p>
-            <p class="text-3xl font-extrabold text-red-600 mt-2">
-                {{ number_format($user->total_withdrawals ?? 0, 0) }} $
+            <p class="text-gray-600 text-sm font-bold uppercase">Total retraits</p>
+            <p class="text-2xl font-extrabold text-red-600 mt-2">
+                {{ number_format($user->total_withdrawals ?? 0, 0, '.', ' ') }} {{ $curr }}
             </p>
         </div>
         <div class="bg-white rounded-2xl shadow-xl p-6 text-center border-l-4 border-purple-500">
-            <p class="text-gray-600 text-sm">Bénéfice net</p>
-            <p class="text-3xl font-extrabold text-purple-600 mt-2">
-                {{ number_format(($user->total_deposits ?? 0) - ($user->total_withdrawals ?? 0), 2) }} $
+            <p class="text-gray-600 text-sm font-bold uppercase">Bénéfice net</p>
+            <p class="text-2xl font-extrabold text-purple-600 mt-2">
+                {{ number_format(($user->total_deposits ?? 0) - ($user->total_withdrawals ?? 0), 0, '.', ' ') }} {{ $curr }}
             </p>
         </div>
     </div>
@@ -67,13 +72,10 @@
                 Modifier le profil
             </a>
 
-            <form method="POST" action="{{ route('admin.users.bonus', $user->id) }}" class="inline-block w-full">
-                @csrf
-                <button type="button" onclick="openBonusModal()" 
-                        class="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 transition">
-                    Ajouter un bonus
-                </button>
-            </form>
+            <button type="button" onclick="openBonusModal()" 
+                    class="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 transition">
+                Ajouter un bonus
+            </button>
 
             <form method="POST" action="{{ route('admin.users.reset-password', $user->id) }}" class="inline-block w-full">
                 @csrf
@@ -94,7 +96,7 @@
             @else
                 <form method="POST" action="{{ route('admin.users.ban', $user->id) }}" class="inline-block w-full"
                       onsubmit="return confirm('Bannir cet utilisateur ?')">
-                    @csrf @method('PUT')
+                    @csrf @method('PATCH')
                     <button type="submit"
                             class="w-full bg-red-600 text-white py-4 rounded-xl font-bold hover:bg-red-700 transition">
                         Bannir le compte
@@ -129,7 +131,6 @@
                 <code class="text-3xl font-mono bg-gray-100 px-6 py-4 rounded-xl">
                     {{ $user->invitation_code }}
                 </code>
-                <p class="text-sm text-gray-500 mt-3">Partagé {{ $user->invitedUsers?->count() ?? 0 }} fois</p>
             </div>
         </div>
     </div>
@@ -160,8 +161,8 @@
                                     {{ ucfirst(str_replace('_', ' ', $tx->type)) }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3 text-right font-bold">
-                                {{ $tx->type === 'retrait' ? '-' : '+' }}{{ number_format($tx->montant, 2) }} $
+                            <td class="px-4 py-3 text-right font-bold text-gray-800">
+                                {{ $tx->type === 'retrait' ? '-' : '+' }}{{ number_format($tx->montant, 0, '.', ' ') }} {{ $curr }}
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <span class="px-3 py-1 rounded-full text-xs font-bold
@@ -183,29 +184,29 @@
 </div>
 
 <!-- Modal Ajouter Bonus -->
-<div id="bonusModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
-        <h3 class="text-2xl font-bold mb-6">Ajouter un bonus à {{ $user->username }}</h3>
+<div id="bonusModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate__animated animate__zoomIn">
+        <h3 class="text-2xl font-bold mb-6 text-gray-800">Ajouter un bonus</h3>
         <form method="POST" action="{{ route('admin.users.bonus', $user->id) }}">
             @csrf
-            <div class="space-y-5">
+            <div class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Montant ($)</label>
-                    <input type="number" name="montant" step="0.01" min="1" required
-                           class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Montant ({{ $curr }})</label>
+                    <input type="number" name="montant" step="1" min="1" required
+                           class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 transition font-bold">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Description (optionnel)</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Description (optionnel)</label>
                     <textarea name="description" rows="3"
-                              class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-emerald-500"></textarea>
+                              class="w-full border-2 border-gray-100 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 transition"></textarea>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex gap-3 pt-2">
                     <button type="submit"
-                            class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700">
-                        Ajouter le bonus
+                            class="flex-1 bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-100">
+                        Ajouter
                     </button>
                     <button type="button" onclick="closeBonusModal()"
-                            class="flex-1 bg-gray-200 py-3 rounded-xl font-bold hover:bg-gray-300">
+                            class="flex-1 bg-gray-100 py-4 rounded-xl font-bold hover:bg-gray-200 text-gray-600">
                         Annuler
                     </button>
                 </div>

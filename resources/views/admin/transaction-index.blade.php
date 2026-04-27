@@ -23,7 +23,7 @@
                     <p class="text-sm opacity-90">Validées aujourd'hui</p>
                 </div>
                 <div class="bg-white/20 backdrop-blur rounded-2xl p-5 text-center">
-                    <p class="text-3xl font-bold">{{ number_format($stats['total_amount_usd'], 0, ',', ' ') }} $</p>
+                    <p class="text-xl font-bold">{{ number_format($stats['total_amount_usd'], 0, ',', ' ') }}</p>
                     <p class="text-sm opacity-90">Volume total</p>
                 </div>
             </div>
@@ -79,6 +79,9 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @forelse($transactions as $tx)
+                        @php
+                            $curr = $tx->user?->currency ?? 'FCFA';
+                        @endphp
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4 text-gray-600">
                                 {{ $tx->created_at->format('d/m/Y') }}
@@ -104,7 +107,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right font-bold text-gray-800">
-                                {{ $tx->type === 'retrait' ? '-' : '' }}{{ number_format($tx->montant_usd ?? $tx->montant, 2) }} $
+                                {{ $tx->type === 'retrait' ? '-' : '' }}{{ number_format($tx->montant, 0, '.', ' ') }} {{ $curr }}
                             </td>
                             <td class="px-6 py-4 text-center">
                                 @if($tx->status === 'completed')

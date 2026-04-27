@@ -54,11 +54,11 @@ class NotchPayPaymentProvider implements PaymentService
             $channel  = "{$country}.{$provider}";
 
             // ─── Étape 1 : Initialiser la transaction ───────────────────────
-            // On utilise le montant en FCFA stocké dans la transaction
+           
             $paymentInit = Payment::initialize([
-                'amount'      => (int) $transaction->montant_fcfa,
+                'amount'      => (int) $transaction->montant,
                 'email'       => $transaction->user->email ?? "user_{$transaction->user_id}@bioenergy.cm",
-                'currency'    => 'XAF',
+                'currency'    => $transaction->user->currency,
                 'reference'   => $reference,
                 'description' => $transaction->description ?: "Dépôt BioEnergy",
             ]);
@@ -179,21 +179,6 @@ class NotchPayPaymentProvider implements PaymentService
     }
 
     // =========================================================================
-    // UTILITAIRES DE CONVERSION
-    // =========================================================================
-
-    public function usdToXaf(float $usd): int
-    {
-        return (int) round($usd * config('notchpay.usd_to_xaf', 600));
-    }
-
-    public function xafToUsd(int $xaf): float
-    {
-        $rate = config('notchpay.usd_to_xaf', 600);
-        return round($xaf / $rate, 2);
-    }
-
-    // =========================================================================
     // WEBHOOK VALIDATION
     // =========================================================================
 
@@ -217,13 +202,7 @@ class NotchPayPaymentProvider implements PaymentService
      */
     public function createBeneficiary(string $name, string $phone, string $email, string $channel, string $country = 'CM'): array
     {
-        // On peut utiliser le SDK ou Http si le SDK n'a pas encore de helper dédié
-        // Mais on va essayer de rester sur la logique fonctionnelle existante si elle marche.
         try {
-            // Note: Le SDK notchpay-php ne semble pas avoir de classe Beneficiary directe facilement accessible dans toutes les versions.
-            // On peut utiliser NotchPay::request() ou continuer avec Http pour cette partie si on veut être sûr.
-            // Dans le doute, on garde la logique Http qui fonctionnait dans NotchPayService.
-
             $publicKey = config('notchpay.public_key');
             $privateKey = config('notchpay.private_key');
             $apiUrl = rtrim(config('notchpay.api_url', 'https://api.notchpay.co'), '/');
@@ -265,7 +244,7 @@ class NotchPayPaymentProvider implements PaymentService
     /**
      * Effectue un transfert (Retrait)
      */
-    public function transfer(int $amountXAF, string $beneficiaryId, string $description, string $reference): array
+    public function transfer(int $amountFCFA, string $beneficiaryId, string $description, string $reference, string $currency = 'XAF'): array
     {
         try {
             $publicKey = config('notchpay.public_key');
@@ -280,8 +259,8 @@ class NotchPayPaymentProvider implements PaymentService
                     'Accept'        => 'application/json',
                 ])
                 ->post("{$apiUrl}/transfers", [
-                    'amount'      => $amountXAF,
-                    'currency'    => config('notchpay.currency', 'XAF'),
+                    'amount'      => $amountFCFA,
+                    'currency'    => $currency,
                     'beneficiary' => $beneficiaryId,
                     'description' => $description,
                     'reference'   => $reference,

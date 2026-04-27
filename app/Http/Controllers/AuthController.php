@@ -66,12 +66,12 @@ class AuthController extends Controller
         ]);
 
         // Bonus de bienvenue (10 $)
-        $user->increment('account_balance', 10);
+        $user->increment('account_balance', 6000);
 
         Transaction::create([
             'user_id'     => $user->id,
             'type'        => 'bonus',
-            'montant'     => 10,
+            'montant'     => 6000,
             'status'      => 'completed',
             'reference'   => 'WELCOME-' . strtoupper(Str::random(6)),
             'description' => 'Bonus de bienvenue offert par BioEnergy',
@@ -84,7 +84,7 @@ class AuthController extends Controller
         session()->forget('referral_code');
 
         return redirect()->route('dashboard')
-                         ->with('success', 'Inscription réussie ! Vous avez reçu 10 $ de bonus');
+                         ->with('success', 'Inscription réussie ! Vous avez reçu 6 000 ' . $user->currency . ' de bonus');
     }
 
     // ==============================

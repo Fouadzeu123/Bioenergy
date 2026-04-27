@@ -67,7 +67,8 @@
                         @php
                             $totalDepots = $user->total_deposits ?? 0;
                             $totalRetraits = $user->total_withdrawals ?? 0;
-                            $balanceUsd = (float) ($user->account_balance ?? 0);
+                            $balance = (float) ($user->account_balance ?? 0);
+                            $curr = $user->currency;
                         @endphp
                         <tr class="hover:bg-gray-50 transition">
                             <!-- Avatar + Nom -->
@@ -78,7 +79,7 @@
                                     </div>
                                     <div>
                                         <p class="font-bold text-gray-900">{{ $user->username }}</p>
-                                        <p class="text-xs text-gray-500">ID: {{ $user->id }}</p>
+                                        <p class="text-xs text-gray-500">ID: {{ $user->id }} • {{ $user->withdrawal_country }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -102,17 +103,17 @@
 
                             <!-- Solde -->
                             <td class="px-6 py-5 text-right font-bold text-emerald-600">
-                                {{ number_format($balanceUsd, 2) }} $
+                                {{ number_format($balance, 0, '.', ' ') }} {{ $curr }}
                             </td>
 
                             <!-- Dépôts -->
                             <td class="px-6 py-5 text-right font-medium text-blue-600">
-                                {{ number_format($totalDepots, 0) }} $
+                                {{ number_format($totalDepots, 0, '.', ' ') }} {{ $curr }}
                             </td>
 
                             <!-- Retraits -->
                             <td class="px-6 py-5 text-right font-medium text-red-600">
-                                {{ number_format($totalRetraits, 0) }} $
+                                {{ number_format($totalRetraits, 0, '.', ' ') }} {{ $curr }}
                             </td>
 
                             <!-- Parrain -->

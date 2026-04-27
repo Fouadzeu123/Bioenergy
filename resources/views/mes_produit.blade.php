@@ -1,9 +1,5 @@
 <x-layouts :title="'Mes Produits'" :level="'Vip1'">
 
-@php
-    $USD_TO_FCFA = 600;
-@endphp
-
 <div class="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 py-8 ">
     <div class="max-w-4xl mx-auto space-y-8">
 
@@ -27,8 +23,7 @@
             <!-- Revenus du jour -->
             <div class="bg-white/90 backdrop-blur rounded-3xl shadow-2xl p-6 sm:p-8 text-center border border-green-100">
                 <h3 class="text-base sm:text-xl font-semibold text-gray-800 mb-3">Revenus crédités aujourd'hui</h3>
-                <div class="text-3xl sm:text-5xl font-bold text-green-600 mb-1">{{ fmtUSD($revenusJournee) }}</div>
-                <div class="text-xl sm:text-2xl text-gray-600">{{ fmtFCFA($revenusJournee * $USD_TO_FCFA) }}</div>
+                <div class="text-3xl sm:text-5xl font-bold text-green-600 mb-1">{{ fmtCurrency($revenusJournee) }}</div>
                 <p class="text-xs text-gray-400 mt-4">Du lundi au samedi</p>
             </div>
         </div>
@@ -45,7 +40,6 @@
                     $now = \Carbon\Carbon::now();
 
                     $daysPassed = $start->diffInDays($now);
-                    $daysRemaining = max(180, $end->diffInDays($now));
                     $totalDays = $start->diffInDays($end);
 
                     $earnedSoFar = \App\Models\Transaction::where('user_id', Auth::id())
@@ -73,15 +67,15 @@
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 text-center">
                                 <div class="bg-green-50 rounded-2xl p-3 sm:p-4">
                                     <p class="text-[10px] sm:text-sm text-gray-500 uppercase tracking-wider">Investi</p>
-                                    <p class="text-base sm:text-2xl font-bold text-green-700">{{ fmtUSD($invested) }}</p>
+                                    <p class="text-base sm:text-2xl font-bold text-green-700">{{ fmtCurrency($invested) }}</p>
                                 </div>
                                 <div class="bg-yellow-50 rounded-2xl p-3 sm:p-4">
                                     <p class="text-[10px] sm:text-sm text-gray-500 uppercase tracking-wider">Gain/jour</p>
-                                    <p class="text-base sm:text-2xl font-bold text-yellow-600">{{ fmtUSD($dayIncome) }}</p>
+                                    <p class="text-base sm:text-2xl font-bold text-yellow-600">{{ fmtCurrency($dayIncome) }}</p>
                                 </div>
                                 <div class="bg-blue-50 rounded-2xl p-3 sm:p-4">
                                     <p class="text-[10px] sm:text-sm text-gray-500 uppercase tracking-wider">Cumul</p>
-                                    <p class="text-base sm:text-2xl font-bold text-blue-700">{{ fmtUSD($earnedSoFar) }}</p>
+                                    <p class="text-base sm:text-2xl font-bold text-blue-700">{{ fmtCurrency($earnedSoFar) }}</p>
                                 </div>
                                 <div class="bg-red-50 rounded-2xl p-3 sm:p-4">
                                     <p class="text-[10px] sm:text-sm text-gray-500 uppercase tracking-wider">Fin</p>
@@ -137,30 +131,22 @@
 </div>
 
 <script>
-    const rate = {{ $USD_TO_FCFA }};
-    const usdInput = document.getElementById('amountUsd');
-    const fcfaOutput = document.getElementById('amountFcfa');
     const countdownElement = document.getElementById('countdown');
-    // Données pour le modal
     const ordersData = @json($ordersForJs);
+    const CURRENCY = "{{ Auth::user()->currency }}";
 
-    // Compte à rebours jusqu'à minuit
-    // Compte à rebours avec figé le dimanche
     function updateCountdown() {
         const now = new Date();
-        const dayOfWeek = now.getDay(); // 0 = dimanche, 1 = lundi, ..., 6 = samedi
+        const dayOfWeek = now.getDay();
 
-        if (dayOfWeek === 0) { // Dimanche
+        if (dayOfWeek === 0) {
             countdownElement.innerHTML = `
-                <span class="text-4xl md:text-6xl font-bold text-yellow-300">
-                    Pas de crédit aujourd'hui
-                </span>
-                <p class="text-xl mt-6 opacity-90">Reprise demain lundi à minuit</p>
+                <span class="text-2xl sm:text-4xl font-bold text-yellow-300">Pas de crédit aujourd'hui</span>
+                <p class="text-sm mt-2 opacity-90">Reprise lundi à minuit</p>
             `;
             return;
         }
 
-        // Sinon : compte à rebours normal jusqu'à minuit
         const midnight = new Date(now);
         midnight.setHours(24, 0, 0, 0);
         const diff = midnight - now;
@@ -172,18 +158,18 @@
         countdownElement.innerHTML = `
             <div class="flex justify-center gap-2 sm:gap-4">
                 <div class="flex flex-col items-center">
-                    <span class="bg-white/10 rounded-xl px-4 py-3 sm:px-6 sm:py-5 text-3xl sm:text-5xl font-mono">${h}</span>
-                    <span class="text-[10px] sm:text-xs mt-1 uppercase opacity-60">heures</span>
+                    <span class="bg-white/10 rounded-xl px-3 py-2 sm:px-6 sm:py-5 text-2xl sm:text-4xl font-mono">${h}</span>
+                    <span class="text-[8px] sm:text-xs mt-1 uppercase opacity-60">heures</span>
                 </div>
-                <div class="text-3xl sm:text-5xl pt-2">:</div>
+                <div class="text-2xl sm:text-4xl pt-2">:</div>
                 <div class="flex flex-col items-center">
-                    <span class="bg-white/10 rounded-xl px-4 py-3 sm:px-6 sm:py-5 text-3xl sm:text-5xl font-mono">${m}</span>
-                    <span class="text-[10px] sm:text-xs mt-1 uppercase opacity-60">minutes</span>
+                    <span class="bg-white/10 rounded-xl px-3 py-2 sm:px-6 sm:py-5 text-2xl sm:text-4xl font-mono">${m}</span>
+                    <span class="text-[8px] sm:text-xs mt-1 uppercase opacity-60">minutes</span>
                 </div>
-                <div class="text-3xl sm:text-5xl pt-2">:</div>
+                <div class="text-2xl sm:text-4xl pt-2">:</div>
                 <div class="flex flex-col items-center">
-                    <span class="bg-white/10 rounded-xl px-4 py-3 sm:px-6 sm:py-5 text-3xl sm:text-5xl font-mono">${s}</span>
-                    <span class="text-[10px] sm:text-xs mt-1 uppercase opacity-60">secondes</span>
+                    <span class="bg-white/10 rounded-xl px-3 py-2 sm:px-6 sm:py-5 text-2xl sm:text-4xl font-mono">${s}</span>
+                    <span class="text-[8px] sm:text-xs mt-1 uppercase opacity-60">secondes</span>
                 </div>
             </div>
         `;
@@ -192,7 +178,6 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Modal détails
     function openDetails(orderId) {
         const data = ordersData.find(o => o.id === orderId);
         if (!data) return;
@@ -208,20 +193,18 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-6">
                     <div class="bg-green-50 rounded-2xl p-5 sm:p-8 text-center border border-green-100">
                         <p class="text-xs sm:text-sm text-gray-500 uppercase tracking-widest mb-2">Montant investi</p>
-                        <p class="text-3xl sm:text-5xl font-black text-green-700">$${parseFloat(data.invested).toLocaleString()}</p>
-                        <p class="text-sm sm:text-xl text-green-600/70 mt-2 font-bold">≈ ${(data.invested * 600).toLocaleString()} FCFA</p>
+                        <p class="text-3xl sm:text-4xl font-black text-green-700">${Number(data.invested).toLocaleString('fr-FR')} ${CURRENCY}</p>
                     </div>
                     <div class="bg-yellow-50 rounded-2xl p-5 sm:p-8 text-center border border-yellow-100">
                         <p class="text-xs sm:text-sm text-gray-500 uppercase tracking-widest mb-2">Gain journalier</p>
-                        <p class="text-3xl sm:text-5xl font-black text-yellow-600">$${parseFloat(data.dayIncome).toFixed(2)}</p>
-                        <p class="text-sm sm:text-xl text-yellow-600/70 mt-2 font-bold">≈ ${(data.dayIncome * 600).toLocaleString()} FCFA</p>
+                        <p class="text-3xl sm:text-4xl font-black text-yellow-600">${Number(data.dayIncome).toLocaleString('fr-FR')} ${CURRENCY}</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     <div class="bg-blue-50/50 rounded-xl p-3 sm:p-5 border border-blue-100">
                         <p class="text-[10px] sm:text-xs text-gray-400 uppercase mb-1">Total Cumulé</p>
-                        <p class="text-base sm:text-xl font-bold text-blue-700">$${parseFloat(data.earnedSoFar).toFixed(2)}</p>
+                        <p class="text-base sm:text-xl font-bold text-blue-700">${Number(data.earnedSoFar).toLocaleString('fr-FR')} ${CURRENCY}</p>
                     </div>
                     <div class="bg-indigo-50/50 rounded-xl p-3 sm:p-5 border border-indigo-100">
                         <p class="text-[10px] sm:text-xs text-gray-400 uppercase mb-1">Date début</p>

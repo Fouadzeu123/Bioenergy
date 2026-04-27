@@ -8,10 +8,9 @@
     $phonePrefix = ($userCountry === 'CI') ? '225' : '237';
     $countryName  = ($userCountry === 'CI') ? "Côte d'Ivoire" : 'Cameroun';
     $countryFlag  = ($userCountry === 'CI') ? '🇨🇮' : '🇨🇲';
-    $minDepot = strtolower($user->username ?? '') === 'boris' ? 0.1 : 5;
+    $minDepot = 1000;
 
-    $localRate = config('notchpay.usd_to_xaf', 600);
-    $localSymbol = 'CFA';
+    $currency = $user->currency;
 
     $detectedOperator = 'UNKNOWN';
     if ($phone) {
@@ -23,10 +22,6 @@
         if ($userCountry === 'CI') {
             // Côte d'Ivoire (new 10-digit format: prefix is first 2 digits)
             $prefix2 = substr($phoneStr, 0, 2);
-            $mtnCI    = ['05','25','45','65','85','07','27','47','67','87']; // MTN starts with 05/07
-            $orangeCI = ['07','27','47','67','87'];
-            $moovCI   = ['01','21','41','61','81'];
-            // Simplified: check first 2 digits
             if (in_array($prefix2, ['05','25','45','65','85'])) $detectedOperator = 'MTN';
             elseif (in_array($prefix2, ['07','27','47','67','87'])) $detectedOperator = 'ORANGE';
             elseif (in_array($prefix2, ['01','21','41','61','81'])) $detectedOperator = 'MOOV';
@@ -42,9 +37,6 @@
         }
     }
 
-    $lastPayment = session('last_payment');
-    if ($lastPayment) session()->forget('last_payment');
-
     $depots = $depots ?? collect();
 @endphp
 
@@ -54,7 +46,7 @@
 <div class="px-4 md:px-0 max-w-2xl mx-auto space-y-6">
 
         <!-- Flash messages -->
-        @if(session('success') && !session('last_payment'))
+        @if(session('success'))
             <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl text-center font-medium shadow-sm">
                 {{ session('success') }}
             </div>
@@ -70,8 +62,7 @@
             <div>
                 <p class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Solde Actuel</p>
                 <div class="flex items-baseline gap-2 mt-1">
-                    <p class="text-3xl font-extrabold text-gray-800">{{ number_format($balance, 2) }} $</p>
-                    <p class="text-sm font-medium text-gray-400">≈ {{ number_format(round($balance * $localRate)) }} FCFA</p>
+                    <p class="text-3xl font-extrabold text-gray-800">{{ fmtCurrency($balance) }}</p>
                 </div>
             </div>
             <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
@@ -100,7 +91,7 @@
                             <div class="text-left leading-tight">
                                 <span class="block font-bold text-emerald-800">Mobile Money</span>
                                 <span class="text-xs text-emerald-600">
-                                    {{ $countryFlag }} {{ $userCountry === 'CI' ? 'MTN, Orange & Moov (Côte d\'Ivoire)' : 'MTN & Orange (Cameroun)' }}
+                                    {{ $countryFlag }} {{ $userCountry === 'CI' ? 'MTN, Orange & Moov' : 'MTN & Orange' }}
                                 </span>
                             </div>
                         </div>
@@ -110,22 +101,20 @@
                 <!-- Saisie Montant -->
                 <div>
                     <label class="block font-semibold text-gray-700 mb-3 text-sm flex justify-between">
-                        Montant à déposer (USD)
-                        <span class="text-xs text-gray-400 font-normal">Min. {{ $minDepot }}$</span>
+                        Montant à déposer ({{ $currency }})
+                        <span class="text-xs text-gray-400 font-normal">Min. {{ number_format($minDepot, 0, '.', ' ') }} {{ $currency }}</span>
                     </label>
                     <div class="relative">
-                        <span class="absolute left-4 py-4 text-gray-400 font-bold text-xl">$</span>
-                        <input type="number" name="amount" id="amountUsd" step="0.01" min="{{ $minDepot }}" required
-                               class="w-full pl-10 pr-4 py-4 text-2xl font-bold bg-gray-50 border border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition"
-                               placeholder="{{ $minDepot }}.00" value="{{ old('amount') }}">
+                        <input type="number" name="amount" id="amount" step="1" min="{{ $minDepot }}" required
+                               class="w-full px-6 py-4 text-2xl font-bold bg-gray-50 border border-gray-200 rounded-2xl focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 focus:bg-white transition"
+                               placeholder="{{ $minDepot }}" value="{{ old('amount') }}">
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-xl">{{ $currency }}</span>
                     </div>
 
-                    <p class="text-right text-emerald-600 font-bold text-sm mt-2" id="amountFcfa">0 {{ $localSymbol }}</p>
-
                     <div class="grid grid-cols-3 gap-3 mt-4">
-                        <button type="button" data-amount="10" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">10 $</button>
-                        <button type="button" data-amount="50" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">50 $</button>
-                        <button type="button" data-amount="100" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">100 $</button>
+                        <button type="button" data-amount="5000" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">5 000</button>
+                        <button type="button" data-amount="10000" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">10 000</button>
+                        <button type="button" data-amount="50000" class="quick-amount bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-300 text-gray-600 hover:text-emerald-700 font-semibold py-2 rounded-xl transition">50 000</button>
                     </div>
                 </div>
 
@@ -156,7 +145,7 @@
             </form>
         </div>
 
-        <!-- Historique abrégé (Optionnel, on peut le rendre plus discret) -->
+        <!-- Historique abrégé -->
         <div class="mt-8 text-sm">
             <div class="flex items-center justify-between mb-4 px-2">
                 <h3 class="font-bold text-gray-700">Derniers dépôts</h3>
@@ -170,12 +159,12 @@
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><i class="fas fa-arrow-down"></i></div>
                                 <div>
-                                    <p class="font-bold text-gray-800">{{ number_format($depot->montant ?? $depot->amount, 2) }} $</p>
+                                    <p class="font-bold text-gray-800">{{ fmtCurrency($depot->montant) }}</p>
                                     <p class="text-xs text-gray-400">{{ $depot->created_at->format('d M, H:i') }}</p>
                                 </div>
                             </div>
                             <div class="text-right">
-                                <p class="text-xs font-medium text-gray-500 mb-1">{{ $depot->gateway === 'notchpay' ? 'NotchPay' : ($depot->operator ?? 'Mobile Money') }}</p>
+                                <p class="text-xs font-medium text-gray-500 mb-1">{{ $depot->operator ?? 'Mobile Money' }}</p>
                                 @if($depot->status === 'completed')
                                     <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-green-100 text-green-700">Crédité</span>
                                 @elseif(in_array($depot->status, ['failed', 'canceled', 'rejected']))
@@ -198,28 +187,12 @@
 </div>
 
 <script>
-    const rate = {{ $localRate }};
-    const usdInput = document.getElementById('amountUsd');
-    const fcfaOutput = document.getElementById('amountFcfa');
-
-    function updateFcfa() {
-        const usd = parseFloat(usdInput.value) || 0;
-        const local = Math.round(usd * rate);
-        fcfaOutput.textContent = '≈ ' + local.toLocaleString('fr-FR') + ' {{ $localSymbol }}';
-    }
-
-    usdInput?.addEventListener('input', updateFcfa);
-
     document.querySelectorAll('.quick-amount').forEach(btn => {
         btn.addEventListener('click', () => {
-            usdInput.value = btn.dataset.amount;
-            updateFcfa();
+            document.getElementById('amount').value = btn.dataset.amount;
         });
     });
-
-    updateFcfa();
 </script>
 
-<!-- Add Animate.css if not present globally -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </x-layouts>

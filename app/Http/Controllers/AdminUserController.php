@@ -130,7 +130,7 @@ class AdminUserController extends Controller
             'description' => $request->description ?? 'Bonus ajouté par l’administrateur',
         ]);
 
-        return back()->with('success', "Bonus de {$request->montant} $ ajouté");
+        return back()->with('success', "Bonus de {$request->montant} {$user->currency} ajouté");
     }
 
     public function resetPassword($id)

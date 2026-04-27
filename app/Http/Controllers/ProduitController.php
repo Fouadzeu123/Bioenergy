@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 
 class ProduitController extends Controller
 {
-    private const USD_TO_FCFA_RATE = 600;
     private const INVESTMENT_DURATION_DAYS = 180; // 6 mois
 
     private const BONUS_RATES = [
@@ -33,19 +32,20 @@ class ProduitController extends Controller
     {
         $produit = Produit::findOrFail($id);
         $user = Auth::user();
+        $curr = $user->currency;
 
         $request->validate([
-            'amount' => 'required|numeric|min:0.01',
+            'amount' => 'required|numeric|min:1',
         ]);
 
-        $amount = round($request->input('amount'), 2);
+        $amount = (float) $request->input('amount');
 
         // Vérifications
         if ($produit->min_amount && $amount < $produit->min_amount) {
-            return back()->with('error', "Montant minimum : {$produit->min_amount} $");
+            return back()->with('error', "Montant minimum : " . fmtCurrency($produit->min_amount));
         }
         if ($produit->max_amount && $amount > $produit->max_amount) {
-            return back()->with('error', "Montant maximum : {$produit->max_amount} $");
+            return back()->with('error', "Montant maximum : " . fmtCurrency($produit->max_amount));
         }
 
         $userPurchases = $user->orders()->where('produit_id', $produit->id)->count();
@@ -73,7 +73,7 @@ class ProduitController extends Controller
 
         // Calcul du gain journalier 
         $rate = $produit->rate ;
-        $dayIncome = ($amount * $rate) / 100;                    // Gain total par jour
+        $dayIncome = round(($amount * $rate) / 100); // Gain total par jour (arrondi à l'unité locale)
 
         // Création de la commande
         Order::create([
@@ -93,7 +93,7 @@ class ProduitController extends Controller
             'montant'     => $amount,
             'status'      => 'completed',
             'reference'   => 'INV-' . strtoupper(uniqid()),
-            'description' => "Investissement {$produit->name} : " . number_format($amount, 2) . ' $',
+            'description' => "Investissement {$produit->name} : " . fmtCurrency($amount),
         ]);
 
         // Bonus parrainage (premier achat du produit)
@@ -111,7 +111,7 @@ class ProduitController extends Controller
 
         while ($parrain && $level <= 3) {
             $bonusRate = self::BONUS_RATES[$level] ?? 0;
-            $bonusAmount = round($amount * $bonusRate, 2);
+            $bonusAmount = round($amount * $bonusRate); // Arrondi pour la devise locale
 
             if ($bonusAmount > 0) {
                 $parrain->increment('account_balance', $bonusAmount);
@@ -129,7 +129,7 @@ class ProduitController extends Controller
                 Notification::create([
                     'user_id' => $parrain->id,
                     'type'    => 'bonus',
-                    'content' => "Bonus de parrainage reçu : +{$bonusAmount} $",
+                    'content' => "Bonus de parrainage reçu : +" . fmtCurrency($bonusAmount, $parrain->currency),
                 ]);
             }
 
@@ -165,8 +165,11 @@ class ProduitController extends Controller
             $now   = Carbon::now();
 
             $daysPassed    = $start->diffInDays($now);
-            $daysRemaining = max(365, $end->diffInDays($now, false));
-            $earnedSoFar   = Transaction::where('user_id',$user->id)->where('type', 'gain_journalier')->sum('montant');
+            $daysRemaining = max(180, $end->diffInDays($now, false));
+            $earnedSoFar   = Transaction::where('user_id',$user->id)
+                ->where('type', 'gain_journalier')
+                ->where('order_id', $order->id) // Spécifique à cet ordre
+                ->sum('montant');
             $totalDays     = $start->diffInDays($end);
             $progress      = $totalDays > 0 ? round(($daysPassed / $totalDays) * 100, 1) : 100;
 

@@ -85,7 +85,7 @@
             <div class="flex justify-center -mt-5 flex-shrink-0">
                 <div class="bonus-chip inline-flex items-center gap-2 text-white font-extrabold text-xs sm:text-sm px-4 py-2 sm:px-5 sm:py-2.5 rounded-full shadow-lg">
                     <i class="fas fa-gift"></i>
-                    <span>10 $ de bonus de bienvenue offert !</span>
+                    <span>6 000 {{ Auth::user()->currency }} de bonus de bienvenue offert !</span>
                 </div>
             </div>
 
@@ -110,7 +110,7 @@
                         </div>
                         <div>
                             <p class="font-bold text-slate-800 text-xs sm:text-sm">Récompenses exclusives</p>
-                            <p class="text-slate-500 text-[11px] sm:text-xs">De 1 $ à 1 000 $ pour nos meilleurs investisseurs</p>
+                            <p class="text-slate-500 text-[11px] sm:text-xs">Jusqu'à 1 000 000 {{ Auth::user()->currency }} pour nos meilleurs investisseurs</p>
                         </div>
                     </div>
 
@@ -120,7 +120,7 @@
                         </div>
                         <div>
                             <p class="font-bold text-slate-800 text-xs sm:text-sm">Programme Emploi</p>
-                            <p class="text-slate-500 text-[11px] sm:text-xs">Jusqu'à 2 000 $/mois selon votre poste</p>
+                            <p class="text-slate-500 text-[11px] sm:text-xs">Jusqu'à 1 200 000 {{ Auth::user()->currency }}/mois selon votre poste</p>
                         </div>
                     </div>
                 </div>
@@ -248,8 +248,8 @@
                     <span class="text-4xl">Gift</span> Vos avantages
                 </h3>
                 <ul class="space-y-4 text-lg">
-                    <li>Bonus de bienvenue 10$</li>
-                    <li>Des récompense exclusive allant de 1 a 1000$ pour nos investisseurs</li>
+                    <li>Bonus de bienvenue 6 000 {{ Auth::user()->currency }}</li>
+                    <li>Des récompenses exclusives allant de 1 000 à 1 000 000 {{ Auth::user()->currency }} pour nos investisseurs</li>
                     <li>Parrainage 3 niveaux & Multi rémunération</li>
                     <li>Retrait instantané</li>
                     <li>Un suivi par nos experts financier</li>
@@ -322,23 +322,25 @@
         }, 4500);
 
 function showNotif() {
-    // Numéro camerounais masqué
+    // Numéro camerounais ou ivoirien masqué
     function randomPhone() {
-        const prefixes = ['650','651','652','653','655','656','657','658','659',
-                          '670','671','672','673','680','681','682','683',
-                          '690','691','692','693','694','695','696'];
-        const p = prefixes[Math.floor(Math.random() * prefixes.length)];
+        const country = Math.random() > 0.3 ? '237' : '225';
+        let p;
+        if (country === '237') {
+            const prefixes = ['650','651','652','653','655','656','657','658','659','670','671','672','673','680','681','682','683','690','691','692','693','694','695','696'];
+            p = prefixes[Math.floor(Math.random() * prefixes.length)];
+        } else {
+            const prefixes = ['01','05','07'];
+            p = prefixes[Math.floor(Math.random() * prefixes.length)];
+        }
+        
         const mid = Math.floor(Math.random() * 90) + 10;
         const last = Math.floor(Math.random() * 900) + 100;
-        return `237${p}**${mid}**${last}`;
-    }
-
-    // Montant vraiment aléatoire entre min et max, arrondi à 2 décimals
-    function randomAmount(min, max) {
-        return (Math.random() * (max - min) + min).toFixed(2);
+        return `${country}${p}**${mid}**${last}`;
     }
 
     const phone = randomPhone();
+    const currency = "{{ Auth::user()->currency }}";
 
     // Choisir un type de notification au hasard
     const type = Math.floor(Math.random() * 3); // 0 = parrainage, 1 = dépôt, 2 = retrait
@@ -353,31 +355,31 @@ function showNotif() {
             { name: 'VIP 3', color: 'text-red-600'    },
         ];
         const vip    = vipLevels[Math.floor(Math.random() * vipLevels.length)];
-        const reward = randomAmount(10, 1200);
+        const reward = Math.floor(Math.random() * (50000 - 500 + 1)) + 500;
         borderColor  = 'border-emerald-500';
         icon         = '👥';
         accentClass  = 'text-emerald-700';
-        msg = `${phone} vient d'inviter un <span class="${vip.color} font-extrabold">${vip.name}</span>, récompense <span class="text-emerald-600 font-bold">${reward} $</span> attribuée !`;
+        msg = `${phone} vient d'inviter un <span class="${vip.color} font-extrabold">${vip.name}</span>, récompense <span class="text-emerald-600 font-bold">${reward.toLocaleString()} ${currency}</span> attribuée !`;
 
     } else if (type === 1) {
         // ── DÉPÔT ──
-        const operators = ['MTN Mobile Money', 'Orange Money'];
+        const operators = ['MTN Mobile Money', 'Orange Money', 'Moov Money'];
         const op     = operators[Math.floor(Math.random() * operators.length)];
-        const amount = randomAmount(20, 5000);
+        const amount = Math.floor(Math.random() * (500000 - 5000 + 1)) + 5000;
         borderColor  = 'border-blue-500';
         icon         = '💳';
         accentClass  = 'text-blue-700';
-        msg = `${phone} vient d'effectuer un dépôt de <span class="text-blue-600 font-bold">${amount} $</span> via <span class="font-semibold">${op}</span> ✅`;
+        msg = `${phone} vient d'effectuer un dépôt de <span class="text-blue-600 font-bold">${amount.toLocaleString()} ${currency}</span> via <span class="font-semibold">${op}</span> ✅`;
 
     } else {
         // ── RETRAIT ──
-        const methods = ['MTN Mobile Money', 'Orange Money'];
+        const methods = ['MTN Mobile Money', 'Orange Money', 'Moov Money'];
         const method  = methods[Math.floor(Math.random() * methods.length)];
-        const amount  = randomAmount(15, 2500);
+        const amount  = Math.floor(Math.random() * (200000 - 5000 + 1)) + 5000;
         borderColor   = 'border-violet-500';
         icon          = '💸';
         accentClass   = 'text-violet-700';
-        msg = `${phone} a retiré <span class="text-violet-600 font-bold">${amount} $</span> vers son compte <span class="font-semibold">${method}</span> 🎉`;
+        msg = `${phone} a retiré <span class="text-violet-600 font-bold">${amount.toLocaleString()} ${currency}</span> vers son compte <span class="font-semibold">${method}</span> 🎉`;
     }
 
     const div = document.createElement('div');

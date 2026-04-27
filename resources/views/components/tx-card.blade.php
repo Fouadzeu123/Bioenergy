@@ -1,8 +1,7 @@
-@props(['tx', 'types', 'statuses', 'rate'])
+@props(['tx', 'types', 'statuses'])
 
 @php
-    $montant_usd = $tx->montant;
-    $montant_fcfa = round(($montant_usd * $rate), 2);
+    $montant = $tx->montant;
     $typeLabel = $types[$tx->type] ?? ucfirst($tx->type);
     
     // Configurer l'icône, la couleur, selon le type
@@ -24,7 +23,7 @@
         $bgIcon = 'bg-red-100';
         $amountColor = 'text-red-600';
         $amountSign = '-';
-    } elseif (in_array($tx->type, ['bonus_vip', 'bonus_journalier', 'gain_journalier', 'parrainage'])) {
+    } elseif (in_array($tx->type, ['bonus_vip', 'bonus_journalier', 'gain_journalier', 'parrainage', 'bonus', 'cadeau'])) {
         $icon = 'gift';
         $iconColor = 'text-purple-600';
         $bgIcon = 'bg-purple-100';
@@ -45,8 +44,7 @@
     $txJson = json_encode([
         'reference' => $tx->reference,
         'type' => $tx->type,
-        'montant_fcfa' => $montant_fcfa,
-        'montant_usd' => $montant_usd,
+        'montant' => $montant,
         'method' => $tx->method,
         'status' => $tx->status,
         'created_at' => $tx->created_at ? $tx->created_at->toDateTimeString() : null,
@@ -78,9 +76,8 @@
         <!-- Amount & Status -->
         <div class="text-right">
             <p class="font-bold {{ $amountColor }} text-lg">
-                {{ $amountSign }}{{ number_format($montant_usd, 2, '.', ',') }} $
+                {{ $amountSign }}{{ fmtCurrency($montant) }}
             </p>
-            <p class="text-xs text-gray-400 font-medium my-0.5">{{ number_format($montant_fcfa, 0, ',', ' ') }} FCFA</p>
             
             <span class="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide mt-1
                 @if($statusColor === 'green') bg-green-100 text-green-700

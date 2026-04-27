@@ -1,9 +1,5 @@
 <x-layouts :title="'Présentation de l\'Entreprise'" :level="'Public'">
 
-    @php
-        $USD_TO_F = 600;
-    @endphp
-
     <!-- Bannière -->
     <div class="w-full relative">
         <img src="{{ asset('images/presentation.jpg') }}"
@@ -88,7 +84,7 @@
                 <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-700 font-bold">2024</div>
                 <div>
                     <h3 class="font-semibold text-gray-800">Croissance et impact</h3>
-                    <p class="text-gray-600">Atteinte de 10 000 investisseurs et extension des opérations dans plusieurs régions, avec renforcement des partenariats locaux.</p>
+                    <p class="text-gray-600">Atteinte de 10 000 investisseurs et extension des opérations dans plusieurs régions, avec renforcement des partenariats locales.</p>
                 </div>
             </div>
         </div>

@@ -22,10 +22,6 @@
 </style>
 @endpush
 
-@php
-    $rate = $rateFCFAperUSD ?? 650;
-@endphp
-
 <div class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
     <!-- Header Premium -->
@@ -34,7 +30,7 @@
         <p class="text-emerald-100 text-lg">Vue d'ensemble complète • {{ now()->translatedFormat('d F Y') }}</p>
     </div>
 
-    <!-- 8 Cartes Statistiques (toutes les données viennent du controller) -->
+    <!-- 8 Cartes Statistiques -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         <div class="stat-card rounded-2xl p-6 border-l-4 border-emerald-500">
@@ -54,8 +50,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Dépôts totaux</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">{{ fmtUSD($totalDepotsUsd) }}</p>
-                    <p class="text-xs text-gray-500">{{ fmtFCFA($totalDepotsFcfa) }}</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalDepotsUsd) }}</p>
                 </div>
                 <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-arrow-trend-up text-2xl text-blue-600"></i>
@@ -66,8 +61,8 @@
         <div class="stat-card rounded-2xl p-6 border-l-4 border-red-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600">Retraits</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">{{ fmtUSD($totalRetraitsUsd) }}</p>
+                    <p class="text-sm font-medium text-gray-600">Retraits totaux</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalRetraitsUsd) }}</p>
                     <p class="text-xs text-red-600">{{ $pendingWithdrawals }} en attente</p>
                 </div>
                 <div class="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center">
@@ -80,8 +75,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Bonus distribués</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">{{ fmtUSD($totalBonusUsd) }}</p>
-                    <p class="text-xs text-gray-500">{{ fmtFCFA($totalBonusFcfa) }}</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($totalBonusUsd) }}</p>
                 </div>
                 <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-gift text-2xl text-amber-600"></i>
@@ -93,8 +87,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Revenus nets</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">{{ fmtUSD($netRevenueUsd) }}</p>
-                    <p class="text-xs text-purple-600">{{ fmtFCFA($netRevenueFcfa) }}</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">{{ fmtCurrency($netRevenueUsd) }}</p>
                 </div>
                 <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-sack-dollar text-2xl text-purple-600"></i>
@@ -105,12 +98,12 @@
         <div class="stat-card rounded-2xl p-6 border-l-4 border-green-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600">Taux de conversion</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-2">1 $ = {{ number_format($rate, 0, ',', ' ') }} F</p>
-                    <p class="text-xs text-green-600">Fixe</p>
+                    <p class="text-sm font-medium text-gray-600">Pays actifs</p>
+                    <p class="text-2xl font-extrabold text-gray-900 mt-2">CM / CI</p>
+                    <p class="text-xs text-green-600">XAF / XOF</p>
                 </div>
                 <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center">
-                    <i class="fas fa-dollar-sign text-2xl text-green-600"></i>
+                    <i class="fas fa-globe-africa text-2xl text-green-600"></i>
                 </div>
             </div>
         </div>
@@ -118,11 +111,11 @@
         <div class="stat-card rounded-2xl p-6 border-l-4 border-pink-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600">VIP Actifs (niveau 3+)</p>
+                    <p class="text-sm font-medium text-gray-600">VIP Actifs</p>
                     <p class="text-3xl font-extrabold text-gray-900 mt-2">
                         {{ collect($vipChartData ?? [])->slice(2)->sum() }}
                     </p>
-                    <p class="text-xs text-pink-600">Haut du réseau</p>
+                    <p class="text-xs text-pink-600">Niveaux 3+</p>
                 </div>
                 <div class="w-14 h-14 bg-pink-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-crown text-2xl text-pink-600"></i>
@@ -133,11 +126,11 @@
         <div class="stat-card rounded-2xl p-6 border-l-4 border-indigo-500">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600">Croissance mensuelle</p>
+                    <p class="text-sm font-medium text-gray-600">Croissance</p>
                     <p class="text-3xl font-extrabold text-gray-900 mt-2">
                         {{ $chartDepots && count($chartDepots) > 1 ? round((end($chartDepots) - $chartDepots[0]) / max(1, $chartDepots[0]) * 100, 1) : 0 }}%
                     </p>
-                    <p class="text-xs text-indigo-600">vs il y a 30 jours</p>
+                    <p class="text-xs text-indigo-600">vs 30 jours</p>
                 </div>
                 <div class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center">
                     <i class="fas fa-rocket text-2xl text-indigo-600"></i>
@@ -149,23 +142,23 @@
     <!-- Graphiques dynamiques -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="chart-container">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Évolution des flux financiers (30 jours)</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Flux financiers (30 jours)</h3>
             <canvas id="flowChart"></canvas>
         </div>
 
         <div class="chart-container">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Répartition des utilisateurs par niveau VIP</h3>
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Répartition VIP</h3>
             <canvas id="vipChart"></canvas>
         </div>
     </div>
 
     <!-- Dernières activités -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Derniers utilisateurs -->
+        <!-- Nouveaux inscrits -->
         <div class="bg-white rounded-2xl shadow-xl p-6">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-emerald-700">Nouveaux inscrits</h3>
-                <a href="{{ route('admin.users.index') ?? '#' }}" class="text-sm text-emerald-600 hover:underline">Voir tous</a>
+                <a href="{{ route('admin.users.index') }}" class="text-sm text-emerald-600 hover:underline">Voir tous</a>
             </div>
             <div class="space-y-4">
                 @foreach($recentUsers->take(6) as $user)
@@ -207,7 +200,7 @@
                         </div>
                         <div class="text-right">
                             <p class="font-bold {{ $tx->type === 'depot' ? 'text-emerald-700' : 'text-red-700' }}">
-                                {{ $tx->type === 'depot' ? '+' : '-' }}{{ fmtUSD($tx->montant_usd) }}
+                                {{ $tx->type === 'depot' ? '+' : '-' }}{{ fmtCurrency($tx->montant) }}
                             </p>
                             @if($tx->status === 'pending')
                                 <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded mt-1 inline-block">En cours</span>
@@ -223,7 +216,6 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Graphique 1 : Flux financiers (données réelles du controller)
     new Chart(document.getElementById('flowChart'), {
         type: 'line',
         data: {
@@ -241,7 +233,6 @@
         }
     });
 
-    // Graphique 2 : Répartition VIP (données réelles)
     new Chart(document.getElementById('vipChart'), {
         type: 'doughnut',
         data: {
@@ -256,8 +247,7 @@
         options: {
             responsive: true,
             plugins: {
-                legend: { position: 'right' },
-                tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed} utilisateurs` } }
+                legend: { position: 'right' }
             }
         }
     });

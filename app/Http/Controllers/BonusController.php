@@ -64,6 +64,6 @@ public function reclamer(Request $request)
     // Marque comme utilisé
     $bonus->users()->attach($user->id);
 
-    return back()->with('success', "🎉 Bonus de {$bonus->montant} $ crédité avec succès !");
+    return back()->with('success', "🎉 Bonus de " . fmtCurrency($bonus->montant) . " crédité avec succès !");
 }
 }

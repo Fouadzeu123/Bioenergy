@@ -2,6 +2,7 @@
 
 @php
     $user = Auth::user();
+    $currency = $user->currency;
 @endphp
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -98,7 +99,7 @@
                         </div>
                         <p class="text-slate-400 text-sm font-medium">Dépôts équipe</p>
                     </div>
-                    <p class="text-3xl font-extrabold text-white">{{ number_format($depotEquipe, 2) }} $</p>
+                    <p class="text-2xl font-extrabold text-white">{{ number_format($depotEquipe, 0, '.', ' ') }} <span class="text-sm font-normal">{{ $currency }}</span></p>
                 </div>
 
                 {{-- Mes dépôts --}}
@@ -109,7 +110,7 @@
                         </div>
                         <p class="text-slate-400 text-sm font-medium">Mes dépôts</p>
                     </div>
-                    <p class="text-3xl font-extrabold text-white">{{ number_format($depotPropre, 2) }} $</p>
+                    <p class="text-2xl font-extrabold text-white">{{ number_format($depotPropre, 0, '.', ' ') }} <span class="text-sm font-normal">{{ $currency }}</span></p>
                 </div>
             </div>
 
@@ -122,7 +123,7 @@
                     <div>
                         <p class="text-emerald-300 text-xs font-bold uppercase tracking-widest">Poste actuel atteint</p>
                         <p class="text-white font-extrabold text-xl">{{ $posteActuel['titre'] }}</p>
-                        <p class="text-emerald-400 font-bold">+ {{ number_format($posteActuel['revenu'], 0) }} $/mois</p>
+                        <p class="text-emerald-400 font-bold">+ {{ number_format($posteActuel['revenu'], 0, '.', ' ') }} {{ $currency }}/mois</p>
                     </div>
                     <div class="ml-auto">
                         <span class="glow-eligible inline-block w-4 h-4 bg-emerald-400 rounded-full"></span>
@@ -174,7 +175,7 @@
                             {{-- Revenu mensuel --}}
                             <div class="bg-gradient-to-r {{ $poste['gradient'] }} rounded-xl px-4 py-2 text-white text-center shadow">
                                 <p class="text-xs font-semibold opacity-80">Revenu mensuel</p>
-                                <p class="text-2xl font-extrabold">{{ number_format($poste['revenu'], 0) }} $</p>
+                                <p class="text-xl font-extrabold">{{ number_format($poste['revenu'], 0, '.', ' ') }} {{ $currency }}</p>
                             </div>
 
                             @if($eli)
@@ -218,7 +219,7 @@
                                             <i class="fas fa-users text-blue-400"></i> Dépôts équipe
                                         </span>
                                         <span class="text-white text-xs font-bold">
-                                            {{ number_format($depotEquipe, 0) }} $ / {{ number_format($c['depot_equipe'], 0) }} $
+                                            {{ number_format($depotEquipe, 0, '.', ' ') }} / {{ number_format($c['depot_equipe'], 0, '.', ' ') }} {{ $currency }}
                                         </span>
                                     </div>
                                     <div class="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -235,7 +236,7 @@
                                             <i class="fas fa-wallet text-amber-400"></i> Mes propres dépôts
                                         </span>
                                         <span class="text-white text-xs font-bold">
-                                            {{ number_format($depotPropre, 0) }} $ / {{ number_format($c['depot_propre'], 0) }} $
+                                            {{ number_format($depotPropre, 0, '.', ' ') }} / {{ number_format($c['depot_propre'], 0, '.', ' ') }} {{ $currency }}
                                         </span>
                                     </div>
                                     <div class="h-2 bg-white/10 rounded-full overflow-hidden">

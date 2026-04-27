@@ -52,7 +52,7 @@
 
                         <!-- Icône appareil photo -->
                         <label for="profile_image" class="absolute bottom-2 right-2 bg-green-600 text-white p-3 rounded-full cursor-pointer shadow-lg hover:bg-green-700 transition transform hover:scale-110">
-                            Camera
+                            <i class="fas fa-camera"></i>
                         </label>
                         <input type="file" name="profile_image" id="profile_image" accept="image/*" class="hidden">
                     </div>
@@ -76,7 +76,7 @@
                             Téléphone
                         </label>
                         <div class="flex items-center gap-3 px-5 py-4 border-2 border-gray-200 rounded-2xl focus-within:border-green-500 transition-all duration-300">
-                            <span class="text-green-600 font-bold border-r border-gray-200 pr-3">+237</span>
+                            <span class="text-green-600 font-bold border-r border-gray-200 pr-3">+{{ $user->country_code }}</span>
                             <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
                                    class="flex-1 bg-transparent focus:outline-none text-lg font-medium">
                         </div>
@@ -130,7 +130,7 @@
                     <button type="submit"
                             class="bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-xl px-12 py-5 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3">
                         Enregistrer les modifications
-                        <span class="text-2xl">Check</span>
+                        <i class="fas fa-check-circle text-2xl"></i>
                     </button>
                 </div>
             </div>
@@ -144,14 +144,5 @@
         </div>
     </div>
 </div>
-
-<!-- Animation au succès (optionnel mais magnifique) -->
-@if(session('success'))
-<script>
-    setTimeout(() => {
-        document.querySelector('.animate-pulse')?.classList.add('animate-bounce');
-    }, 100);
-</script>
-@endif
 
 </x-layouts>
