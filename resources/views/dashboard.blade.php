@@ -259,10 +259,29 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Notifications -->
-    <div id="notifications" class="fixed top-20 right-4 space-y-3 z-40 max-w-sm w-full"></div>
+        <!-- Activité Récente (Tableau) -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 pb-6 mb-10">
+            <h3 class="text-xs font-bold text-gray-400 mb-4 flex items-center gap-2">
+                <i class="fas fa-broadcast-tower text-emerald-500 animate-pulse"></i>
+                Activité en direct
+            </h3>
+            <div class="overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-50">
+                            <th class="pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-1/3">Membre</th>
+                            <th class="pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-1/3 text-center">Action</th>
+                            <th class="pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-1/3 text-right">Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody id="live-activity-table" class="text-xs divide-y divide-gray-50">
+                        <!-- Rempli par JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
     <!-- SCRIPTS -->
     <script>
@@ -318,7 +337,7 @@ function showNotif() {
 
         const mid = Math.floor(Math.random() * 90) + 10;
         const last = Math.floor(Math.random() * 900) + 100;
-        return `${country}${p}**${mid}**${last}`;
+        return `+${country} ${p}**${mid}**${last}`;
     }
 
     const phone = randomPhone();
@@ -327,70 +346,54 @@ function showNotif() {
     // Choisir un type de notification au hasard
     const type = Math.floor(Math.random() * 3); // 0 = parrainage, 1 = dépôt, 2 = retrait
 
-    let msg, borderColor, headerColor, icon, accentClass;
+    let actionText, amountText;
 
     if (type === 0) {
         // ── PARRAINAGE ──
-        const vipLevels = [
-            { name: 'VIP 1', color: 'text-yellow-600' },
-            { name: 'VIP 2', color: 'text-orange-600' },
-            { name: 'VIP 3', color: 'text-red-600'    },
-        ];
-        const vip    = vipLevels[Math.floor(Math.random() * vipLevels.length)];
         const reward = Math.floor(Math.random() * (50000 - 500 + 1)) + 500;
-        borderColor  = 'border-emerald-500';
-        icon         = '👥';
-        accentClass  = 'text-emerald-700';
-        msg = `${phone} vient d'inviter un <span class="${vip.color} font-extrabold">${vip.name}</span>, récompense <span class="text-emerald-600 font-bold">${reward.toLocaleString()} ${currency}</span> attribuée !`;
-
+        actionText = `<span class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-md font-bold text-[9px]">Gagné</span>`;
+        amountText = `<span class="text-emerald-600 font-bold">+${reward.toLocaleString()}</span>`;
     } else if (type === 1) {
         // ── DÉPÔT ──
-        const operators = ['MTN Mobile Money', 'Orange Money', 'Moov Money'];
-        const op     = operators[Math.floor(Math.random() * operators.length)];
         const amount = Math.floor(Math.random() * (500000 - 5000 + 1)) + 5000;
-        borderColor  = 'border-blue-500';
-        icon         = '💳';
-        accentClass  = 'text-blue-700';
-        msg = `${phone} vient d'effectuer un dépôt de <span class="text-blue-600 font-bold">${amount.toLocaleString()} ${currency}</span> via <span class="font-semibold">${op}</span> ✅`;
-
+        actionText = `<span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-md font-bold text-[9px]">Dépôt</span>`;
+        amountText = `<span class="text-blue-600 font-bold">+${amount.toLocaleString()}</span>`;
     } else {
         // ── RETRAIT ──
-        const methods = ['MTN Mobile Money', 'Orange Money', 'Moov Money'];
-        const method  = methods[Math.floor(Math.random() * methods.length)];
         const amount  = Math.floor(Math.random() * (200000 - 5000 + 1)) + 5000;
-        borderColor   = 'border-violet-500';
-        icon          = '💸';
-        accentClass   = 'text-violet-700';
-        msg = `${phone} a retiré <span class="text-violet-600 font-bold">${amount.toLocaleString()} ${currency}</span> vers son compte <span class="font-semibold">${method}</span> 🎉`;
+        actionText = `<span class="bg-violet-50 text-violet-600 px-2 py-1 rounded-md font-bold text-[9px]">Retrait</span>`;
+        amountText = `<span class="text-violet-600 font-bold">-${amount.toLocaleString()}</span>`;
     }
 
-    const div = document.createElement('div');
-    div.className = `bg-white/95 backdrop-blur-lg shadow-2xl rounded-xl px-4 py-3 border-l-4 ${borderColor} animate__animated animate__fadeInRight text-sm`;
-    div.innerHTML = `
-        <div class="flex items-start gap-2">
-            <span class="text-lg leading-none mt-0.5">${icon}</span>
-            <p class="${accentClass} font-semibold leading-snug">${msg}</p>
-        </div>
-        <p class="text-gray-400 text-[10px] mt-1 ml-6">Il y a quelques secondes</p>
+    const tr = document.createElement('tr');
+    tr.className = `animate__animated animate__fadeIn bg-emerald-50/30 transition-all duration-500`;
+    tr.innerHTML = `
+        <td class="py-3 font-semibold text-gray-700 truncate w-1/3">${phone}</td>
+        <td class="py-3 text-center w-1/3">${actionText}</td>
+        <td class="py-3 text-right w-1/3">${amountText} <span class="text-[9px] text-gray-400 ml-1">${currency}</span></td>
     `;
 
-    document.getElementById('notifications').prepend(div);
-
-    // Limiter à 4 notifications visibles simultanément
-    const container = document.getElementById('notifications');
-    while (container.children.length > 2) {
-        container.removeChild(container.lastChild);
-    }
-
-    // Disparition après 7,5s
+    const tbody = document.getElementById('live-activity-table');
+    
+    // Enlever le fond coloré après l'animation
     setTimeout(() => {
-        div.classList.replace('animate__fadeInRight', 'animate__fadeOutRight');
-        setTimeout(() => div.remove(), 800);
-    }, 7500);
+        tr.classList.remove('bg-emerald-50/30');
+    }, 1000);
+
+    tbody.prepend(tr);
+
+    // Garder 5 éléments max
+    if (tbody.children.length > 5) {
+        const last = tbody.lastElementChild;
+        last.classList.replace('animate__fadeIn', 'animate__fadeOut');
+        setTimeout(() => last.remove(), 800);
+    }
 }
-        setInterval(showNotif, 7000);
+        setInterval(showNotif, 3500);
+        setTimeout(showNotif, 1000);
         setTimeout(showNotif, 2500);
-        setTimeout(showNotif, 5000);
+        setTimeout(showNotif, 4500);
+        setTimeout(showNotif, 6500);
     </script>
 
 </x-layouts>
