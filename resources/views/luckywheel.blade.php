@@ -104,11 +104,30 @@
     const wheel = document.getElementById('wheel');
     const spinCountDisplay = document.getElementById('spin-count');
 
-    const prizes = [500, 1200, 5000, 8000, 150000, 500, 1200, 5000];
+    const prizes = [
+        { val: 500 },
+        { val: 'Montre connectée', img: 'watch.png' },
+        { val: 5000 },
+        { val: 'Power Bank', img: 'powerbank.png' },
+        { val: 150000 },
+        { val: 500 },
+        { val: 'Ventilateur', img: 'fan.png' },
+        { val: 5000 }
+    ];
     // Couleurs bleu nuit pour la roue
     const colors = ['#1e3a8a','#2563eb','#1e40af','#0891b2','#1e3a8a','#3b82f6','#1d4ed8','#06b6d4'];
     const totalSlices = prizes.length;
     const sliceDeg = 360 / totalSlices;
+
+    const loadedImages = {};
+    prizes.forEach(p => {
+        if (p.img) {
+            const img = new Image();
+            img.src = '/images/' + p.img;
+            loadedImages[p.img] = img;
+            img.onload = () => drawWheel();
+        }
+    });
 
     function drawWheel() {
         ctx.clearRect(0, 0, 400, 400);
@@ -130,10 +149,18 @@
             ctx.save();
             ctx.translate(200, 200);
             ctx.rotate(((i + 0.5) * sliceDeg * Math.PI) / 180);
-            ctx.textAlign = "right";
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 13px Inter";
-            ctx.fillText(prizes[i].toLocaleString('fr-FR'), 175, 6);
+            
+            if (prizes[i].img && loadedImages[prizes[i].img] && loadedImages[prizes[i].img].complete) {
+                // Dessiner l'image (X vers le bord extérieur, Y centré verticalement)
+                ctx.drawImage(loadedImages[prizes[i].img], 120, -25, 50, 50);
+            } else {
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 13px Inter";
+                let text = typeof prizes[i].val === 'number' ? prizes[i].val.toLocaleString('fr-FR') : prizes[i].val;
+                ctx.fillText(text, 175, 6);
+            }
+            
             ctx.restore();
         }
     }
@@ -154,7 +181,7 @@
             if (data.error) { alert(data.error); return; }
 
             isSpinning = true;
-            const prizeIndex = prizes.indexOf(data.prize);
+            const prizeIndex = prizes.findIndex(p => p.val == data.prize);
             const extraRounds = 5 + Math.floor(Math.random() * 5);
             const targetRotation = 360 * extraRounds + (360 - (prizeIndex * sliceDeg)) - (sliceDeg / 2);
             currentRotation += targetRotation;

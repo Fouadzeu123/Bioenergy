@@ -42,6 +42,28 @@
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
 
+                @if($errors->any())
+                    <div class="bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] p-4 rounded-2xl">
+                        <ul class="list-disc list-inside space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold p-4 rounded-2xl text-center">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold p-4 rounded-2xl text-center">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <div class="space-y-6">
                     <!-- Login Input -->
                     <div class="space-y-2">

@@ -49,17 +49,19 @@ class LuckyWheelController extends Controller
         $prize = 500; // Prix par défaut
 
         if ($globalCount % 120 === 0) {
-            $prize = 8000;
+            $prize = 'Power Bank';
         } elseif ($globalCount % 70 === 0) {
-            $prize = 5000;
+            $prize = 'Ventilateur';
         } elseif ($globalCount % 30 === 0) {
-            $prize = 1200;
+            $prize = 'Montre connectée';
         } elseif (rand(1, 2000) === 777) {
             $prize = 150000;
         }
 
-        // Créditer l'utilisateur
-        $user->increment('account_balance', $prize);
+        // Créditer l'utilisateur uniquement si c'est du cash
+        if (is_numeric($prize)) {
+            $user->increment('account_balance', $prize);
+        }
 
         // Enregistrer la transaction
         Transaction::create([
@@ -68,20 +70,20 @@ class LuckyWheelController extends Controller
             'montant'     => $prize,
             'status'      => 'completed',
             'reference'   => 'LUCKY-' . strtoupper(uniqid()),
-            'description' => "Gain Lucky Wheel : " . fmtCurrency($prize),
+            'description' => "Gain Lucky Wheel : " . (is_numeric($prize) ? fmtCurrency($prize) : $prize),
         ]);
 
         Notification::create([
             'user_id' => $user->id,
             'type'    => 'bonus',
-            'content' => "Bravo ! Vous avez gagné " . fmtCurrency($prize) . " sur la Lucky Wheel !",
+            'content' => "Bravo ! Vous avez gagné " . (is_numeric($prize) ? fmtCurrency($prize) : $prize) . " sur la Lucky Wheel !",
         ]);
 
         return response()->json([
             'prize' => $prize,
             'new_balance' => fmtCurrency($user->account_balance),
             'remaining_spins' => $user->lucky_spins,
-            'message' => "Félicitations ! Vous avez gagné " . fmtCurrency($prize)
+            'message' => "Félicitations ! Vous avez gagné " . (is_numeric($prize) ? fmtCurrency($prize) : $prize)
         ]);
     }
 }
