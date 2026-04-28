@@ -26,25 +26,7 @@
         </div>
 
         <!-- Social Share -->
-        <div class="grid grid-cols-4 gap-4">
-            <a href="https://wa.me/?text={{ urlencode('Rejoins BioEnergy et gagne tous les jours ! 👉 ' . $refUrl) }}" target="_blank" class="flex flex-col items-center gap-2">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.2);">
-                    <i class="fab fa-whatsapp text-lg text-green-400"></i>
-                </div>
-                <span class="text-[10px] font-medium" style="color: #4b5563;">WhatsApp</span>
-            </a>
-            <a href="https://t.me/share/url?url={{ urlencode($refUrl) }}&text={{ urlencode('Rejoins BioEnergy !') }}" target="_blank" class="flex flex-col items-center gap-2">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(0,136,204,0.12); border: 1px solid rgba(0,136,204,0.2);">
-                    <i class="fab fa-telegram-plane text-lg text-sky-400"></i>
-                </div>
-                <span class="text-[10px] font-medium" style="color: #4b5563;">Telegram</span>
-            </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($refUrl) }}" target="_blank" class="flex flex-col items-center gap-2">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(59,89,152,0.12); border: 1px solid rgba(59,89,152,0.2);">
-                    <i class="fab fa-facebook-f text-lg text-indigo-400"></i>
-                </div>
-                <span class="text-[10px] font-medium" style="color: #4b5563;">Facebook</span>
-            </a>
+        <div class="grid grid-cols-1 gap-4">
             <button onclick="copyReferralLink()" class="flex flex-col items-center gap-2">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
                     <i class="fas fa-copy text-lg text-blue-400"></i>
