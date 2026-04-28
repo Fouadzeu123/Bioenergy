@@ -221,20 +221,14 @@ class ProduitController extends Controller
 
         $claimableAmount = 0;
         foreach ($orders as $order) {
-            $startDate = $order->last_gain_at 
-                ? Carbon::parse($order->last_gain_at)->startOfDay()->addDay() 
-                : Carbon::parse($order->start_date)->startOfDay();
+            $today = Carbon::today()->startOfDay();
             
-            $endDate = Carbon::yesterday()->startOfDay();
-            
-            if (!$startDate->isAfter($endDate)) {
-                $currentDate = $startDate->copy();
-                while ($currentDate->lte($endDate)) {
-                    if (!$currentDate->isSunday()) {
-                        $claimableAmount += (float) $order->day_income;
-                    }
-                    $currentDate->addDay();
-                }
+            $validGainDay = !$today->isSunday() && 
+                            $today->isAfter(Carbon::parse($order->start_date)->startOfDay()) &&
+                            ($order->last_gain_at === null || Carbon::parse($order->last_gain_at)->startOfDay()->lt($today));
+
+            if ($validGainDay) {
+                $claimableAmount += (float) $order->day_income;
             }
         }
 

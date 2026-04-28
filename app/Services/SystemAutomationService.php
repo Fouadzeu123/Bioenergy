@@ -36,57 +36,46 @@ class SystemAutomationService
             ->get();
 
         foreach ($orders as $order) {
-            $startDate = $order->last_gain_at 
-                ? Carbon::parse($order->last_gain_at)->startOfDay()->addDay() 
-                : Carbon::parse($order->start_date)->startOfDay();
-            
-            $endDate = Carbon::yesterday()->startOfDay(); // On traite tous les jours révolus
+            $today = Carbon::today()->startOfDay();
 
-            // Si la date de début est dans le futur par rapport à hier, rien à faire
-            if ($startDate->isAfter($endDate)) {
+            // Si la date de début est aujourd'hui ou dans le futur, on ne peut rien réclamer
+            if (!Carbon::parse($order->start_date)->startOfDay()->lt($today)) {
                 continue;
             }
 
-            $currentDate = $startDate->copy();
-            $totalGain = 0;
-            $daysProcessed = 0;
+            $validGainDay = !$today->isSunday() && 
+                            ($order->last_gain_at === null || Carbon::parse($order->last_gain_at)->startOfDay()->lt($today));
 
-            while ($currentDate->lte($endDate)) {
-                // Ignore les dimanches
-                if (!$currentDate->isSunday()) {
-                    $gain = (float) $order->day_income;
-                    if ($gain > 0) {
-                        DB::beginTransaction();
-                        try {
-                            $user->increment('account_balance', $gain);
+            if ($validGainDay) {
+                $gain = (float) $order->day_income;
+                if ($gain > 0) {
+                    DB::beginTransaction();
+                    try {
+                        $user->increment('account_balance', $gain);
 
-                            Transaction::create([
-                                'user_id'     => $user->id,
-                                'type'        => 'gain_journalier',
-                                'montant'     => $gain,
-                                'order_id'    => $order->id,
-                                'status'      => 'completed',
-                                'reference'   => uniqid('GAIN-'),
-                                'description' => 'Gain journalier (' . $currentDate->format('d/m/Y') . ') : ' . ($order->produit->name ?? 'Produit'),
-                                'created_at'  => $currentDate->copy()->setTime(12, 0, 0),
-                            ]);
+                        Transaction::create([
+                            'user_id'     => $user->id,
+                            'type'        => 'gain_journalier',
+                            'montant'     => $gain,
+                            'order_id'    => $order->id,
+                            'status'      => 'completed',
+                            'reference'   => uniqid('GAIN-'),
+                            'description' => 'Gain journalier (' . $today->format('d/m/Y') . ') : ' . ($order->produit->name ?? 'Produit'),
+                            'created_at'  => $today->copy()->setTime(12, 0, 0),
+                        ]);
 
-                            $this->attribuerBonusParrainage($user, $gain, $currentDate);
-                            
-                            DB::commit();
-                            $totalGain += $gain;
-                            $daysProcessed++;
-                        } catch (\Exception $e) {
-                            DB::rollBack();
-                            Log::error("Failed to process gain for User {$user->id}, Order {$order->id} on {$currentDate->toDateString()}: " . $e->getMessage());
-                        }
+                        $this->attribuerBonusParrainage($user, $gain, $today);
+                        
+                        DB::commit();
+                    } catch (\Exception $e) {
+                        DB::rollBack();
+                        Log::error("Failed to process gain for User {$user->id}, Order {$order->id} on {$today->toDateString()}: " . $e->getMessage());
                     }
                 }
-                $currentDate->addDay();
             }
 
-            // On marque que les gains ont été vérifiés jusqu'à hier
-            $order->update(['last_gain_at' => $endDate]);
+            // Mettre à jour last_gain_at à "aujourd'hui" pour s'assurer que les jours passés non réclamés sont perdus
+            $order->update(['last_gain_at' => $today]);
         }
     }
 

@@ -23,12 +23,19 @@ class AdminProduitController extends Controller
         $data = $request->validate([
             'name'        => 'required|string|max:100',
             'description' => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'min_amount'  => 'required|numeric|min:0',
             'max_amount'  => 'nullable|numeric|min:0',
             'rate'        => 'required|numeric|min:0',
             'level'       => 'required|integer|min:0',
             'limit_order' => 'required|integer|min:1',
         ]);
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images/produits'), $imageName);
+            $data['image'] = 'images/produits/' . $imageName;
+        }
 
         Produit::create($data);
         return redirect()->route('admin.produits.index')->with('success', 'Produit créé avec succès.');
@@ -44,12 +51,19 @@ class AdminProduitController extends Controller
         $data = $request->validate([
             'name'        => 'required|string|max:100',
             'description' => 'nullable|string',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'min_amount'  => 'required|numeric|min:0',
             'max_amount'  => 'nullable|numeric|min:0',
             'rate'        => 'required|numeric|min:0',
             'level'       => 'required|integer|min:0',
             'limit_order' => 'required|integer|min:1',
         ]);
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images/produits'), $imageName);
+            $data['image'] = 'images/produits/' . $imageName;
+        }
 
         $produit->update($data);
         return redirect()->route('admin.produits.index')->with('success', 'Produit mis à jour.');

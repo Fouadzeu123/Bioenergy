@@ -51,7 +51,7 @@
 
             <div class="rounded-2xl overflow-hidden transition-all hover:border-blue-500/20" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
                 <div class="relative h-44">
-                    <img src="{{ asset('images/produits/produit' . $produit->id . '.jpg') }}" class="w-full h-full object-cover opacity-70">
+                    <img src="{{ asset($produit->image ? $produit->image : 'images/produits/produit' . $produit->id . '.jpg') }}" class="w-full h-full object-cover opacity-70">
                     <div class="absolute inset-0" style="background: linear-gradient(to top, #0d1117 0%, rgba(13,17,23,0.4) 60%, transparent 100%);"></div>
                     <div class="absolute top-3 left-3">
                         <span class="text-[10px] font-bold px-3 py-1.5 rounded-full" style="background: rgba(59,130,246,0.2); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3);">VIP {{ $produit->level }}</span>
@@ -144,8 +144,8 @@
         const p = produits[id];
         if (!p) return;
         document.getElementById('modalTitle').textContent = p.name;
-        document.getElementById('modalImage').src = `/images/produits/produit${p.id}.jpg`;
-        document.getElementById('modalInformation').textContent = p.information || 'Innovation durable pour un avenir énergétique autonome.';
+        document.getElementById('modalImage').src = p.image ? `/${p.image}` : `/images/produits/produit${p.id}.jpg`;
+        document.getElementById('modalInformation').textContent = p.description || p.information || 'Innovation durable pour un avenir énergétique autonome.';
         document.getElementById('modalRate').textContent = `Rendement Journalier : ${p.rate}%`;
         document.getElementById('modalMin').textContent = `Min. requis : ${Number(p.min_amount).toLocaleString('fr-FR')} ${CURRENCY}`;
         document.getElementById('investForm').action = `/products/${id}`;

@@ -8,7 +8,7 @@
         <h1 class="text-2xl font-bold text-white mt-3">Modifier — {{ $produit->name }}</h1>
     </div>
 
-    <form action="{{ route('admin.produits.update', $produit) }}" method="POST" class="card-admin p-6 space-y-5">
+    <form action="{{ route('admin.produits.update', $produit) }}" method="POST" enctype="multipart/form-data" class="card-admin p-6 space-y-5">
         @csrf @method('PUT')
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -20,6 +20,16 @@
                 <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Niveau VIP requis</label>
                 <input type="number" name="level" value="{{ old('level', $produit->level) }}" min="0" max="5" required class="input-dark">
             </div>
+        </div>
+
+        <div>
+            <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Image du produit (Optionnel)</label>
+            @if($produit->image)
+                <div class="mb-2">
+                    <img src="{{ asset($produit->image) }}" alt="Image actuelle" class="w-20 h-20 rounded-xl object-cover" style="border: 1px solid rgba(255,255,255,0.1);">
+                </div>
+            @endif
+            <input type="file" name="image" accept="image/*" class="input-dark bg-slate-800 p-2 text-xs">
         </div>
 
         <div>

@@ -8,7 +8,7 @@
         <h1 class="text-2xl font-bold text-white mt-3">Nouveau produit</h1>
     </div>
 
-    <form action="{{ route('admin.produits.store') }}" method="POST" class="card-admin p-6 space-y-5">
+    <form action="{{ route('admin.produits.store') }}" method="POST" enctype="multipart/form-data" class="card-admin p-6 space-y-5">
         @csrf
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -21,6 +21,12 @@
                 <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Niveau VIP requis</label>
                 <input type="number" name="level" value="{{ old('level', 1) }}" min="0" max="5" required class="input-dark" placeholder="1">
             </div>
+        </div>
+
+        <div>
+            <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Image du produit (Optionnel)</label>
+            <input type="file" name="image" accept="image/*" class="input-dark bg-slate-800 p-2 text-xs">
+            @error('image') <p style="font-size: 11px; color: #f87171; margin-top: 4px;">{{ $message }}</p> @enderror
         </div>
 
         <div>
