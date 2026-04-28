@@ -16,7 +16,7 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen px-6 overflow-x-hidden relative py-12">
+<body class="flex items-center justify-center min-h-screen px-2 overflow-x-hidden relative py-12">
 
     <!-- Background Decoration -->
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
@@ -64,15 +64,13 @@
                         <label class="cursor-pointer group">
                             <input type="radio" name="_country" value="CM" checked class="hidden peer" id="reg-cm">
                             <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 border border-white/5 bg-slate-900/30 rounded-2xl p-4 text-center transition active:scale-95">
-                                <span class="text-lg">🇨🇲</span>
-                                <p class="text-[10px] font-bold text-white mt-1">Cameroun</p>
+                                <p class="text-[10px] font-bold text-white mt-1">+237</p>
                             </div>
                         </label>
                         <label class="cursor-pointer group">
                             <input type="radio" name="_country" value="CI" class="hidden peer" id="reg-ci">
                             <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 border border-white/5 bg-slate-900/30 rounded-2xl p-4 text-center transition active:scale-95">
-                                <span class="text-lg">🇨🇮</span>
-                                <p class="text-[10px] font-bold text-white mt-1">C. Ivoire</p>
+                                <p class="text-[10px] font-bold text-white mt-1">+225</p>
                             </div>
                         </label>
                     </div>

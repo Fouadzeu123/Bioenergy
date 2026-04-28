@@ -111,6 +111,20 @@
     </div>
 </div>
 
+<!-- Error Modal -->
+<div id="errorModal" class="fixed inset-0 z-[120] hidden flex items-center justify-center backdrop-blur-md p-4" style="background: rgba(0,0,0,0.85);">
+    <div class="rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center transform transition-all scale-95" id="errorModalContent" style="background: linear-gradient(135deg, #1f2937 0%, #111827 100%); border: 1px solid rgba(239,68,68,0.3);">
+        <div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6" style="background: rgba(239,68,68,0.15); box-shadow: 0 0 30px rgba(239,68,68,0.3);">
+            <i class="fas fa-ticket-alt text-4xl text-red-400 opacity-80"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white mb-2">Oups !</h2>
+        <p id="errorMessage" class="text-[13px] font-medium text-gray-400 mb-6 leading-relaxed"></p>
+        <button onclick="closeErrorModal()" class="w-full py-4 text-[13px] font-bold text-white rounded-2xl active:scale-95 transition" style="background: linear-gradient(135deg, #ef4444, #b91c1c); box-shadow: 0 0 20px rgba(239,68,68,0.3);">
+            D'accord
+        </button>
+    </div>
+</div>
+
 <script>
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -192,7 +206,7 @@
                 headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
             });
             const data = await response.json();
-            if (data.error) { alert(data.error); return; }
+            if (data.error) { showErrorModal(data.error); return; }
 
             isSpinning = true;
             
@@ -254,6 +268,27 @@
         setTimeout(() => {
             modal.classList.add('hidden');
             window.location.reload();
+        }, 200);
+    }
+
+    function showErrorModal(message) {
+        document.getElementById('errorMessage').textContent = message;
+        const modal = document.getElementById('errorModal');
+        const modalContent = document.getElementById('errorModalContent');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+    }
+
+    function closeErrorModal() {
+        const modal = document.getElementById('errorModal');
+        const modalContent = document.getElementById('errorModalContent');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
         }, 200);
     }
 </script>
