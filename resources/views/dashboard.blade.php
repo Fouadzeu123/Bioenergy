@@ -77,14 +77,13 @@
     </style>
 
     <!-- POPUP BIENVENUE -->
-    <div id="welcomePopup" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center hidden">
+    <div id="welcomePopup" class="fixed inset-0 z-[9999] flex items-center justify-center hidden p-5">
 
         <!-- Overlay -->
         <div id="popupOverlay" class="absolute inset-0 backdrop-blur-sm" style="background: rgba(0,0,0,0.75);"></div>
 
         <!-- Carte popup -->
-        <div
-            class="popup-card relative w-full sm:max-w-md sm:mx-4 sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden max-h-[92dvh] flex flex-col">
+        <div class="popup-card relative w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden max-h-[90dvh] flex flex-col animate__animated animate__zoomIn">
 
             <!-- En-tête gradient animé -->
             <div class="popup-header-bg px-6 pt-8 pb-12 text-center relative overflow-hidden flex-shrink-0">
@@ -157,17 +156,9 @@
                     </div>
                 </div>
 
-                <!-- CTA Telegram -->
-                <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank"
-                    class="telegram-btn flex items-center justify-center gap-3 w-full text-white font-bold text-sm sm:text-base py-3.5 sm:py-4 rounded-2xl touch-manipulation">
-                    <i class="fab fa-telegram text-lg sm:text-xl"></i>
-                    <span>Rejoindre le canal officiel</span>
-                    <i class="fas fa-arrow-right text-xs sm:text-sm opacity-70"></i>
-                </a>
-
-                <p class="text-center text-[11px] mt-2.5" style="color: #374151;">
-                    <i class="fas fa-lock mr-1"></i> Canal vérifié · Annonces exclusives
-                </p>
+                <button id="startJourneyBtn" class="flex items-center justify-center w-full text-white font-bold text-[13px] py-3.5 rounded-2xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);">
+                    Commencer
+                </button>
             </div>
         </div>
     </div>
@@ -353,8 +344,9 @@
             // Afficher après 1,5s
             setTimeout(() => popup.classList.remove('hidden'), 1500);
 
-            // Fermer avec le X
+            // Fermer avec le X ou le bouton Commencer
             closeBtn.onclick = () => popup.classList.add('hidden');
+            document.getElementById('startJourneyBtn').onclick = () => popup.classList.add('hidden');
 
             // Fermer en cliquant dehors
             overlay.onclick = () => popup.classList.add('hidden');
