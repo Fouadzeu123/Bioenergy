@@ -60,14 +60,14 @@
                     <div class="flex justify-between items-center winner-item">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-bold text-blue-400" style="background: rgba(59,130,246,0.15);">
-                                {{ substr($winner['name'], 0, 1) }}
+                                <i class="fas fa-gift"></i>
                             </div>
                             <div>
-                                <p class="text-[11px] font-semibold text-white">{{ $winner['name'] }}</p>
+                                <p class="text-[11px] font-semibold text-white tracking-wider">{{ $winner['phone'] }}</p>
                                 <p class="text-[10px] font-medium" style="color: #4b5563;">{{ $winner['time'] }}</p>
                             </div>
                         </div>
-                        <p class="text-[11px] font-bold text-cyan-400">+{{ $winner['prize'] }} XAF</p>
+                        <p class="text-[11px] font-bold text-cyan-400">+{{ is_numeric($winner['prize']) ? number_format($winner['prize'], 0, ',', ' ') . ' XAF' : $winner['prize'] }}</p>
                     </div>
                 @endforeach
             </div>

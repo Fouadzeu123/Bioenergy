@@ -14,18 +14,36 @@ class LuckyWheelController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
-        // Utilisateurs fictifs pour le tableau défilant
-        $fictiveWinners = [
-            ['name' => 'Kouassi B.', 'prize' => 500, 'time' => 'Il y a 2 min'],
-            ['name' => 'Moussa T.', 'prize' => 1200, 'time' => 'Il y a 5 min'],
-            ['name' => 'Nathalie O.', 'prize' => 500, 'time' => 'Il y a 8 min'],
-            ['name' => 'Jean-Paul M.', 'prize' => 5000, 'time' => 'Il y a 12 min'],
-            ['name' => 'Aïcha D.', 'prize' => 500, 'time' => 'Il y a 15 min'],
-            ['name' => 'Patrick K.', 'prize' => 8000, 'time' => 'Il y a 20 min'],
-            ['name' => 'Saliou S.', 'prize' => 500, 'time' => 'Il y a 25 min'],
-            ['name' => 'Marie L.', 'prize' => 500, 'time' => 'Il y a 30 min'],
-        ];
+
+        // Utilisateurs fictifs pour le tableau défilant (Numéros de téléphone masqués)
+        $fictiveWinners = [];
+        $possiblePrizes = [500, 1200, 500, 5000, 500, 500, 5000, 150000];
+        $timeMinutes = 1;
+
+        for ($i = 0; $i < 40; $i++) {
+            $country = rand(1, 100) > 30 ? '237' : '225'; // 70% Cameroun, 30% CI
+            if ($country === '237') {
+                $prefixes = ['650', '651', '652', '653', '655', '656', '657', '658', '659', '670', '671', '672', '673', '680', '681', '682', '683', '690', '691', '692', '693', '694', '695', '696'];
+                $p = $prefixes[array_rand($prefixes)];
+            } else {
+                $prefixes = ['01', '05', '07'];
+                $p = $prefixes[array_rand($prefixes)];
+            }
+
+            $mid = str_pad(rand(10, 99), 2, '0', STR_PAD_LEFT);
+            $last = str_pad(rand(100, 999), 3, '0', STR_PAD_LEFT);
+
+            $phone = "+{$country} {$p}**{$mid}**{$last}";
+
+            $prize = $possiblePrizes[array_rand($possiblePrizes)];
+            $timeMinutes += rand(1, 4);
+
+            $fictiveWinners[] = [
+                'phone' => $phone,
+                'prize' => $prize,
+                'time'  => "Il y a {$timeMinutes} min"
+            ];
+        }
 
         return view('luckywheel', compact('user', 'fictiveWinners'));
     }
