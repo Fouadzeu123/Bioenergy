@@ -26,70 +26,7 @@ class AddDailyIncome extends Command
      */
     public function handle()
     {
-        // 🚫 Ne pas exécuter le dimanche
-        if (Carbon::now()->isSunday()) {
-            $this->info('⏭️ Pas de gains journaliers le dimanche.');
-            return 0;
-        }
-
-        // 🔹 Récupérer toutes les commandes actives
-        $orders = Order::with([
-                'user.parrain.parrain', // jusqu’au niveau 3
-                'produit',
-            ])
-            ->whereDate('end_date', '>=', Carbon::today())
-            ->get();
-
-        if ($orders->isEmpty()) {
-            $this->info('Aucune commande active.');
-            return 0;
-        }
-
-        // 🔄 Parcourir les commandes
-        foreach ($orders as $order) {
-            $user    = $order->user;
-            $produit = $order->produit;
-
-            if (!$produit) {
-                $this->warn("⚠️ Produit introuvable pour la commande #{$order->id}");
-                continue;
-            }
-
-            // ⚡ Utiliser le revenu journalier du produit
-            $gain = (float) $order->day_income;
-
-            if ($gain <= 0) {
-                $this->warn("⚠️ Gain invalide pour la commande #{$order->id}");
-                continue;
-            }
-
-            DB::beginTransaction();
-            try {
-                // ➕ Créditer le filleul
-                $user->increment('account_balance', $gain);
-
-                Transaction::create([
-                    'user_id'     => $user->id,
-                    'type'        => 'gain_journalier',
-                    'montant'     => $gain,
-                    'order_id'=>$order->id,
-                    'status'      => 'completed',
-                    'reference'   => uniqid('GAIN-'),
-                    'description' => 'Gain journalier du produit : ' . ($produit->name ?? $produit->nom ?? 'Produit'),
-                ]);
-
-                // 🎁 Bonus multi-niveaux
-                $this->attribuerBonusParrainage($user, $gain);
-
-                DB::commit();
-                $this->info("✅ Gain de {$gain} $ attribué à {$user->phone} (commande #{$order->id})");
-            } catch (\Throwable $e) {
-                DB::rollBack();
-                $this->error("❌ Erreur commande #{$order->id} : {$e->getMessage()}");
-            }
-        }
-
-        $this->info('✅ Gains journaliers et bonus attribués.');
+        $this->info('Les gains sont maintenant récupérés manuellement par les utilisateurs via le bouton "Réclamer".');
         return 0;
     }
 

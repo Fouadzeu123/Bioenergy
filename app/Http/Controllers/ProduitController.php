@@ -219,6 +219,45 @@ class ProduitController extends Controller
             ];
         })->toArray();
 
-        return view('mes_produit', compact('orders', 'revenusJournee', 'ordersForJs'));
+        $claimableAmount = 0;
+        foreach ($orders as $order) {
+            $startDate = $order->last_gain_at 
+                ? Carbon::parse($order->last_gain_at)->startOfDay()->addDay() 
+                : Carbon::parse($order->start_date)->startOfDay();
+            
+            $endDate = Carbon::yesterday()->startOfDay();
+            
+            if (!$startDate->isAfter($endDate)) {
+                $currentDate = $startDate->copy();
+                while ($currentDate->lte($endDate)) {
+                    if (!$currentDate->isSunday()) {
+                        $claimableAmount += (float) $order->day_income;
+                    }
+                    $currentDate->addDay();
+                }
+            }
+        }
+
+        return view('mes_produit', compact('orders', 'revenusJournee', 'ordersForJs', 'claimableAmount'));
+    }
+
+    public function claimGains(\App\Services\SystemAutomationService $automationService)
+    {
+        $user = Auth::user();
+        
+        $balanceBefore = $user->account_balance;
+
+        // Traite les gains pour tous les ordres éligibles
+        $automationService->processGains($user);
+
+        $user->refresh();
+
+        $gains = $user->account_balance - $balanceBefore;
+
+        if ($gains > 0) {
+            return back()->with('success', "Vous avez réclamé " . fmtCurrency($gains, $user->currency) . " de gains avec succès !");
+        } else {
+            return back()->with('error', "Aucun gain disponible à réclamer pour le moment.");
+        }
     }
 }

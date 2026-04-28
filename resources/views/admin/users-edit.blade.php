@@ -22,7 +22,7 @@
 
         <div>
             <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Email</label>
-            <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="input-dark">
+            <input type="email" name="email" value="{{ old('email', $user->email) }}" class="input-dark">
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">

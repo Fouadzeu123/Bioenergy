@@ -21,7 +21,8 @@ class ProcessAutomatedTasks
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            $this->automationService->processForUser(Auth::user());
+            // Process refunds (matured savings) automatically
+            $this->automationService->processRefunds(Auth::user());
         }
 
         return $next($request);

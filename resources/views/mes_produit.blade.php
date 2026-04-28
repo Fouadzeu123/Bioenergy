@@ -25,6 +25,21 @@
 
     <!-- Active Investments List -->
     <div class="space-y-4">
+        @if($claimableAmount > 0)
+        <div class="rounded-2xl p-5 flex items-center justify-between" style="background: linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(6,182,212,0.1) 100%); border: 1px solid rgba(16,185,129,0.2);">
+            <div>
+                <p class="text-[11px] font-semibold text-gray-400 mb-1">Gains Disponibles</p>
+                <p class="text-2xl font-bold text-emerald-400">{{ fmtCurrency($claimableAmount) }}</p>
+            </div>
+            <form method="POST" action="{{ route('produits.claim') }}">
+                @csrf
+                <button type="submit" class="px-5 py-2.5 rounded-xl text-[12px] font-bold text-white transition-all active:scale-95" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
+                    <i class="fas fa-hand-holding-dollar mr-1"></i> Réclamer
+                </button>
+            </form>
+        </div>
+        @endif
+
         <h3 class="text-[12px] font-semibold px-1" style="color: #4b5563;">Portefeuille Actif</h3>
 
         @forelse($orders as $order)

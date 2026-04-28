@@ -24,7 +24,7 @@ class SystemAutomationService
     /**
      * Calculate and attribute daily gains missed since last check.
      */
-    protected function processGains(User $user)
+    public function processGains(User $user)
     {
         $orders = Order::where('user_id', $user->id)
             ->whereDate('end_date', '>=', Carbon::today())
@@ -93,7 +93,7 @@ class SystemAutomationService
     /**
      * Process matured savings/preservations.
      */
-    protected function processRefunds(User $user)
+    public function processRefunds(User $user)
     {
         $epargnes = Epargne::where('user_id', $user->id)
             ->where('end_date', '<=', Carbon::today())

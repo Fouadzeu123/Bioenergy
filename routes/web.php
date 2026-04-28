@@ -65,6 +65,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('produits.acheter');
     Route::get('/mes-produits', [ProduitController::class, 'MesProduits'])
         ->name('Mesproduits');
+    Route::post('/mes-produits/claim', [ProduitController::class, 'claimGains'])
+        ->name('produits.claim');
 
     // Partage / lien d’invitation
     Route::get('/share', [UserController::class, 'monlien'])
