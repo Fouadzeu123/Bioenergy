@@ -132,7 +132,6 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'username'        => 'required|string|max:255',
             'phone'           => 'nullable|string|max:30',
             'email'           => 'required|email|max:255|unique:users,email,' . $user->id,
             'profile_image'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -140,7 +139,7 @@ class ProfileController extends Controller
             'password'        => 'nullable|min:8|confirmed',
         ]);
 
-        $user->fill($request->only(['username', 'phone', 'email']));
+        $user->fill($request->only(['phone', 'email']));
 
         if ($request->hasFile('profile_image')) {
             if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {

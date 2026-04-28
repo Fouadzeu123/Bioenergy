@@ -182,7 +182,7 @@
                 <div class="flex justify-between items-start mb-1">
                     <div>
                         <p class="text-[11px] font-medium" style="color: rgba(147,197,253,0.8);">Bonjour,</p>
-                        <p class="text-2xl font-bold tracking-tight">{{ Auth::user()->username }}</p>
+                        <p class="text-2xl font-bold tracking-tight">+{{ Auth::user()->country_code }} {{ Auth::user()->phone }}</p>
                     </div>
                     <div class="w-9 h-9 rounded-full flex items-center justify-center"
                         style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);">

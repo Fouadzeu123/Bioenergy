@@ -11,7 +11,7 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'username' => 'AdminBioEnergy',
+
             'country_code'=>237,
             'phone' => '691051864',
             'role'=>'admin',

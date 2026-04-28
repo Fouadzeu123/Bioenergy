@@ -1,4 +1,4 @@
-<x-admin-layout :title="'Modifier ' . $user->username" :level="'admin'">
+<x-admin-layout :title="'Modifier ' . $user->phone" :level="'admin'">
 
 <div class="max-w-2xl space-y-6">
 
@@ -6,17 +6,14 @@
         <a href="{{ route('admin.users.show', $user->id) }}" style="font-size: 12px; color: #4b5563; display: inline-flex; align-items: center; gap: 6px;">
             <i class="fas fa-arrow-left text-xs"></i> Retour au profil
         </a>
-        <h1 class="text-2xl font-bold text-white mt-3">Modifier — {{ $user->username }}</h1>
+        <h1 class="text-2xl font-bold text-white mt-3">Modifier — {{ $user->phone }}</h1>
     </div>
 
     <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="card-admin p-6 space-y-5">
         @csrf @method('PUT')
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-                <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Nom d'utilisateur</label>
-                <input type="text" name="username" value="{{ old('username', $user->username) }}" required class="input-dark">
-            </div>
+
             <div>
                 <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Téléphone</label>
                 <input type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="input-dark">

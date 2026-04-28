@@ -1,4 +1,4 @@
-<x-admin-layout :title="'Profil de ' . $user->username" :level="'admin'">
+<x-admin-layout :title="'Profil de ' . $user->phone" :level="'admin'">
 
 @php $curr = $user->currency; @endphp
 
@@ -13,10 +13,10 @@
     <!-- Header avec avatar + infos principales -->
     <div class="flex flex-col md:flex-row gap-6 p-6 rounded-3xl" style="background: linear-gradient(135deg, rgba(37,99,235,0.1) 0%, rgba(6,182,212,0.1) 100%); border: 1px solid rgba(6,182,212,0.2);">
         <div class="w-28 h-28 rounded-full flex items-center justify-center text-5xl font-bold shadow-xl flex-shrink-0" style="background: linear-gradient(135deg, #0891b2, #2563eb); color: white;">
-            {{ strtoupper(substr($user->username, 0, 1)) }}
+            U
         </div>
         <div class="flex-1 flex flex-col justify-center text-center md:text-left">
-            <h1 class="text-3xl font-bold text-white mb-2">{{ $user->username }}</h1>
+            <h1 class="text-3xl font-bold text-white mb-2">+{{ $user->country_code }} {{ $user->phone }}</h1>
             <div class="flex flex-wrap gap-4 justify-center md:justify-start text-xs text-gray-400">
                 <span><i class="fas fa-phone mr-1"></i> {{ $user->phone ?? 'Non renseigné' }}</span>
                 <span><i class="fas fa-envelope mr-1"></i> {{ $user->email }}</span>
@@ -105,10 +105,10 @@
             @if($user->parrain)
                 <div class="flex items-center gap-4 p-4 rounded-xl" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
                     <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold" style="background: rgba(16,185,129,0.15); color: #34d399;">
-                        {{ strtoupper(substr($user->parrain->username, 0, 1)) }}
+                        U
                     </div>
                     <div>
-                        <p class="font-bold text-white text-sm">{{ $user->parrain->username }}</p>
+                        <p class="font-bold text-white text-sm">+{{ $user->parrain->country_code }} {{ $user->parrain->phone }}</p>
                         <p class="text-[11px] text-gray-500">VIP {{ $user->parrain->level ?? 1 }}</p>
                     </div>
                 </div>

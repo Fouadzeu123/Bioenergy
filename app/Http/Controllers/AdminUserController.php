@@ -16,15 +16,14 @@ class AdminUserController extends Controller
         $perPage = $request->get('per_page', 25);
 
         $query = User::query()
-            ->with(['parrain:id,username'])
-            ->select('id', 'username', 'phone', 'email', 'account_balance', 'role', 'level', 'invited_by', 'invitation_code', 'created_at');
+            ->with(['parrain:id,phone'])
+            ->select('id', 'phone', 'email', 'account_balance', 'role', 'level', 'invited_by', 'invitation_code', 'created_at');
 
         // Recherche
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('username', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
+                $q->where('phone', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('invitation_code', 'like', "%{$search}%");
             });
@@ -65,7 +64,7 @@ class AdminUserController extends Controller
     public function show($id)
     {
         $user = User::with([
-                'parrain:id,username',
+                'parrain:id,phone',
                 'transactions' => fn($q) => $q->latest()->take(40)
             ])
             ->findOrFail($id);
@@ -93,7 +92,6 @@ class AdminUserController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'username'        => 'required|string|max:255',
             'phone'           => 'nullable|string|max:20',
             'email'           => 'required|email|max:255',
             'account_balance' => 'required|numeric|min:0',
@@ -104,7 +102,7 @@ class AdminUserController extends Controller
 
         $user = User::findOrFail($id);
         $user->update($request->only([
-            'username', 'phone', 'email', 'account_balance', 'lucky_spins', 'role', 'level'
+            'phone', 'email', 'account_balance', 'lucky_spins', 'role', 'level'
         ]));
 
         return redirect()->route('admin.users.index')
@@ -120,7 +118,7 @@ class AdminUserController extends Controller
         $user = User::findOrFail($id);
         $user->increment('lucky_spins', $request->spins);
 
-        return back()->with('success', "{$request->spins} tours de roue ajoutés à {$user->username}");
+        return back()->with('success', "{$request->spins} tours de roue ajoutés à {$user->phone}");
     }
 
     public function addBonus(Request $request, $id)

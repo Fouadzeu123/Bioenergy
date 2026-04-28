@@ -73,10 +73,10 @@
                             <td>
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-full text-white font-bold flex items-center justify-center text-sm shadow-lg flex-shrink-0" style="background: linear-gradient(135deg, #0891b2, #2563eb);">
-                                        {{ strtoupper(substr($user->username ?? 'U', 0, 1)) }}
+                                        U
                                     </div>
                                     <div>
-                                        <p class="font-semibold text-white text-sm">{{ $user->username }}</p>
+                                        <p class="font-semibold text-white text-sm">+{{ $user->country_code }} {{ $user->phone }}</p>
                                         <p class="text-[10px] text-gray-500">ID: {{ $user->id }} • {{ $user->withdrawal_country }}</p>
                                     </div>
                                 </div>
@@ -116,7 +116,7 @@
                             <td class="text-center">
                                 @if($user->parrain)
                                     <span class="badge-status" style="background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25);">
-                                        {{ $user->parrain->username }}
+                                        {{ $user->parrain->phone }}
                                     </span>
                                 @else
                                     <span class="text-gray-500 text-[11px] font-medium">Aucun</span>

@@ -79,12 +79,12 @@ class AdminDashboardController extends Controller
         // ===================================================================
         // 4. DERNIERS UTILISATEURS & TRANSACTIONS
         // ===================================================================
-        $recentUsers = User::select('id', 'username', 'level', 'created_at', 'account_balance')
+        $recentUsers = User::select('id', 'phone', 'level', 'created_at', 'account_balance')
             ->latest()
             ->take(8)
             ->get();
 
-        $recentTransactions = Transaction::with(['user:id,username'])
+        $recentTransactions = Transaction::with(['user:id,phone'])
             ->select('id', 'user_id', 'type', 'montant', 'status', 'created_at')
             ->latest()
             ->take(10)

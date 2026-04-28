@@ -82,7 +82,7 @@ class AddDailyIncome extends Command
                 $this->attribuerBonusParrainage($user, $gain);
 
                 DB::commit();
-                $this->info("✅ Gain de {$gain} $ attribué à {$user->username} (commande #{$order->id})");
+                $this->info("✅ Gain de {$gain} $ attribué à {$user->phone} (commande #{$order->id})");
             } catch (\Throwable $e) {
                 DB::rollBack();
                 $this->error("❌ Erreur commande #{$order->id} : {$e->getMessage()}");
@@ -115,7 +115,7 @@ class AddDailyIncome extends Command
                 'status'      => 'completed',
                 'from_user_id'=> $filleul->id,
                 'reference'   => uniqid('BONJ-'),
-                'description' => "Bonus journalier niveau 1 (5%) grâce à {$filleul->username}",
+                'description' => "Bonus journalier niveau 1 (5%) grâce à {$filleul->phone}",
             ]);
         }
 
@@ -131,7 +131,7 @@ class AddDailyIncome extends Command
                 'status'      => 'completed',
                 'from_user_id'=> $filleul->id,
                 'reference'   => uniqid('BONJ-'),
-                'description' => "Bonus journalier niveau 2 (2%) grâce à {$filleul->username}",
+                'description' => "Bonus journalier niveau 2 (2%) grâce à {$filleul->phone}",
             ]);
         }
 
@@ -147,7 +147,7 @@ class AddDailyIncome extends Command
                 'status'      => 'completed',
                 'from_user_id'=> $filleul->id,
                 'reference'   => uniqid('BONJ-'),
-                'description' => "Bonus journalier niveau 3 (1%) grâce à {$filleul->username}",
+                'description' => "Bonus journalier niveau 3 (1%) grâce à {$filleul->phone}",
             ]);
         }
     }

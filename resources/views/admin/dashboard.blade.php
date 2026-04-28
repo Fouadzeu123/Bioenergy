@@ -168,10 +168,10 @@
                     <div class="flex items-center justify-between p-3 rounded-xl transition" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04);">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-full text-white font-bold flex items-center justify-center text-sm shadow-lg" style="background: linear-gradient(135deg, #06b6d4, #3b82f6);">
-                                {{ strtoupper(substr($user->username ?? 'U', 0, 1)) }}
+                                U
                             </div>
                             <div>
-                                <p class="font-semibold text-gray-200 text-sm">{{ $user->username }}</p>
+                                <p class="font-semibold text-gray-200 text-sm">+{{ $user->country_code }} {{ $user->phone }}</p>
                                 <p class="text-[10px] text-gray-500">{{ $user->created_at->diffForHumans() }}</p>
                             </div>
                         </div>
@@ -197,7 +197,7 @@
                                 <i class="fas {{ $tx->type === 'depot' ? 'fa-arrow-down' : 'fa-arrow-up' }} text-sm {{ $tx->type === 'depot' ? 'text-emerald-400' : 'text-red-400' }}"></i>
                             </div>
                             <div>
-                                <p class="font-medium text-gray-200 text-sm">{{ $tx->user->username ?? 'Système' }}</p>
+                                <p class="font-medium text-gray-200 text-sm">{{ $tx->user->phone ?? 'Système' }}</p>
                                 <p class="text-[10px] text-gray-500">{{ ucfirst(str_replace('_', ' ', $tx->type)) }} • {{ $tx->created_at->format('H:i') }}</p>
                             </div>
                         </div>

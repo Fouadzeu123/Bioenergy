@@ -85,11 +85,10 @@
                             <td>
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold" style="background: rgba(16,185,129,0.15); color: #34d399; font-size: 11px;">
-                                        {{ strtoupper(substr($tx->user?->username ?? 'S', 0, 1)) }}
+                                        U
                                     </div>
                                     <div>
-                                        <p class="font-semibold text-white text-[13px]">{{ $tx->user?->username ?? 'Système' }}</p>
-                                        <p class="text-[10px] text-gray-500">{{ $tx->user?->phone ?? '' }}</p>
+                                        <p class="font-semibold text-white text-[13px]">{{ $tx->user ? '+' . $tx->user->country_code . ' ' . $tx->user->phone : 'Système' }}</p>
                                     </div>
                                 </div>
                             </td>

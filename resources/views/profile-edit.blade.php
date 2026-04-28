@@ -22,7 +22,7 @@
                         <img src="{{ asset('storage/' . $user->profile_image) }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-4xl font-bold text-blue-400" style="background: rgba(59,130,246,0.12);">
-                            {{ strtoupper(substr($user->username ?? 'U', 0, 1)) }}
+                            U
                         </div>
                     @endif
                 </div>
@@ -39,13 +39,7 @@
             <h3 class="text-[11px] font-semibold text-center" style="color: #4b5563;">Informations Personnelles</h3>
 
             <div class="space-y-4">
-                <div class="space-y-2">
-                    <label class="text-[11px] font-semibold px-1" style="color: #4b5563;">Pseudo</label>
-                    <input type="text" name="username" value="{{ old('username', $user->username) }}" required
-                           class="w-full rounded-2xl px-5 py-4 text-sm font-semibold text-white outline-none transition"
-                           style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);"
-                           placeholder="Pseudo">
-                </div>
+
 
                 <div class="space-y-2">
                     <label class="text-[11px] font-semibold px-1" style="color: #4b5563;">Téléphone</label>

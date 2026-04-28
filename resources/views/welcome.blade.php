@@ -77,12 +77,6 @@
                         </label>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 px-2">Pseudo</label>
-                        <input type="text" name="username" value="{{ old('username') }}" required
-                               class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
-                               placeholder="Nom d'utilisateur">
-                    </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-gray-500 px-2">Téléphone</label>

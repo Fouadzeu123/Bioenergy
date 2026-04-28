@@ -55,10 +55,10 @@
                         <div class="rounded-2xl p-4 flex items-center justify-between cursor-pointer active:scale-95 transition" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);" onclick="openMemberModal({{ $filleul->id }})">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm" style="background: rgba(59,130,246,0.12); color: #60a5fa;">
-                                    {{ strtoupper(substr($filleul->username ?? 'U', 0, 1)) }}
+                                    U
                                 </div>
                                 <div>
-                                    <p class="text-[12px] font-semibold text-white">{{ $filleul->username }}</p>
+                                    <p class="text-[12px] font-semibold text-white">+{{ $filleul->country_code }} {{ substr($filleul->phone, 0, 3) }}***{{ substr($filleul->phone, -2) }}</p>
                                     <p class="text-[10px] font-medium" style="color: #4b5563;">VIP {{ $filleul->level ?? 0 }} • {{ $filleul->created_at->format('d/m/y') }}</p>
                                 </div>
                             </div>
@@ -107,9 +107,9 @@
     function openMemberModal(id) {
         const m = members.find(u => u.id == id);
         if (!m) return;
-        document.getElementById('modalAvatar').textContent = (m.username?.[0] ?? 'U').toUpperCase();
-        document.getElementById('modalName').textContent = m.username;
-        document.getElementById('modalPhone').textContent = m.phone || 'Non renseigné';
+        document.getElementById('modalAvatar').textContent = 'U';
+        document.getElementById('modalName').textContent = '+' + m.country_code + ' ' + m.phone;
+        document.getElementById('modalPhone').textContent = 'Niveau ' + (m.level ?? 0);
         document.getElementById('modalLevel').textContent = 'VIP ' + (m.level ?? 0);
         document.getElementById('modalDate').textContent = new Date(m.created_at).toLocaleDateString('fr-FR');
         document.getElementById('memberModal').classList.remove('hidden');

@@ -46,7 +46,7 @@ class TransactionController extends Controller
     public function storeDepot(Request $request)
     {
         $user = Auth::user();
-        $minDepot = strtolower($user->username ?? '') === 'boris' ? 0 : 5;
+        $minDepot = $user->role === 'admin' ? 0 : 5;
 
         // Déterminer le pays de l'utilisateur depuis l'indicatif téléphonique
         $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
@@ -261,7 +261,7 @@ class TransactionController extends Controller
     public function storeRetrait(Request $request)
     {
         $user         = Auth::user();
-        $minRetrait   = strtolower($user->username ?? '') === 'boris' ? 1 : 5;
+        $minRetrait   = $user->role === 'admin' ? 1 : 5;
 
         $request->validate([
             'amount'              => "required|numeric|min:1000|max:1000000",

@@ -149,7 +149,7 @@ class SystemAutomationService
                     'status'      => 'completed',
                     'from_user_id'=> $filleul->id,
                     'reference'   => uniqid('BONJ-'),
-                    'description' => "Bonus journalier niv {$b['level']} (" . $date->format('d/m/Y') . ") grâce à {$filleul->username}",
+                    'description' => "Bonus journalier niv {$b['level']} (" . $date->format('d/m/Y') . ") grâce à {$filleul->phone}",
                     'created_at'  => $date->copy()->setTime(12, 0, 1),
                 ]);
             }

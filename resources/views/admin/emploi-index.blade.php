@@ -37,11 +37,10 @@
                             <td>
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold" style="background: rgba(59,130,246,0.15); color: #60a5fa; font-size: 11px;">
-                                        {{ substr($u->username, 0, 1) }}
+                                        U
                                     </div>
                                     <div>
-                                        <p class="font-semibold text-white" style="font-size: 13px;">{{ $u->username }}</p>
-                                        <p style="font-size: 10px; color: #6b7280;">{{ $u->phone }}</p>
+                                        <p class="font-semibold text-white" style="font-size: 13px;">+{{ $u->country_code }} {{ $u->phone }}</p>
                                     </div>
                                 </div>
                             </td>

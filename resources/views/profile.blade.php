@@ -5,11 +5,11 @@
     <div class="relative overflow-hidden rounded-[2rem] p-7 text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0e7490 100%); box-shadow: 0 0 40px rgba(30,64,175,0.35);">
         <div class="relative z-10 flex items-center gap-5">
             <div class="w-20 h-20 rounded-2xl flex items-center justify-center text-white text-3xl font-bold flex-shrink-0" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px);">
-                {{ strtoupper(substr(Auth::user()->username ?? 'U', 0, 1)) }}
+                U
             </div>
             <div class="space-y-1">
-                <h1 class="text-2xl font-bold leading-tight">{{ Auth::user()->username }}</h1>
-                <p class="text-[11px] font-medium" style="color: rgba(147,197,253,0.7);">{{ Auth::user()->phone ? substr(Auth::user()->phone,0,3).'****'.substr(Auth::user()->phone,-3) : 'Compte vérifié' }}</p>
+                <h1 class="text-2xl font-bold leading-tight">+{{ Auth::user()->country_code }} {{ Auth::user()->phone }}</h1>
+                <p class="text-[11px] font-medium" style="color: rgba(147,197,253,0.7);">Compte vérifié</p>
                 <div class="flex items-center gap-3 pt-1">
                     @php
                         $lvl = Auth::user()->level;

@@ -67,10 +67,10 @@
                 <div class="space-y-6">
                     <!-- Login Input -->
                     <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-gray-500 px-2">Identifiant</label>
+                        <label class="text-[10px] font-bold text-gray-500 px-2">Téléphone</label>
                         <input type="text" name="login" value="{{ old('login') }}" required autofocus
                                class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-5 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
-                               placeholder="Utilisateur ou Mobile">
+                               placeholder="Numéro de téléphone">
                     </div>
 
                     <!-- Password Input -->

@@ -152,7 +152,7 @@ class ProduitController extends Controller
                     'from_user_id'=> $filleul->id,
                     'status'      => 'completed',
                     'reference'   => 'BONUS-' . uniqid(),
-                    'description' => "Bonus niveau {$level} sur investissement de {$filleul->username}",
+                    'description' => "Bonus niveau {$level} sur investissement de {$filleul->phone}",
                 ]);
 
                 Notification::create([

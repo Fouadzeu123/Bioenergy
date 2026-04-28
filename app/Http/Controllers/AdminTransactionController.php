@@ -17,7 +17,7 @@ class AdminTransactionController extends Controller
         $type    = $request->get('type');
         $status  = $request->get('status');
 
-        $query = Transaction::with(['user:id,username,phone,level'])
+        $query = Transaction::with(['user:id,phone,level'])
             ->select('transactions.*')
             ->leftJoin('users', 'transactions.user_id', '=', 'users.id');
 
@@ -25,7 +25,6 @@ class AdminTransactionController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('transactions.reference', 'like', "%{$search}%")
-                  ->orWhere('users.username', 'like', "%{$search}%")
                   ->orWhere('users.phone', 'like', "%{$search}%");
             });
         }

@@ -25,7 +25,6 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'username'        => 'required|string|max:30|unique:users,username',
             'phone'           => 'required|digits_between:8,12|unique:users,phone',
             'password'        => 'required|confirmed|min:6',
             'invitation_code' => 'required|string|exists:users,invitation_code',
@@ -33,7 +32,6 @@ class AuthController extends Controller
         ], [
             'invitation_code.exists' => 'Ce code d\'invitation est invalide.',
             'phone.unique'           => 'Ce numéro est déjà utilisé.',
-            'username.unique'        => 'Ce nom d\'utilisateur est déjà pris.',
             'country_code.in'        => 'Pays non supporté.',
         ]);
 
@@ -46,7 +44,6 @@ class AuthController extends Controller
 
         // Création de l'utilisateur
         $user = User::create([
-            'username'          => $request->username,
             'country_code'      => $countryCode,
             'phone'             => $request->phone,
             'password'          => Hash::make($request->password),
@@ -62,7 +59,7 @@ class AuthController extends Controller
             'user_id' => $parrain->id,
             'type'    => 'new_referral',
             'title'   => 'Nouveau filleul !',
-            'content' => "{$user->username} s’est inscrit avec votre code.",
+            'content' => "{$user->phone} s’est inscrit avec votre code.",
         ]);
 
         // Connexion automatique
@@ -86,9 +83,8 @@ class AuthController extends Controller
             'remember'  => 'sometimes|boolean',
         ]);
 
-        // Recherche par username OU phone
-        $field = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' :
-                 (preg_match('/^\d+$/', $request->login) ? 'phone' : 'username');
+        // Recherche par phone
+        $field = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
         $credentials = [
             $field     => $request->login,

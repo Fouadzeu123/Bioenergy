@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
             $table->string('phone')->unique();
             $table->decimal('account_balance', 15, 4)->unsigned()->nullable();
             $table->integer('level')->default(0);
