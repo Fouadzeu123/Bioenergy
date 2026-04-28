@@ -1,68 +1,66 @@
 <x-admin-layout :title="'Gestion des Utilisateurs'" :level="'admin'">
 
-<div class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+<div class="space-y-6">
 
-    <!-- Header Premium -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-8 text-white shadow-2xl">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-4xl font-extrabold mb-2">Gestion des Utilisateurs</h1>
-                <p class="text-emerald-100 text-lg">{{ $users->total() }} utilisateur{{ $users->total() > 1 ? 's' : '' }} au total</p>
-            </div>
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-white">Gestion des Utilisateurs</h1>
+            <p style="font-size: 13px; color: #4b5563; margin-top: 2px;">{{ $users->total() }} utilisateur{{ $users->total() > 1 ? 's' : '' }} au total</p>
         </div>
     </div>
 
     <!-- Barre de recherche + Filtres rapides -->
-    <div class="bg-white rounded-2xl shadow-xl p-6">
+    <div class="card-admin p-5">
         <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="md:col-span-2">
                 <input type="text" name="search" value="{{ request('search') }}"
-                       class="w-full border rounded-xl px-5 py-3 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                       class="input-dark"
                        placeholder="Rechercher par nom, téléphone, email ou code invitation">
             </div>
 
-            <select name="role" class="border rounded-xl px-5 py-3 focus:ring-2 focus:ring-emerald-500">
-                <option value="">Tous les rôles</option>
-                <option value="user" {{ request('role') === 'user' ? 'selected' : '' }}>Utilisateur</option>
-                <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Administrateur</option>
+            <select name="role" class="input-dark">
+                <option value="" style="background: var(--admin-card);">Tous les rôles</option>
+                <option value="user" {{ request('role') === 'user' ? 'selected' : '' }} style="background: var(--admin-card);">Utilisateur</option>
+                <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }} style="background: var(--admin-card);">Administrateur</option>
             </select>
 
-            <select name="level" class="border rounded-xl px-5 py-3 focus:ring-2 focus:ring-emerald-500">
-                <option value="">Tous les niveaux VIP</option>
+            <select name="level" class="input-dark">
+                <option value="" style="background: var(--admin-card);">Tous les niveaux VIP</option>
                 @for($i = 1; $i <= 10; $i++)
-                    <option value="{{ $i }}" {{ request('level') == $i ? 'selected' : '' }}>VIP {{ $i }}</option>
+                    <option value="{{ $i }}" {{ request('level') == $i ? 'selected' : '' }} style="background: var(--admin-card);">VIP {{ $i }}</option>
                 @endfor
             </select>
 
-            <div class="flex gap-3">
-                <button type="submit" class="bg-emerald-600 text-white rounded-xl px-6 py-3 hover:bg-emerald-700 transition flex items-center gap-2">
-                    <i class="fas fa-search"></i> Rechercher
-                </button>
-                <a href="{{ route('admin.users.index') }}" class="bg-gray-200 text-gray-700 rounded-xl px-6 py-3 hover:bg-gray-300 transition">
+            <div class="flex gap-3 md:col-span-4 mt-2 justify-end">
+                <a href="{{ route('admin.users.index') }}" class="btn-danger-admin flex items-center justify-center gap-2">
                     Réinitialiser
                 </a>
+                <button type="submit" class="btn-primary-admin flex items-center justify-center gap-2">
+                    <i class="fas fa-search"></i> Rechercher
+                </button>
             </div>
         </form>
     </div>
 
     <!-- Tableau moderne -->
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="card-admin overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-gradient-to-r from-slate-800 to-slate-900 text-white">
+            <table class="admin-table w-full">
+                <thead>
                     <tr>
-                        <th class="px-6 py-4 text-left">Utilisateur</th>
-                        <th class="px-6 py-4 text-left">Contact</th>
-                        <th class="px-6 py-4 text-center">Niveau VIP</th>
-                        <th class="px-6 py-4 text-right">Solde</th>
-                        <th class="px-6 py-4 text-right">Dépôts</th>
-                        <th class="px-6 py-4 text-right">Retraits</th>
-                        <th class="px-6 py-4 text-center">Parrain</th>
-                        <th class="px-6 py-4 text-center">Inscrit le</th>
-                        <th class="px-6 py-4 text-center">Actions</th>
+                        <th class="text-left">Utilisateur</th>
+                        <th class="text-left">Contact</th>
+                        <th class="text-center">Niveau VIP</th>
+                        <th class="text-right">Solde</th>
+                        <th class="text-right">Dépôts</th>
+                        <th class="text-right">Retraits</th>
+                        <th class="text-center">Parrain</th>
+                        <th class="text-center">Inscrit le</th>
+                        <th class="text-center">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody>
                     @forelse($users as $user)
                         @php
                             $totalDepots = $user->total_deposits ?? 0;
@@ -70,87 +68,80 @@
                             $balance = (float) ($user->account_balance ?? 0);
                             $curr = $user->currency;
                         @endphp
-                        <tr class="hover:bg-gray-50 transition">
+                        <tr>
                             <!-- Avatar + Nom -->
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 text-white font-bold flex items-center justify-center text-lg shadow-lg">
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full text-white font-bold flex items-center justify-center text-sm shadow-lg flex-shrink-0" style="background: linear-gradient(135deg, #0891b2, #2563eb);">
                                         {{ strtoupper(substr($user->username ?? 'U', 0, 1)) }}
                                     </div>
                                     <div>
-                                        <p class="font-bold text-gray-900">{{ $user->username }}</p>
-                                        <p class="text-xs text-gray-500">ID: {{ $user->id }} • {{ $user->withdrawal_country }}</p>
+                                        <p class="font-semibold text-white text-sm">{{ $user->username }}</p>
+                                        <p class="text-[10px] text-gray-500">ID: {{ $user->id }} • {{ $user->withdrawal_country }}</p>
                                     </div>
                                 </div>
                             </td>
 
                             <!-- Contact -->
-                            <td class="px-6 py-5">
+                            <td>
                                 <div>
-                                    <p class="text-gray-700">{{ $user->phone ?? '—' }}</p>
-                                    <p class="text-xs text-gray-500">{{ $user->email ?? '—' }}</p>
+                                    <p class="text-[12px] text-gray-300">{{ $user->phone ?? '—' }}</p>
+                                    <p class="text-[10px] text-gray-500">{{ $user->email ?? '—' }}</p>
                                 </div>
                             </td>
 
                             <!-- VIP Level -->
-                            <td class="px-6 py-5 text-center">
-                                <span class="inline-block px-4 py-2 rounded-full text-xs font-bold
-                                    {{ $user->level >= 5 ? 'bg-gradient-to-r from-yellow-400 to-amber-600 text-white' : '' }}
-                                    {{ $user->level >= 3 ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600' }}">
+                            <td class="text-center">
+                                <span class="badge-status {{ $user->level >= 3 ? 'badge-success' : 'badge-gray' }}">
                                     VIP {{ $user->level ?? 1 }}
                                 </span>
                             </td>
 
                             <!-- Solde -->
-                            <td class="px-6 py-5 text-right font-bold text-emerald-600">
+                            <td class="text-right font-bold text-cyan-400 text-sm">
                                 {{ number_format($balance, 0, '.', ' ') }} {{ $curr }}
                             </td>
 
                             <!-- Dépôts -->
-                            <td class="px-6 py-5 text-right font-medium text-blue-600">
+                            <td class="text-right font-medium text-blue-400 text-[12px]">
                                 {{ number_format($totalDepots, 0, '.', ' ') }} {{ $curr }}
                             </td>
 
                             <!-- Retraits -->
-                            <td class="px-6 py-5 text-right font-medium text-red-600">
+                            <td class="text-right font-medium text-red-400 text-[12px]">
                                 {{ number_format($totalRetraits, 0, '.', ' ') }} {{ $curr }}
                             </td>
 
                             <!-- Parrain -->
-                            <td class="px-6 py-5 text-center">
+                            <td class="text-center">
                                 @if($user->parrain)
-                                    <span class="text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">
+                                    <span class="badge-status" style="background: rgba(139,92,246,0.15); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25);">
                                         {{ $user->parrain->username }}
                                     </span>
                                 @else
-                                    <span class="text-gray-400 text-xs">Aucun</span>
+                                    <span class="text-gray-500 text-[11px] font-medium">Aucun</span>
                                 @endif
                             </td>
 
                             <!-- Date inscription -->
-                            <td class="px-6 py-5 text-center text-xs text-gray-500">
+                            <td class="text-center text-[11px] text-gray-400">
                                 {{ $user->created_at->format('d/m/Y') }}
                             </td>
 
                             <!-- Actions -->
-                            <td class="px-6 py-5 text-center">
+                            <td class="text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('admin.users.show', $user->id) }}"
-                                       class="text-emerald-600 hover:text-emerald-800 font-bold text-xs">
-                                        Voir
+                                    <a href="{{ route('admin.users.show', $user->id) }}" class="btn-primary-admin py-1.5 px-3 text-xs" style="background: rgba(16,185,129,0.1); color: #34d399; box-shadow: none;">
+                                        <i class="fas fa-eye"></i>
                                     </a>
-                                    <span class="text-gray-300">|</span>
-                                    <a href="{{ route('admin.users.edit', $user->id) }}"
-                                       class="text-blue-600 hover:text-blue-800 font-bold text-xs">
-                                        Modifier
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-primary-admin py-1.5 px-3 text-xs" style="background: rgba(59,130,246,0.1); color: #60a5fa; box-shadow: none;">
+                                        <i class="fas fa-pen"></i>
                                     </a>
                                     @if($user->role !== 'admin')
-                                        <span class="text-gray-300">|</span>
                                         <form method="POST" action="{{ route('admin.users.ban', $user->id) }}" class="inline">
                                             @csrf @method('PATCH')
-                                            <button type="submit" onclick="return confirm('Bannir cet utilisateur ?')"
-                                                    class="text-red-600 hover:text-red-800 font-bold text-xs">
-                                                Bannir
+                                            <button type="submit" onclick="return confirm('Bannir cet utilisateur ?')" class="btn-danger-admin py-1.5 px-3 text-xs" title="Bannir">
+                                                <i class="fas fa-ban"></i>
                                             </button>
                                         </form>
                                     @endif
@@ -159,7 +150,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center py-16 text-gray-500 text-lg">
+                            <td colspan="9" class="text-center py-16 text-gray-500 text-sm">
                                 Aucun utilisateur trouvé
                             </td>
                         </tr>
@@ -169,7 +160,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-6 border-t bg-gray-50">
+        <div class="p-5 border-t" style="border-color: var(--admin-border); background: rgba(255,255,255,0.01);">
             {{ $users->appends(request()->query())->links() }}
         </div>
     </div>

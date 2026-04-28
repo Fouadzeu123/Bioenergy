@@ -19,6 +19,8 @@ use App\Http\Controllers\WithdrawalInfoController;
 use App\Http\Controllers\AdminTransactionController;
 use App\Http\Controllers\EmploiController;
 use App\Http\Controllers\LuckyWheelController;
+use App\Http\Controllers\AdminProduitController;
+use App\Http\Controllers\AdminPreservationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -155,6 +157,21 @@ Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function 
     Route::post('/users/{id}/lucky-spins', [AdminUserController::class, 'addLuckySpins'])->name('admin.users.lucky_spins');
     Route::patch('/users/{id}/ban', [AdminUserController::class, 'ban'])->name('admin.users.ban');
     Route::patch('/users/{id}/unban', [AdminUserController::class, 'unban'])->name('admin.users.unban');
+    // Produits (CRUD)
+    Route::get('/produits', [AdminProduitController::class, 'index'])->name('admin.produits.index');
+    Route::get('/produits/create', [AdminProduitController::class, 'create'])->name('admin.produits.create');
+    Route::post('/produits', [AdminProduitController::class, 'store'])->name('admin.produits.store');
+    Route::get('/produits/{produit}/edit', [AdminProduitController::class, 'edit'])->name('admin.produits.edit');
+    Route::put('/produits/{produit}', [AdminProduitController::class, 'update'])->name('admin.produits.update');
+    Route::delete('/produits/{produit}', [AdminProduitController::class, 'destroy'])->name('admin.produits.destroy');
+
+    // Fonds de Préservation (CRUD)
+    Route::get('/preservation', [AdminPreservationController::class, 'index'])->name('admin.preservation.index');
+    Route::get('/preservation/create', [AdminPreservationController::class, 'create'])->name('admin.preservation.create');
+    Route::post('/preservation', [AdminPreservationController::class, 'store'])->name('admin.preservation.store');
+    Route::get('/preservation/{preservation}/edit', [AdminPreservationController::class, 'edit'])->name('admin.preservation.edit');
+    Route::put('/preservation/{preservation}', [AdminPreservationController::class, 'update'])->name('admin.preservation.update');
+    Route::delete('/preservation/{preservation}', [AdminPreservationController::class, 'destroy'])->name('admin.preservation.destroy');
 });
 
 }); // Fin du groupe middleware('auth')

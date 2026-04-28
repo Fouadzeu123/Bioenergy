@@ -1,33 +1,32 @@
 <x-layouts :title="'Mes Actifs'" :level="Auth::user()->level">
-<div class="max-w-xl mx-auto pt-6 px-4 space-y-8 pb-20">
+<div class="max-w-xl mx-auto pt-5 px-4 space-y-6 pb-24">
 
-    <!-- Header & Timer Sleeker -->
-    <div class="bg-slate-900 rounded-[40px] p-10 text-white shadow-2xl relative overflow-hidden">
-        <div class="relative z-10 text-center space-y-6">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Prochain Revenu Passif</p>
-            <div id="countdown" class="flex justify-center gap-6">
-                <!-- JS Inject here -->
-            </div>
+    <!-- Header & Timer Countdown -->
+    <div class="relative overflow-hidden rounded-[2rem] p-7 text-white text-center" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e3a8a 100%); box-shadow: 0 0 50px rgba(99,102,241,0.3);">
+        <div class="relative z-10 space-y-3">
+            <p class="text-[11px] font-semibold" style="color: rgba(199,210,254,0.8);">Prochain Revenu Passif</p>
+            <div id="countdown" class="flex justify-center gap-5"></div>
         </div>
-        <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full" style="background: rgba(255,255,255,0.05); filter: blur(30px);"></div>
+        <div class="absolute -left-10 -top-10 w-32 h-32 rounded-full" style="background: rgba(59,130,246,0.1); filter: blur(24px);"></div>
     </div>
 
-    <!-- Quick Stats Sleeker -->
+    <!-- Quick Stats -->
     <div class="grid grid-cols-2 gap-4">
-        <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 space-y-1">
-            <p class="text-[10px] font-bold text-gray-400">Gains Journaliers</p>
-            <p class="text-xl font-bold text-emerald-600">{{ fmtCurrency($revenusJournee) }}</p>
+        <div class="rounded-2xl p-5" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <p class="text-[11px] font-semibold mb-1" style="color: #4b5563;">Gains Journaliers</p>
+            <p class="text-xl font-bold text-cyan-400">{{ fmtCurrency($revenusJournee) }}</p>
         </div>
-        <div class="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 text-right space-y-1">
-            <p class="text-[10px] font-bold text-gray-400">Actifs Détenus</p>
-            <p class="text-xl font-bold text-slate-900">{{ $orders->count() }} <span class="text-[10px] font-medium text-gray-300">unités</span></p>
+        <div class="rounded-2xl p-5 text-right" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <p class="text-[11px] font-semibold mb-1" style="color: #4b5563;">Actifs Détenus</p>
+            <p class="text-xl font-bold text-white">{{ $orders->count() }} <span class="text-[10px] font-medium" style="color: #374151;">unités</span></p>
         </div>
     </div>
 
     <!-- Active Investments List -->
-    <div class="space-y-6">
-        <h3 class="text-[11px] font-bold text-gray-400 px-4">Portefeuille Actif</h3>
-        
+    <div class="space-y-4">
+        <h3 class="text-[12px] font-semibold px-1" style="color: #4b5563;">Portefeuille Actif</h3>
+
         @forelse($orders as $order)
             @php
                 $p = $order->produit;
@@ -40,67 +39,65 @@
                 $earned = \App\Models\Transaction::where('user_id', Auth::id())->where('type', 'gain_journalier')->where('order_id', $order->id)->sum('montant');
             @endphp
 
-            <div class="bg-white rounded-[40px] p-8 shadow-sm border border-gray-50 space-y-8 active:scale-[0.98] transition-transform group" onclick="openDetails({{ $order->id }})">
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center border border-gray-100 group-hover:bg-emerald-50 transition">
-                            <i class="fas fa-microchip text-emerald-600 text-xs"></i>
+            <div class="rounded-2xl p-5 space-y-5 cursor-pointer hover:border-blue-500/20 transition-all" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);" onclick="openDetails({{ $order->id }})">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
+                            <i class="fas fa-microchip text-blue-400 text-lg"></i>
                         </div>
-                        <div class="space-y-1">
-                            <h4 class="text-sm font-bold text-gray-800 tracking-tight">{{ $p->name }}</h4>
-                            <p class="text-[10px] font-bold text-emerald-600">+{{ fmtCurrency($order->day_income) }} <span class="text-gray-300 font-medium">/ jour</span></p>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">{{ $p->name }}</h4>
+                            <p class="text-[11px] font-semibold text-cyan-400">+{{ fmtCurrency($order->day_income) }} <span style="color: #374151;">/ jour</span></p>
                         </div>
                     </div>
-                    <div class="text-right space-y-1">
-                        <span class="text-[10px] font-bold text-slate-900">{{ $progress }}%</span>
-                        <div class="w-12 h-1.5 bg-gray-50 rounded-full overflow-hidden border border-gray-100">
-                            <div class="h-full bg-emerald-500 rounded-full" style="width: {{ $progress }}%"></div>
+                    <div class="text-right space-y-1.5">
+                        <span class="text-[11px] font-bold text-gray-400">{{ $progress }}%</span>
+                        <div class="w-16 h-1.5 rounded-full" style="background: rgba(255,255,255,0.06);">
+                            <div class="h-full rounded-full transition-all duration-1000" style="width: {{ $progress }}%; background: linear-gradient(90deg, #2563eb, #06b6d4);"></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-slate-50 rounded-2xl p-4 space-y-1 border border-gray-100/50">
-                        <p class="text-[9px] font-bold text-gray-400">Profit Cumulé</p>
-                        <p class="text-xs font-bold text-emerald-600">{{ fmtCurrency($earned) }}</p>
+                <div class="grid grid-cols-2 gap-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                    <div>
+                        <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Profit Cumulé</p>
+                        <p class="text-sm font-bold text-cyan-400">{{ fmtCurrency($earned) }}</p>
                     </div>
-                    <div class="bg-slate-50 rounded-2xl p-4 text-right space-y-1 border border-gray-100/50">
-                        <p class="text-[9px] font-bold text-gray-400">Échéance</p>
-                        <p class="text-xs font-bold text-slate-900">{{ $end->format('d/m/Y') }}</p>
+                    <div class="text-right">
+                        <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Échéance</p>
+                        <p class="text-sm font-bold text-gray-300">{{ $end->format('d/m/Y') }}</p>
                     </div>
                 </div>
             </div>
         @empty
-            <div class="text-center py-20 bg-gray-50/50 rounded-[48px] border border-dashed border-gray-200">
-                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                    <i class="fas fa-leaf text-gray-200"></i>
+            <div class="text-center py-16 rounded-2xl border border-dashed" style="border-color: rgba(255,255,255,0.08);">
+                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(59,130,246,0.08);">
+                    <i class="fas fa-leaf text-blue-500 text-2xl"></i>
                 </div>
-                <p class="text-[11px] font-bold text-gray-300">Aucun investissement actif</p>
-                <a href="{{ route('products') }}" class="inline-block mt-6 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-6 py-2.5 rounded-full transition active:scale-95">Explorer</a>
+                <p class="text-[12px] font-semibold mb-4" style="color: #374151;">Aucun investissement actif</p>
+                <a href="{{ route('products') }}" class="inline-block text-[11px] font-bold text-white px-6 py-2.5 rounded-xl transition" style="background: linear-gradient(135deg, #2563eb, #0891b2);">Explorer</a>
             </div>
         @endforelse
     </div>
 </div>
 
-<!-- Modal Détails Sleeker -->
-<div id="detailsModal" class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center bg-slate-900/80 backdrop-blur-sm p-0 sm:p-4">
-    <div class="bg-white rounded-t-[48px] sm:rounded-[48px] shadow-2xl max-w-lg w-full p-10 space-y-10 animate__animated animate__slideInUp">
+<!-- Modal Détails -->
+<div id="detailsModal" class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4" style="background: rgba(0,0,0,0.75);">
+    <div class="rounded-t-[2rem] sm:rounded-3xl shadow-2xl max-w-lg w-full p-6 space-y-6 animate__animated animate__slideInUp" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
         <div class="flex justify-between items-center">
-            <div class="space-y-1">
-                <h4 id="modalTitle" class="text-xl font-bold text-gray-800">Détails de l'actif</h4>
-                <p class="text-[10px] font-bold text-gray-400">Informations techniques</p>
+            <div>
+                <h4 id="modalTitle" class="text-xl font-bold text-white">Détails de l'actif</h4>
+                <p class="text-[11px] font-semibold mt-0.5" style="color: #4b5563;">Informations techniques</p>
             </div>
-            <button onclick="closeDetails()" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-800 transition">
-                <i class="fas fa-times text-xs"></i>
+            <button onclick="closeDetails()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:text-white transition" style="background: rgba(255,255,255,0.05);">
+                <i class="fas fa-times"></i>
             </button>
         </div>
 
-        <div id="modalContent" class="space-y-8">
-            <!-- Dynamic Content -->
-        </div>
-        
-        <button onclick="closeDetails()" class="w-full py-5 bg-slate-900 text-white text-[11px] font-bold rounded-2xl shadow-xl active:scale-95 transition">
-            Fermer les détails
+        <div id="modalContent" class="space-y-5"></div>
+
+        <button onclick="closeDetails()" class="w-full py-4 text-[12px] font-bold text-white rounded-2xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2);">
+            Fermer
         </button>
     </div>
 </div>
@@ -115,67 +112,61 @@
         const midnight = new Date(now);
         midnight.setHours(24, 0, 0, 0);
         const diff = midnight - now;
-
         const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
         const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
         const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
-
         countdownElement.innerHTML = `
             <div class="flex flex-col items-center">
                 <span class="text-3xl font-bold tracking-tight">${h}</span>
-                <span class="text-[9px] font-bold text-gray-500 mt-1">HRS</span>
+                <span class="text-[10px] font-semibold mt-1" style="color: rgba(147,197,253,0.6);">h</span>
             </div>
-            <div class="text-2xl font-bold opacity-10 pt-1">:</div>
+            <div class="text-2xl font-bold pt-1" style="color: rgba(255,255,255,0.15);">:</div>
             <div class="flex flex-col items-center">
                 <span class="text-3xl font-bold tracking-tight">${m}</span>
-                <span class="text-[9px] font-bold text-gray-500 mt-1">MIN</span>
+                <span class="text-[10px] font-semibold mt-1" style="color: rgba(147,197,253,0.6);">min</span>
             </div>
-            <div class="text-2xl font-bold opacity-10 pt-1">:</div>
+            <div class="text-2xl font-bold pt-1" style="color: rgba(255,255,255,0.15);">:</div>
             <div class="flex flex-col items-center">
                 <span class="text-3xl font-bold tracking-tight">${s}</span>
-                <span class="text-[9px] font-bold text-gray-500 mt-1">SEC</span>
+                <span class="text-[10px] font-semibold mt-1" style="color: rgba(147,197,253,0.6);">sec</span>
             </div>
         `;
     }
-
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
     function openDetails(orderId) {
         const data = ordersData.find(o => o.id === orderId);
         if (!data) return;
-
         const cleanDescription = data.description.replace(/\$/g, '');
-
         document.getElementById('modalTitle').textContent = data.produitName;
         document.getElementById('modalContent').innerHTML = `
-            <div class="bg-emerald-50/30 rounded-3xl p-6 border border-emerald-100/50">
-                <p class="text-[10px] font-bold text-emerald-700/50 mb-3">Vision du Projet</p>
-                <p class="text-xs font-medium text-gray-600 leading-relaxed italic">"${cleanDescription}"</p>
+            <div class="rounded-xl p-4" style="background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15);">
+                <p class="text-[11px] font-semibold text-blue-400 mb-2">Vision du Projet</p>
+                <p class="text-[12px] font-medium leading-relaxed" style="color: #6b7280;">"${cleanDescription}"</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-gray-50 rounded-2xl p-4 space-y-1">
-                    <p class="text-[9px] font-bold text-gray-400">Montant Engagé</p>
-                    <p class="text-sm font-bold text-slate-900">${Number(data.invested).toLocaleString('fr-FR')} ${CURRENCY}</p>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="rounded-xl p-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                    <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Montant Engagé</p>
+                    <p class="text-sm font-bold text-white">${Number(data.invested).toLocaleString('fr-FR')} ${CURRENCY}</p>
                 </div>
-                <div class="bg-gray-50 rounded-2xl p-4 text-right space-y-1">
-                    <p class="text-[9px] font-bold text-gray-400">Rendement / j</p>
-                    <p class="text-sm font-bold text-emerald-600">${Number(data.dayIncome).toLocaleString('fr-FR')} ${CURRENCY}</p>
+                <div class="rounded-xl p-4" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+                    <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Rendement / j</p>
+                    <p class="text-sm font-bold text-cyan-400">${Number(data.dayIncome).toLocaleString('fr-FR')} ${CURRENCY}</p>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <div class="flex justify-between items-end px-2">
-                    <p class="text-[10px] font-bold text-gray-400">Cycle Opérationnel</p>
-                    <p class="text-[10px] font-bold text-slate-900">${data.start} → ${data.end}</p>
+            <div class="space-y-2">
+                <div class="flex justify-between items-center px-1">
+                    <p class="text-[11px] font-semibold" style="color: #4b5563;">Cycle Opérationnel</p>
+                    <p class="text-[11px] font-bold text-gray-300">${data.start} → ${data.end}</p>
                 </div>
-                <div class="w-full bg-gray-50 h-1.5 rounded-full overflow-hidden border border-gray-100">
-                    <div class="bg-emerald-500 h-full rounded-full" style="width: ${data.progress}%"></div>
+                <div class="h-1.5 rounded-full" style="background: rgba(255,255,255,0.06);">
+                    <div class="h-full rounded-full transition-all" style="width: ${data.progress}%; background: linear-gradient(90deg, #2563eb, #06b6d4);"></div>
                 </div>
             </div>
         `;
-
         document.getElementById('detailsModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }

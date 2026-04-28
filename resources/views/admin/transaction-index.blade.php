@@ -1,132 +1,128 @@
 <x-admin-layout :title="'Historique des Transactions'" :level="'admin'">
 
-<div class="max-w-7xl mx-auto py-8 space-y-8">
+<div class="space-y-6">
 
     <!-- Header + Stats rapides -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-8 text-white shadow-2xl">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-            <div>
-                <h1 class="text-4xl font-extrabold mb-2">Historique des Transactions</h1>
-                <p class="text-emerald-100 text-lg">Toutes les opérations traitées via l'API</p>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-5 text-center">
-                    <p class="text-3xl font-bold">{{ $stats['total'] }}</p>
-                    <p class="text-sm opacity-90">Total</p>
-                </div>
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-5 text-center">
-                    <p class="text-3xl font-bold text-yellow-300">{{ $stats['pending_retraits'] }}</p>
-                    <p class="text-sm opacity-90">Retraits En cours</p>
-                </div>
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-5 text-center">
-                    <p class="text-3xl font-bold text-green-300">{{ $stats['today_completed'] }}</p>
-                    <p class="text-sm opacity-90">Validées aujourd'hui</p>
-                </div>
-                <div class="bg-white/20 backdrop-blur rounded-2xl p-5 text-center">
-                    <p class="text-xl font-bold">{{ number_format($stats['total_amount'], 0, ',', ' ') }}</p>
-                    <p class="text-sm opacity-90">Volume total</p>
-                </div>
-            </div>
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-white">Historique des Transactions</h1>
+            <p style="font-size: 13px; color: #4b5563; margin-top: 2px;">Toutes les opérations traitées via l'API</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="stat-card rounded-2xl p-5 border-l-4 border-emerald-500">
+            <p class="text-[11px] font-semibold text-gray-400">Volume total</p>
+            <p class="text-xl font-bold text-white mt-1">{{ number_format($stats['total_amount'], 0, ',', ' ') }}</p>
+        </div>
+        <div class="stat-card rounded-2xl p-5 border-l-4 border-blue-500">
+            <p class="text-[11px] font-semibold text-gray-400">Total Transactions</p>
+            <p class="text-xl font-bold text-white mt-1">{{ $stats['total'] }}</p>
+        </div>
+        <div class="stat-card rounded-2xl p-5 border-l-4 border-cyan-500">
+            <p class="text-[11px] font-semibold text-gray-400">Validées aujourd'hui</p>
+            <p class="text-xl font-bold text-white mt-1">{{ $stats['today_completed'] }}</p>
+        </div>
+        <div class="stat-card rounded-2xl p-5 border-l-4 border-amber-500">
+            <p class="text-[11px] font-semibold text-gray-400">Retraits En cours</p>
+            <p class="text-xl font-bold text-white mt-1">{{ $stats['pending_retraits'] }}</p>
         </div>
     </div>
 
     <!-- Filtres & Recherche -->
-    <form method="GET" class="bg-white rounded-2xl shadow-xl p-6">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="card-admin p-5">
+        <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="md:col-span-2">
-                <input type="text" name="q" value="{{ request('q') }}" placeholder="Recherche (ref, nom, téléphone...)"
-                       class="w-full border rounded-xl px-5 py-3 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Recherche (ref, nom, téléphone...)" class="input-dark">
             </div>
-            <select name="type" class="border rounded-xl px-5 py-3 focus:ring-2 focus:ring-emerald-500">
-                <option value="">Tous les types</option>
-                <option value="depot" {{ request('type') === 'depot' ? 'selected' : '' }}>Dépôt</option>
-                <option value="retrait" {{ request('type') === 'retrait' ? 'selected' : '' }}>Retrait</option>
-                <option value="bonus_all" {{ request('type') === 'bonus_all' ? 'selected' : '' }}>Bonus (tous)</option>
+            <select name="type" class="input-dark">
+                <option value="" style="background: var(--admin-card);">Tous les types</option>
+                <option value="depot" {{ request('type') === 'depot' ? 'selected' : '' }} style="background: var(--admin-card);">Dépôt</option>
+                <option value="retrait" {{ request('type') === 'retrait' ? 'selected' : '' }} style="background: var(--admin-card);">Retrait</option>
+                <option value="bonus_all" {{ request('type') === 'bonus_all' ? 'selected' : '' }} style="background: var(--admin-card);">Bonus (tous)</option>
             </select>
-            <select name="status" class="border rounded-xl px-5 py-3 focus:ring-2 focus:ring-emerald-500">
-                <option value="">Tous les statuts</option>
-                <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>En cours</option>
-                <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Validé</option>
-                <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Échoué</option>
+            <select name="status" class="input-dark">
+                <option value="" style="background: var(--admin-card);">Tous les statuts</option>
+                <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }} style="background: var(--admin-card);">En cours</option>
+                <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }} style="background: var(--admin-card);">Validé</option>
+                <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }} style="background: var(--admin-card);">Échoué</option>
             </select>
 
-            <div class="flex gap-3">
-                <button type="submit"
-                        class="bg-emerald-600 text-white rounded-xl px-6 py-3 hover:bg-emerald-700 transition flex items-center gap-2">
-                    Filtrer
-                </button>
-                <a href="{{ route('admin.transactions') }}"
-                   class="bg-gray-200 text-gray-700 rounded-xl px-6 py-3 hover:bg-gray-300 transition">
+            <div class="flex gap-3 md:col-span-4 mt-2 justify-end">
+                <a href="{{ route('admin.transactions') }}" class="btn-danger-admin flex items-center justify-center gap-2">
                     Réinitialiser
                 </a>
+                <button type="submit" class="btn-primary-admin flex items-center justify-center gap-2">
+                    <i class="fas fa-filter"></i> Filtrer
+                </button>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 
     <!-- Tableau des transactions -->
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="card-admin overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-                <thead class="bg-gradient-to-r from-slate-800 to-slate-900 text-white">
+            <table class="admin-table w-full">
+                <thead>
                     <tr>
-                        <th class="px-6 py-4 text-left">Date</th>
-                        <th class="px-6 py-4 text-left">Utilisateur</th>
-                        <th class="px-6 py-4 text-left">Type</th>
-                        <th class="px-6 py-4 text-right">Montant</th>
-                        <th class="px-6 py-4 text-center">Statut</th>
-                        <th class="px-6 py-4 text-left">Référence</th>
+                        <th class="text-left">Date</th>
+                        <th class="text-left">Utilisateur</th>
+                        <th class="text-left">Type</th>
+                        <th class="text-right">Montant</th>
+                        <th class="text-center">Statut</th>
+                        <th class="text-left">Référence</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody>
                     @forelse($transactions as $tx)
-                        @php
-                            $curr = $tx->user?->currency ?? 'FCFA';
-                        @endphp
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 text-gray-600">
-                                {{ $tx->created_at->format('d/m/Y') }}
-                                <span class="block text-xs text-gray-500">{{ $tx->created_at->format('H:i') }}</span>
+                        @php $curr = $tx->user?->currency ?? 'FCFA'; @endphp
+                        <tr>
+                            <td>
+                                <p class="text-[12px] font-semibold text-white">{{ $tx->created_at->format('d/m/Y') }}</p>
+                                <span class="text-[10px] text-gray-500">{{ $tx->created_at->format('H:i') }}</span>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">
+                            <td>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold" style="background: rgba(16,185,129,0.15); color: #34d399; font-size: 11px;">
                                         {{ strtoupper(substr($tx->user?->username ?? 'S', 0, 1)) }}
                                     </div>
                                     <div>
-                                        <p class="font-semibold text-gray-800">{{ $tx->user?->username ?? 'Système' }}</p>
-                                        <p class="text-xs text-gray-500">{{ $tx->user?->phone ?? '' }}</p>
+                                        <p class="font-semibold text-white text-[13px]">{{ $tx->user?->username ?? 'Système' }}</p>
+                                        <p class="text-[10px] text-gray-500">{{ $tx->user?->phone ?? '' }}</p>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="px-4 py-2 rounded-full text-xs font-bold
-                                    {{ $tx->type === 'depot' ? 'bg-emerald-100 text-emerald-700' : '' }}
-                                    {{ $tx->type === 'retrait' ? 'bg-red-100 text-red-700' : '' }}
-                                    {{ str_starts_with($tx->type, 'bonus') ? 'bg-amber-100 text-amber-700' : '' }}">
+                            <td>
+                                <span class="badge-status 
+                                    {{ $tx->type === 'depot' ? 'badge-success' : '' }}
+                                    {{ $tx->type === 'retrait' ? 'badge-danger' : '' }}
+                                    {{ str_starts_with($tx->type, 'bonus') ? 'badge-warning' : '' }}
+                                    {{ !in_array($tx->type, ['depot','retrait']) && !str_starts_with($tx->type, 'bonus') ? 'badge-gray' : '' }}">
                                     {{ ucfirst(str_replace('_', ' ', $tx->type)) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-right font-bold text-gray-800">
+                            <td class="text-right font-bold text-white text-[13px]">
                                 {{ $tx->type === 'retrait' ? '-' : '' }}{{ number_format($tx->montant, 0, '.', ' ') }} {{ $curr }}
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="text-center">
                                 @if($tx->status === 'completed')
-                                    <span class="bg-green-100 text-green-700 px-4 py-2 rounded-full text-xs font-bold">Validé</span>
+                                    <span class="badge-status badge-success">Validé</span>
                                 @elseif($tx->status === 'pending')
-                                    <span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-full text-xs font-bold">En cours</span>
+                                    <span class="badge-status badge-warning">En cours</span>
                                 @else
-                                    <span class="bg-red-100 text-red-700 px-4 py-2 rounded-full text-xs font-bold">Échoué</span>
+                                    <span class="badge-status badge-danger">Échoué</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4">
-                                <code class="text-xs font-mono bg-gray-100 px-3 py-1 rounded">{{ $tx->reference }}</code>
+                            <td>
+                                <code class="text-[11px] font-mono px-2 py-1 rounded" style="background: rgba(255,255,255,0.05); color: #9ca3af;">{{ $tx->reference }}</code>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-20 text-gray-500 text-lg">
-                                <i class="fas fa-inbox text-6xl mb-4 opacity-20"></i>
-                                <p>Aucune transaction trouvée</p>
+                            <td colspan="6" class="text-center py-10" style="color: #374151;">
+                                <i class="fas fa-inbox text-3xl mb-3 block" style="color: #1f2937;"></i>
+                                Aucune transaction trouvée
                             </td>
                         </tr>
                     @endforelse
@@ -135,7 +131,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="p-6 border-t bg-gray-50">
+        <div class="p-5 border-t" style="border-color: var(--admin-border); background: rgba(255,255,255,0.01);">
             {{ $transactions->links() }}
         </div>
     </div>

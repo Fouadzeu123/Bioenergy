@@ -5,7 +5,7 @@
     $balance = $user->account_balance ?? 0;
     $phone = $user->phone ?? '';
     $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
-    $phonePrefix = ($userCountry === 'CI') ? '225' : '237'; 
+    $phonePrefix = ($userCountry === 'CI') ? '225' : '237';
     $countryName  = ($userCountry === 'CI') ? "Côte d'Ivoire" : 'Cameroun';
     $countryFlag  = ($userCountry === 'CI') ? '🇨🇮' : '🇨🇲';
     $minDepot = 1000;
@@ -16,7 +16,6 @@
         $phoneStr = preg_replace('/\D/', '', $phone);
         if (str_starts_with($phoneStr, '237')) $phoneStr = substr($phoneStr, 3);
         if (str_starts_with($phoneStr, '225')) $phoneStr = substr($phoneStr, 3);
-
         if ($userCountry === 'CI') {
             $prefix2 = substr($phoneStr, 0, 2);
             if (in_array($prefix2, ['05','25','45','65','85'])) $detectedOperator = 'MTN';
@@ -35,54 +34,57 @@
     $depots = $depots ?? collect();
 @endphp
 
-<div class="max-w-xl mx-auto pt-6 px-4 space-y-8 pb-20">
+<div class="max-w-xl mx-auto pt-5 px-4 space-y-6 pb-24">
 
-    <!-- Card Solde Sleeker -->
-    <div class="relative overflow-hidden rounded-[40px] bg-slate-900 p-10 text-white shadow-2xl">
+    <!-- Card Solde -->
+    <div class="relative overflow-hidden rounded-[2rem] p-7 text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0e7490 100%); box-shadow: 0 0 40px rgba(30,64,175,0.35);">
         <div class="relative z-10 flex justify-between items-end">
             <div class="space-y-1">
-                <p class="text-[10px] font-bold text-gray-400">Liquidités disponibles</p>
+                <p class="text-[11px] font-medium" style="color: rgba(147,197,253,0.8);">Liquidités disponibles</p>
                 <h2 class="text-4xl font-bold tracking-tight">{{ fmtCurrency($balance) }}</h2>
             </div>
-            <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/5">
-                <i class="fas fa-wallet text-emerald-400"></i>
+            <div class="w-12 h-12 rounded-2xl flex items-center justify-center" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);">
+                <i class="fas fa-wallet text-blue-200 text-lg"></i>
             </div>
         </div>
-        <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full" style="background: rgba(255,255,255,0.05); filter: blur(30px);"></div>
     </div>
 
-    <!-- Formulaire Dépôt Sleeker -->
-    <form id="depositForm" action="{{ route('depot.store') }}" method="POST" class="space-y-8">
+    <!-- Formulaire Dépôt -->
+    <form id="depositForm" action="{{ route('depot.store') }}" method="POST" class="space-y-5">
         @csrf
 
-        <div class="bg-white rounded-[32px] p-8 shadow-sm border border-gray-50 space-y-8">
-            <div class="space-y-4 text-center">
-                <h3 class="text-xs font-bold text-gray-400">Passerelle de Paiement</h3>
-                <div class="p-6 rounded-[24px] border-2 border-emerald-500 bg-emerald-50/30">
-                    <div class="flex items-center justify-center gap-4">
-                        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                            <i class="fas fa-mobile-screen text-emerald-600"></i>
+        <div class="rounded-2xl p-6 space-y-6" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <!-- Passerelle -->
+            <div class="space-y-3 text-center">
+                <p class="text-[11px] font-semibold" style="color: #4b5563;">Passerelle de Paiement</p>
+                <div class="p-4 rounded-2xl" style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);">
+                    <div class="flex items-center justify-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.15);">
+                            <i class="fas fa-mobile-screen text-blue-400"></i>
                         </div>
                         <div class="text-left">
-                            <p class="text-[11px] font-bold text-gray-800">NotchPay Gateway</p>
-                            <p class="text-[9px] font-medium text-gray-400">{{ $countryFlag }} Momo, Orange & Moov</p>
+                            <p class="text-[12px] font-bold text-white">NotchPay Gateway</p>
+                            <p class="text-[10px] font-medium" style="color: #4b5563;">{{ $countryFlag }} Momo, Orange & Moov</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <label class="block text-[11px] font-bold text-gray-400 text-center">Montant de l'approvisionnement</label>
+            <!-- Montant -->
+            <div class="space-y-3">
+                <label class="block text-[11px] font-semibold text-center" style="color: #4b5563;">Montant de l'approvisionnement</label>
                 <div class="relative">
                     <input type="number" name="amount" id="amount" step="1" min="{{ $minDepot }}" required
-                           class="w-full bg-gray-50 border border-gray-100 rounded-2xl px-6 py-6 text-3xl font-bold text-center focus:bg-white focus:border-emerald-500 transition outline-none tracking-tight"
+                           class="w-full rounded-2xl px-6 py-5 text-3xl font-bold text-center text-white outline-none transition"
+                           style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"
                            placeholder="0">
-                    <span class="absolute right-6 top-1/2 -translate-y-1/2 text-gray-300 font-black text-sm italic">{{ $currency }}</span>
+                    <span class="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-semibold" style="color: #374151;">{{ $currency }}</span>
                 </div>
 
                 <div class="grid grid-cols-3 gap-3">
                     @foreach([5000, 10000, 50000] as $amt)
-                        <button type="button" onclick="setAmount({{ $amt }})" class="py-3 rounded-xl bg-gray-50 text-[10px] font-black text-gray-400 hover:bg-slate-900 hover:text-white transition uppercase tracking-wider border border-gray-100">
+                        <button type="button" onclick="setAmount({{ $amt }})" class="py-3 rounded-xl text-[11px] font-semibold transition active:scale-95" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: #9ca3af;">
                             {{ number_format($amt, 0, '.', ' ') }}
                         </button>
                     @endforeach
@@ -90,22 +92,22 @@
             </div>
 
             @if($detectedOperator !== 'UNKNOWN')
-                <div class="bg-slate-50 rounded-2xl p-4 flex items-center justify-between border border-gray-100">
+                <div class="rounded-2xl p-4 flex items-center justify-between" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center text-xs text-gray-400">
-                            <i class="fas fa-phone"></i>
+                        <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.12);">
+                            <i class="fas fa-phone text-blue-400 text-xs"></i>
                         </div>
                         <div>
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">Numéro détecté</p>
-                            <p class="text-[10px] font-black text-gray-800">+{{ $phonePrefix }} {{ chunk_split(ltrim(preg_replace('/\D/','',$phone), '0237225'), 2, ' ') }}</p>
+                            <p class="text-[10px] font-semibold" style="color: #4b5563;">Numéro détecté</p>
+                            <p class="text-[11px] font-bold text-white">+{{ $phonePrefix }} {{ chunk_split(ltrim(preg_replace('/\D/','',$phone), '0237225'), 2, ' ') }}</p>
                         </div>
                     </div>
-                    <span class="text-[9px] font-black uppercase text-emerald-600 px-2 py-1 bg-emerald-50 rounded-md">{{ $detectedOperator }}</span>
+                    <span class="text-[10px] font-bold px-3 py-1 rounded-lg" style="background: rgba(6,182,212,0.15); color: #22d3ee;">{{ $detectedOperator }}</span>
                     <input type="hidden" name="payment_method" value="{{ $detectedOperator }}">
                 </div>
             @endif
 
-            <button type="submit" class="w-full py-6 bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl active:scale-95 transition">
+            <button type="submit" class="w-full py-5 text-white text-[12px] font-bold rounded-2xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2); box-shadow: 0 0 24px rgba(59,130,246,0.3);">
                 Confirmer le dépôt
             </button>
         </div>
@@ -113,26 +115,26 @@
 
     <!-- Historique Mini -->
     @if($depots->count() > 0)
-    <div class="space-y-4">
-        <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2 italic">Dernières opérations</h3>
+    <div class="space-y-3">
+        <h3 class="text-[11px] font-semibold px-1" style="color: #4b5563;">Dernières opérations</h3>
         <div class="space-y-3">
             @foreach($depots->take(3) as $depot)
-                <div class="bg-white rounded-[24px] p-5 border border-gray-50 flex items-center justify-between shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                            <i class="fas fa-arrow-down text-xs"></i>
+                <div class="rounded-2xl p-4 flex items-center justify-between" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
+                            <i class="fas fa-arrow-down text-blue-400 text-xs"></i>
                         </div>
                         <div>
-                            <p class="text-xs font-black text-gray-800 italic">{{ fmtCurrency($depot->montant) }}</p>
-                            <p class="text-[9px] font-bold text-gray-400 uppercase">{{ $depot->created_at->format('d M, H:i') }}</p>
+                            <p class="text-xs font-bold text-white">{{ fmtCurrency($depot->montant) }}</p>
+                            <p class="text-[10px] font-medium" style="color: #4b5563;">{{ $depot->created_at->format('d M, H:i') }}</p>
                         </div>
                     </div>
                     @php
-                        $statusClass = 'bg-gray-100 text-gray-400';
-                        if($depot->status === 'completed') $statusClass = 'bg-emerald-50 text-emerald-600';
-                        elseif(in_array($depot->status, ['failed', 'canceled', 'rejected'])) $statusClass = 'bg-red-50 text-red-600';
+                        $sc = 'background: rgba(107,114,128,0.15); color: #9ca3af;';
+                        if($depot->status === 'completed') $sc = 'background: rgba(6,182,212,0.15); color: #22d3ee;';
+                        elseif(in_array($depot->status, ['failed','canceled','rejected'])) $sc = 'background: rgba(239,68,68,0.15); color: #f87171;';
                     @endphp
-                    <span class="text-[8px] font-black uppercase px-3 py-1.5 rounded-full {{ $statusClass }}">
+                    <span class="text-[9px] font-bold px-3 py-1 rounded-full" style="{{ $sc }}">
                         {{ $depot->status }}
                     </span>
                 </div>

@@ -1,12 +1,12 @@
 <x-admin-layout :title="'Nouveau Code Bonus'" :level="'admin'">
 
-<div class="max-w-full mx-auto py-6 space-y-6">
+<div class="max-w-2xl space-y-6">
 
-    <!-- Header compact mobile -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white shadow-xl text-center">
-        <i class="fas fa-gift text-4xl mb-2"></i>
-        <h1 class="text-2xl font-bold">Nouveau Code Bonus</h1>
-        <p class="text-sm opacity-90 mt-1">Créez un code en 3 secondes</p>
+    <div>
+        <a href="{{ route('admin.bonus.index') }}" style="font-size: 12px; color: #4b5563; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fas fa-arrow-left text-xs"></i> Retour aux codes
+        </a>
+        <h1 class="text-2xl font-bold text-white mt-3">Nouveau Code Bonus</h1>
     </div>
 
     <!-- Messages -->
@@ -24,71 +24,74 @@
         </div>
     @endif
 
-    <!-- Formulaire ultra-compact mobile -->
-    <div class="bg-white rounded-2xl shadow-xl p-6 space-y-8">
+    <!-- Formulaire -->
+    <div class="card-admin p-6 space-y-8">
         <form action="{{ route('admin.bonus.store') }}" method="POST">
             @csrf
 
             <!-- Code + Générateur -->
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Code promotionnel</label>
+            <div class="mb-6">
+                <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Code promotionnel</label>
                 <div class="flex gap-2">
                     <input type="text" name="code" id="bonusCode" value="{{ old('code') }}" required maxlength="20"
-                           class="flex-1 text-center text-xl font-mono tracking-wider bg-gray-50 border rounded-xl py-4 focus:ring-2 focus:ring-emerald-500"
+                           class="input-dark flex-1 text-center text-xl font-mono tracking-wider py-4"
                            placeholder="Appuyez sur Générer">
                     <button type="button" onclick="generateCode()"
-                            class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold px-4 py-4 rounded-xl whitespace-nowrap">
+                            class="btn-primary-admin font-bold px-4 py-4 whitespace-nowrap" style="background: linear-gradient(135deg, #a855f7, #ec4899); border: none; box-shadow: 0 4px 15px rgba(236,72,153,0.3);">
                         Générer
                     </button>
                 </div>
                 @error('code')
-                    <p class="text-red-600 text-xs mt-1 text-center">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1 text-center">{{ $message }}</p>
                 @enderror
             </div>
 
             <!-- Montant -->
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-2">Montant du bonus ($)</label>
+            <div class="mb-6">
+                <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Montant du bonus (FCFA)</label>
                 <div class="relative">
-                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-2xl text-emerald-600 font-bold">$</span>
-                    <input type="number" name="montant" value="{{ old('montant') }}" required min="1" step="0.01"
-                           class="w-full text-center text-4xl font-bold bg-gray-50 border rounded-xl py-5 pl-14 focus:ring-2 focus:ring-emerald-500">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-emerald-400 font-bold">FCFA</span>
+                    <input type="number" name="montant" value="{{ old('montant') }}" required min="1" step="1"
+                           class="input-dark w-full text-center text-4xl font-bold py-5 pl-14">
                 </div>
                 @error('montant')
-                    <p class="text-red-600 text-xs mt-1 text-center">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1 text-center">{{ $message }}</p>
                 @enderror
             </div>
 
             <!-- Utilisations max -->
-            <div>
-                <label class="block text-sm font-bold text-gray-700 mb-3">Utilisations max</label>
-                <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="mb-6">
+                <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Utilisations max</label>
+                <div class="grid grid-cols-3 gap-3 text-center mb-4">
                     @foreach([5, 10, 50, 100, 500, 1000] as $num)
-                        <label class="block">
-                            <input type="radio" name="max_usage" value="{{ $num }}"
-                                   {{ old('max_usage', 10) == $num ? 'checked' : '' }} class="hidden peer">
-                            <div class="py-4 bg-gray-100 peer-checked:bg-emerald-600 peer-checked:text-white rounded-xl font-bold text-lg hover:bg-emerald-100 hover:text-emerald-700 transition">
+                        <label class="block cursor-pointer">
+                            <input type="radio" name="max_usage_radio" value="{{ $num }}"
+                                   {{ old('max_usage', 10) == $num ? 'checked' : '' }} class="hidden peer" onchange="document.getElementById('max_usage_input').value = this.value;">
+                            <div class="py-3 rounded-xl font-bold text-lg transition" style="background: var(--admin-card); border: 1px solid rgba(255,255,255,0.05); color: #9ca3af;">
                                 {{ $num === 1000 ? 'Illimité' : $num }}
                             </div>
                         </label>
                     @endforeach
                 </div>
-                <input type="number" name="max_usage" value="{{ old('max_usage', 10) }}" min="1" required
-                       class="mt-4 w-full text-center text-2xl font-bold bg-emerald-50 border-2 border-emerald-400 rounded-xl py-4 focus:ring-2 focus:ring-emerald-500"
+                <input type="number" name="max_usage" id="max_usage_input" value="{{ old('max_usage', 10) }}" min="1" required
+                       class="input-dark mt-4 w-full text-center text-2xl font-bold py-4" style="border-color: rgba(52,211,153,0.3); color: #34d399;"
                        placeholder="ou personnalisé">
                 @error('max_usage')
-                    <p class="text-red-600 text-xs mt-1 text-center">{{ $message }}</p>
+                    <p class="text-red-500 text-xs mt-1 text-center">{{ $message }}</p>
                 @enderror
             </div>
 
+            <style>
+                input[type="radio"]:checked + div {
+                    background: rgba(16,185,129,0.15) !important;
+                    border-color: rgba(16,185,129,0.5) !important;
+                    color: #34d399 !important;
+                }
+            </style>
+
             <!-- Boutons -->
-            <div class="flex gap-3 pt-4">
-                <a href="{{ route('admin.bonus.index') }}"
-                   class="flex-1 text-center bg-gray-200 text-gray-700 font-bold py-4 rounded-xl text-sm">
-                    Retour
-                </a>
-                <button type="submit"
-                        class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-4 rounded-xl text-sm hover:from-emerald-700 hover:to-teal-700 transition">
+            <div class="flex justify-end pt-4">
+                <button type="submit" class="btn-primary-admin py-3 px-8 text-sm">
                     Créer le code
                 </button>
             </div>

@@ -1,111 +1,97 @@
 <x-layouts :title="'Lucky Wheel'" :level="Auth::user()->level">
-<div class="max-w-xl mx-auto pt-6 px-4 space-y-10 pb-32">
+<div class="max-w-xl mx-auto pt-5 px-4 space-y-8 pb-32">
 
     <!-- Hero Lucky Wheel -->
-    <div class="relative overflow-hidden rounded-[40px] bg-slate-900 p-10 text-white shadow-2xl text-center">
+    <div class="relative overflow-hidden rounded-[2rem] p-8 text-white text-center" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e3a8a 100%); box-shadow: 0 0 50px rgba(99,102,241,0.3);">
         <div class="relative z-10 space-y-2">
-            <h1 class="text-3xl font-bold tracking-tight leading-none">Roue de la Fortune</h1>
-            <p class="text-[11px] font-semibold text-emerald-400 tracking-wide">Tentez votre chance</p>
+            <h1 class="text-3xl font-extrabold tracking-tight">Roue de la Fortune</h1>
+            <p class="text-[11px] font-medium" style="color: rgba(199,210,254,0.8);">Tentez votre chance</p>
         </div>
-        <div class="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute -right-16 -top-16 w-56 h-56 rounded-full" style="background: rgba(139,92,246,0.15); filter: blur(40px);"></div>
+        <div class="absolute -left-16 -bottom-16 w-56 h-56 rounded-full" style="background: rgba(59,130,246,0.15); filter: blur(40px);"></div>
     </div>
 
     <!-- Wheel Section -->
-    <div class="flex flex-col items-center space-y-10">
-        
+    <div class="flex flex-col items-center space-y-8">
+
         <!-- Lucky Spins Badge -->
-        <div class="bg-white/50 backdrop-blur-md border border-white px-8 py-4 rounded-3xl shadow-sm inline-flex items-center gap-4">
-            <div class="w-10 h-10 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-lg">
-                <i class="fas fa-ticket text-xs"></i>
+        <div class="inline-flex items-center gap-4 px-7 py-4 rounded-2xl" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #2563eb, #0891b2); box-shadow: 0 0 16px rgba(59,130,246,0.4);">
+                <i class="fas fa-ticket text-white text-xs"></i>
             </div>
             <div>
-                <p class="text-[10px] font-bold text-gray-400">Tours restants</p>
-                <p id="spin-count" class="text-xl font-bold text-slate-900">{{ $user->lucky_spins }}</p>
+                <p class="text-[10px] font-semibold" style="color: #4b5563;">Tours restants</p>
+                <p id="spin-count" class="text-xl font-bold text-white">{{ $user->lucky_spins }}</p>
             </div>
         </div>
 
         <!-- The Wheel Container -->
-        <div class="relative w-72 h-72 sm:w-80 sm:h-80 group">
+        <div class="relative w-72 h-72 sm:w-80 sm:h-80">
             <!-- Indicator -->
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2 z-20 text-slate-900 text-3xl">
+            <div class="absolute -top-5 left-1/2 -translate-x-1/2 z-20 text-3xl" style="color: #3b82f6; filter: drop-shadow(0 0 8px rgba(59,130,246,0.6));">
                 <i class="fas fa-caret-down"></i>
             </div>
-            
-            <!-- Wheel Image/SVG -->
-            <div id="wheel" class="w-full h-full rounded-full border-[8px] border-slate-900 shadow-2xl transition-transform duration-[5s] cubic-bezier(0.15, 0, 0.15, 1) bg-slate-50 relative overflow-hidden">
-                <!-- Slices will be represented by background segments or just a nice image -->
+
+            <!-- Wheel -->
+            <div id="wheel" class="w-full h-full rounded-full transition-transform duration-[5s] relative overflow-hidden" style="border: 8px solid #1e3a8a; box-shadow: 0 0 40px rgba(59,130,246,0.3), inset 0 0 30px rgba(0,0,0,0.5);">
                 <canvas id="wheel-canvas" width="400" height="400" class="w-full h-full"></canvas>
             </div>
 
             <!-- Center Button -->
-            <button id="spin-button" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-slate-900 rounded-full border-4 border-white shadow-2xl flex items-center justify-center text-white text-[10px] font-black uppercase tracking-widest active:scale-90 transition z-30 group-hover:bg-emerald-600">
+            <button id="spin-button" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border-4 border-white/10 flex items-center justify-center text-white text-[11px] font-bold active:scale-90 transition z-30" style="background: linear-gradient(135deg, #2563eb, #0891b2); box-shadow: 0 0 30px rgba(59,130,246,0.5);">
                 Lancer
             </button>
         </div>
     </div>
 
     <!-- Live Winners Feed -->
-    <div class="space-y-6">
-        <div class="flex justify-between items-end px-4">
-            <h3 class="text-xs font-bold text-gray-400">Gagnants en direct</h3>
+    <div class="space-y-4">
+        <div class="flex justify-between items-center px-2">
+            <h3 class="text-[12px] font-semibold" style="color: #4b5563;">Gagnants en direct</h3>
             <div class="flex items-center gap-2">
-                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                <span class="text-[10px] font-bold text-emerald-600">En direct</span>
+                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></span>
+                <span class="text-[10px] font-semibold text-blue-400">En direct</span>
             </div>
         </div>
 
-        <div class="bg-white rounded-[40px] border border-gray-50 shadow-sm overflow-hidden h-48 relative">
-            <div id="winners-feed" class="absolute inset-0 p-6 space-y-4 transition-all">
+        <div class="rounded-2xl overflow-hidden h-44 relative" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <div id="winners-feed" class="absolute inset-0 p-5 space-y-4 transition-all">
                 @foreach($fictiveWinners as $winner)
                     <div class="flex justify-between items-center winner-item">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-bold text-blue-400" style="background: rgba(59,130,246,0.15);">
                                 {{ substr($winner['name'], 0, 1) }}
                             </div>
                             <div>
-                                <p class="text-[10px] font-black text-slate-800">{{ $winner['name'] }}</p>
-                                <p class="text-[8px] font-bold text-gray-400 uppercase">{{ $winner['time'] }}</p>
+                                <p class="text-[11px] font-semibold text-white">{{ $winner['name'] }}</p>
+                                <p class="text-[10px] font-medium" style="color: #4b5563;">{{ $winner['time'] }}</p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-[10px] font-black text-emerald-600">+{{ $winner['prize'] }} XAF</p>
-                        </div>
+                        <p class="text-[11px] font-bold text-cyan-400">+{{ $winner['prize'] }} XAF</p>
                     </div>
                 @endforeach
             </div>
-            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 right-0 h-14 pointer-events-none" style="background: linear-gradient(to top, #0d1117, transparent);"></div>
         </div>
     </div>
 
     <!-- Rules Section -->
-    <div class="bg-slate-900 rounded-[40px] p-8 text-white space-y-6">
-        <h3 class="text-sm font-bold text-emerald-400">Règles du jeu</h3>
+    <div class="rounded-2xl p-6 space-y-4" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+        <h3 class="text-sm font-bold text-blue-400">Règles du jeu</h3>
         <ul class="space-y-4">
-            <li class="flex gap-4 items-start">
-                <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <i class="fas fa-check text-[8px]"></i>
+            @foreach([
+                'Obtenez 1 tour gratuit après votre premier investissement.',
+                'Recevez 1 tour pour chaque premier investissement de vos filleuls directs.',
+                'Chaque passage à un niveau VIP supérieur vous offre 1 tour supplémentaire.',
+                'Les gains sont instantanément crédités sur votre compte principal.',
+            ] as $rule)
+            <li class="flex gap-3 items-start">
+                <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3);">
+                    <i class="fas fa-check text-blue-400 text-[8px]"></i>
                 </div>
-                <p class="text-[10px] font-medium text-gray-400 leading-relaxed uppercase tracking-wide">Obtenez 1 tour gratuit après votre premier investissement.</p>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">{{ $rule }}</p>
             </li>
-            <li class="flex gap-4 items-start">
-                <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <i class="fas fa-check text-[8px]"></i>
-                </div>
-                <p class="text-[10px] font-medium text-gray-400 leading-relaxed uppercase tracking-wide">Recevez 1 tour pour chaque premier investissement de vos filleuls directs.</p>
-            </li>
-            <li class="flex gap-4 items-start">
-                <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <i class="fas fa-check text-[8px]"></i>
-                </div>
-                <p class="text-[10px] font-medium text-gray-400 leading-relaxed uppercase tracking-wide">Chaque passage à un niveau VIP supérieur vous offre 1 tour supplémentaire.</p>
-            </li>
-            <li class="flex gap-4 items-start">
-                <div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <i class="fas fa-check text-[8px]"></i>
-                </div>
-                <p class="text-[10px] font-medium text-gray-400 leading-relaxed">Les gains sont instantanément crédités sur votre compte principal.</p>
-            </li>
+            @endforeach
         </ul>
     </div>
 
@@ -119,7 +105,8 @@
     const spinCountDisplay = document.getElementById('spin-count');
 
     const prizes = [500, 1200, 5000, 8000, 150000, 500, 1200, 5000];
-    const colors = ['#0f172a', '#10b981', '#1e293b', '#34d399', '#0f172a', '#10b981', '#1e293b', '#34d399'];
+    // Couleurs bleu nuit pour la roue
+    const colors = ['#1e3a8a','#2563eb','#1e40af','#0891b2','#1e3a8a','#3b82f6','#1d4ed8','#06b6d4'];
     const totalSlices = prizes.length;
     const sliceDeg = 360 / totalSlices;
 
@@ -131,14 +118,22 @@
             ctx.moveTo(200, 200);
             ctx.arc(200, 200, 200, (i * sliceDeg * Math.PI) / 180, ((i + 1) * sliceDeg * Math.PI) / 180);
             ctx.fill();
-            
+
+            // Séparateur
+            ctx.beginPath();
+            ctx.moveTo(200, 200);
+            ctx.lineTo(200 + 200 * Math.cos((i * sliceDeg * Math.PI) / 180), 200 + 200 * Math.sin((i * sliceDeg * Math.PI) / 180));
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
             ctx.save();
             ctx.translate(200, 200);
             ctx.rotate(((i + 0.5) * sliceDeg * Math.PI) / 180);
             ctx.textAlign = "right";
-            ctx.fillStyle = "#fff";
-            ctx.font = "bold 14px Inter";
-            ctx.fillText(prizes[i], 180, 10);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 13px Inter";
+            ctx.fillText(prizes[i].toLocaleString('fr-FR'), 175, 6);
             ctx.restore();
         }
     }
@@ -150,30 +145,18 @@
 
     spinButton.addEventListener('click', async () => {
         if (isSpinning) return;
-
         try {
             const response = await fetch("{{ route('luckywheel.spin') }}", {
                 method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
             });
-
             const data = await response.json();
-
-            if (data.error) {
-                alert(data.error);
-                return;
-            }
+            if (data.error) { alert(data.error); return; }
 
             isSpinning = true;
             const prizeIndex = prizes.indexOf(data.prize);
-            // On veut que la roue s'arrête sur le bon index.
-            // On rajoute 5-10 tours complets pour l'effet.
             const extraRounds = 5 + Math.floor(Math.random() * 5);
-            const targetRotation = 360 * extraRounds + (360 - (prizeIndex * sliceDeg)) - (sliceDeg/2);
-            
+            const targetRotation = 360 * extraRounds + (360 - (prizeIndex * sliceDeg)) - (sliceDeg / 2);
             currentRotation += targetRotation;
             wheel.style.transform = `rotate(${currentRotation}deg)`;
 
@@ -181,9 +164,8 @@
                 isSpinning = false;
                 spinCountDisplay.textContent = data.remaining_spins;
                 alert(data.message);
-                window.location.reload(); // Pour rafraîchir le solde proprement ou via JS
+                window.location.reload();
             }, 5500);
-
         } catch (error) {
             console.error(error);
             isSpinning = false;
@@ -194,16 +176,12 @@
     const feed = document.getElementById('winners-feed');
     let scrollPos = 0;
     function scrollFeed() {
-        scrollPos -= 1;
-        if (Math.abs(scrollPos) >= feed.scrollHeight / 2) {
-            scrollPos = 0;
-        }
+        scrollPos -= 0.6;
+        if (Math.abs(scrollPos) >= feed.scrollHeight / 2) scrollPos = 0;
         feed.style.transform = `translateY(${scrollPos}px)`;
         requestAnimationFrame(scrollFeed);
     }
-    // Cloner le contenu pour un scroll infini
     feed.innerHTML += feed.innerHTML;
     scrollFeed();
-
 </script>
 </x-layouts>

@@ -17,9 +17,9 @@ class ProduitController extends Controller
     private const INVESTMENT_DURATION_DAYS = 180; // 6 mois
 
     private const BONUS_RATES = [
-        1 => 0.15, // 15% niveau 1
-        2 => 0.05, // 5% niveau 2
-        3 => 0.01, // 1% niveau 3
+        1 => 0.10, // 10% niveau 1 (premier investissement du filleul)
+        2 => 0.03, // 3%  niveau 2
+        3 => 0.01, // 1%  niveau 3
     ];
 
     public function index()

@@ -7,15 +7,15 @@
     <style>
         #welcomePopup { font-family: 'Inter', sans-serif; }
 
-        @keyframes gradientShift {
+        @keyframes gradientShiftDark {
             0%   { background-position: 0% 50%; }
             50%  { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
         .popup-header-bg {
-            background: linear-gradient(135deg, #064e3b, #065f46, #047857, #0d9488, #0369a1);
+            background: linear-gradient(135deg, #1e1b4b, #1e3a8a, #0e7490, #1d4ed8, #312e81);
             background-size: 300% 300%;
-            animation: gradientShift 6s ease infinite;
+            animation: gradientShiftDark 6s ease infinite;
         }
 
         @keyframes floatIcon {
@@ -29,16 +29,16 @@
             box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
         }
         .popup-card {
-            background: rgba(255,255,255,0.97);
-            backdrop-filter: blur(20px);
+            background: #0d1117;
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(24px);
         }
         .telegram-btn {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+            background: linear-gradient(135deg, #2563eb, #0891b2);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
             transition: all 0.3s ease;
         }
         .telegram-btn:hover {
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
             box-shadow: 0 12px 35px rgba(37, 99, 235, 0.6);
             transform: translateY(-2px) scale(1.02);
         }
@@ -51,76 +51,81 @@
     <!-- POPUP BIENVENUE -->
     <div id="welcomePopup" class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center hidden">
 
-        <!-- Overlay flouté -->
-        <div id="popupOverlay" class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
+        <!-- Overlay -->
+        <div id="popupOverlay" class="absolute inset-0 backdrop-blur-sm" style="background: rgba(0,0,0,0.75);"></div>
 
-        <!-- Carte popup — slide depuis le bas sur mobile, centrée sur desktop -->
+        <!-- Carte popup -->
         <div class="popup-card relative w-full sm:max-w-md sm:mx-4 sm:rounded-3xl rounded-t-3xl shadow-2xl overflow-hidden animate__animated animate__slideInUp sm:animate__zoomIn max-h-[92dvh] flex flex-col">
 
-            <!-- En-tête gradient animé — compact sur mobile -->
+            <!-- En-tête gradient animé -->
             <div class="popup-header-bg px-6 pt-8 pb-12 text-center relative overflow-hidden flex-shrink-0">
-                <!-- Cercles décoratifs -->
                 <div class="absolute top-0 left-0 w-28 h-28 bg-white/5 rounded-full -translate-x-10 -translate-y-10"></div>
                 <div class="absolute bottom-0 right-0 w-36 h-36 bg-white/5 rounded-full translate-x-14 translate-y-14"></div>
 
-                <!-- Bouton fermer — plus grand sur mobile pour le toucher -->
                 <button id="closePopup"
-                        class="absolute top-3 right-3 w-10 h-10 bg-white/20 active:bg-white/40 rounded-full flex items-center justify-center text-white transition text-base font-bold touch-manipulation">
+                        class="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center text-white text-base font-bold touch-manipulation transition"
+                        style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);">
                     <i class="fas fa-times"></i>
                 </button>
 
-                <!-- Icône principale flottante — taille réduite sur mobile -->
-                <div class="float-icon inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-white/15 rounded-2xl sm:rounded-3xl mb-3 mx-auto border border-white/20">
+                <div class="float-icon inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl mb-3 mx-auto"
+                     style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);">
                     <i class="fas fa-leaf text-white text-3xl sm:text-4xl"></i>
                 </div>
 
-                <h2 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight mb-1">
+                <h2 class="text-xl sm:text-2xl font-extrabold text-white leading-tight mb-1">
                     Bienvenue chez<br>
-                    <span class="text-emerald-200">BioEnergy Investment</span>
+                    <span style="color: #93c5fd;">BioEnergy Investment</span>
                 </h2>
-                <p class="text-emerald-100/80 text-xs sm:text-sm">La plateforme d'investissement vert qui rapporte</p>
+                <p class="text-xs sm:text-sm" style="color: rgba(147,197,253,0.7);">La plateforme d'investissement vert qui rapporte</p>
             </div>
 
             <!-- Chip bonus flottant -->
             <div class="flex justify-center -mt-5 flex-shrink-0">
-                <div class="bonus-chip inline-flex items-center gap-2 text-white font-extrabold text-xs sm:text-sm px-4 py-2 sm:px-5 sm:py-2.5 rounded-full shadow-lg">
+                <div class="bonus-chip inline-flex items-center gap-2 text-white font-bold text-xs sm:text-sm px-4 py-2 sm:px-5 sm:py-2.5 rounded-full">
                     <i class="fas fa-gift"></i>
                     <span>6 000 {{ Auth::user()->currency }} de bonus de bienvenue offert !</span>
                 </div>
             </div>
 
-            <!-- Corps — scrollable si écran très petit -->
+            <!-- Corps -->
             <div class="px-5 sm:px-7 pt-5 pb-6 overflow-y-auto overscroll-contain">
 
                 <!-- Avantages -->
                 <div class="space-y-2 sm:space-y-3 mb-5">
-                    <div class="feature-item flex items-center gap-3 bg-emerald-50 border border-emerald-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 bg-emerald-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-users text-white text-xs sm:text-sm"></i>
+                    <div class="feature-item flex items-center gap-3 rounded-xl px-3 sm:px-4 py-3"
+                         style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2);">
+                        <div class="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center"
+                             style="background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.3);">
+                            <i class="fas fa-users text-emerald-400 text-sm"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-slate-800 text-xs sm:text-sm">Parrainage multi-niveaux</p>
-                            <p class="text-slate-500 text-[11px] sm:text-xs">Gagnez sur 3 niveaux de filleuls</p>
+                            <p class="font-semibold text-white text-xs sm:text-sm">Parrainage multi-niveaux</p>
+                            <p class="text-[11px] sm:text-xs" style="color: #4b5563;">Gagnez sur 3 niveaux de filleuls</p>
                         </div>
                     </div>
 
-                    <div class="feature-item flex items-center gap-3 bg-blue-50 border border-blue-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 bg-blue-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-trophy text-white text-xs sm:text-sm"></i>
+                    <div class="feature-item flex items-center gap-3 rounded-xl px-3 sm:px-4 py-3"
+                         style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);">
+                        <div class="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center"
+                             style="background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.3);">
+                            <i class="fas fa-trophy text-blue-400 text-sm"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-slate-800 text-xs sm:text-sm">Récompenses exclusives</p>
-                            <p class="text-slate-500 text-[11px] sm:text-xs">Jusqu'à 1 000 000 {{ Auth::user()->currency }} pour nos meilleurs investisseurs</p>
+                            <p class="font-semibold text-white text-xs sm:text-sm">Récompenses exclusives</p>
+                            <p class="text-[11px] sm:text-xs" style="color: #4b5563;">Jusqu'à 1 000 000 {{ Auth::user()->currency }} pour nos meilleurs investisseurs</p>
                         </div>
                     </div>
 
-                    <div class="feature-item flex items-center gap-3 bg-violet-50 border border-violet-100 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 bg-violet-500 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-briefcase text-white text-xs sm:text-sm"></i>
+                    <div class="feature-item flex items-center gap-3 rounded-xl px-3 sm:px-4 py-3"
+                         style="background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2);">
+                        <div class="w-9 h-9 flex-shrink-0 rounded-xl flex items-center justify-center"
+                             style="background: rgba(139,92,246,0.2); border: 1px solid rgba(139,92,246,0.3);">
+                            <i class="fas fa-briefcase text-violet-400 text-sm"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-slate-800 text-xs sm:text-sm">Programme Emploi</p>
-                            <p class="text-slate-500 text-[11px] sm:text-xs">Jusqu'à 1 200 000 {{ Auth::user()->currency }}/mois selon votre poste</p>
+                            <p class="font-semibold text-white text-xs sm:text-sm">Programme Emploi</p>
+                            <p class="text-[11px] sm:text-xs" style="color: #4b5563;">Jusqu'à 1 200 000 {{ Auth::user()->currency }}/mois selon votre poste</p>
                         </div>
                     </div>
                 </div>
@@ -133,7 +138,7 @@
                     <i class="fas fa-arrow-right text-xs sm:text-sm opacity-70"></i>
                 </a>
 
-                <p class="text-center text-slate-400 text-[11px] mt-2.5 pb-safe">
+                <p class="text-center text-[11px] mt-2.5" style="color: #374151;">
                     <i class="fas fa-lock mr-1"></i> Canal vérifié · Annonces exclusives
                 </p>
             </div>
@@ -141,141 +146,148 @@
     </div>
 
     <!-- CONTENU PRINCIPAL -->
-    <div class="max-w-xl mx-auto pt-6 px-4 space-y-8">
+    <div class="max-w-xl mx-auto pt-5 px-4 space-y-6">
 
-        <!-- Hero Section Premium -->
-        <div class="relative overflow-hidden rounded-3xl bg-emerald-600 p-6 text-white shadow-xl">
+        <!-- Hero Card -->
+        <div class="relative overflow-hidden rounded-[2rem] p-7 text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 40%, #0e7490 100%); box-shadow: 0 0 40px rgba(30,64,175,0.4);">
             <div class="relative z-10">
-                <h1 class="text-sm font-medium opacity-90">Bonjour,</h1>
-                <p class="text-2xl font-bold">{{ Auth::user()->username }}</p>
-                
-                <div class="mt-6 grid grid-cols-2 gap-4">
-                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
-                        <p class="text-[11px] font-medium opacity-70 mb-1">Solde disponible</p>
+                <div class="flex justify-between items-start mb-1">
+                    <div>
+                        <p class="text-[11px] font-medium" style="color: rgba(147,197,253,0.8);">Bonjour,</p>
+                        <p class="text-2xl font-bold tracking-tight">{{ Auth::user()->username }}</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-full flex items-center justify-center" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);">
+                        <i class="fas fa-bell text-xs text-blue-200"></i>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-2 gap-3">
+                    <div class="rounded-2xl p-4" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);">
+                        <p class="text-[10px] font-medium mb-1" style="color: rgba(147,197,253,0.7);">Solde disponible</p>
                         <p class="text-xl font-bold">{{ fmtCurrency(Auth::user()->account_balance) }}</p>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/10">
-                        <p class="text-[11px] font-medium opacity-70 mb-1">Gains du jour</p>
-                        <p class="text-xl font-bold text-emerald-300">+{{ fmtCurrency(0) }}</p>
+                    <div class="rounded-2xl p-4" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);">
+                        <p class="text-[10px] font-medium mb-1" style="color: rgba(147,197,253,0.7);">Gains du jour</p>
+                        <p class="text-xl font-bold text-cyan-300">+{{ fmtCurrency(0) }}</p>
                     </div>
                 </div>
             </div>
-            <!-- Décoration -->
-            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+            <!-- Déco -->
+            <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full" style="background: rgba(255,255,255,0.05); filter: blur(30px);"></div>
+            <div class="absolute -left-8 -bottom-8 w-32 h-32 rounded-full" style="background: rgba(6,182,212,0.1); filter: blur(24px);"></div>
         </div>
 
-        <!-- Carousel Sleeker -->
-        <div class="relative rounded-2xl overflow-hidden shadow-lg aspect-[16/7]">
+        <!-- Carousel -->
+        <div class="relative rounded-2xl overflow-hidden shadow-lg aspect-[16/7]" style="border: 1px solid rgba(255,255,255,0.06);">
             <div id="carousel" class="flex transition-transform duration-700 ease-in-out h-full">
                 <img src="{{ asset('images/slide1.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
                 <img src="{{ asset('images/slide2.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
                 <img src="{{ asset('images/slide3.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
             </div>
-            <!-- Indicateurs -->
+            <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(7,9,15,0.4), transparent);"></div>
             <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-40"></div>
                 <div class="w-3 h-1.5 rounded-full bg-white"></div>
-                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-50"></div>
+                <div class="w-1.5 h-1.5 rounded-full bg-white opacity-40"></div>
             </div>
         </div>
 
-        <!-- Grille d'actions rapide - Version 2025 Mobile First -->
+        <!-- Grille d'actions rapide -->
         <div class="grid grid-cols-4 gap-3">
-            <a href="{{ route('deposit') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-emerald-600 border border-gray-50">
-                    <i class="fas fa-plus-circle text-xl"></i>
+            <a href="{{ route('deposit') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-blue-400 group-hover:text-blue-300 transition-all duration-300 group-hover:scale-105" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
+                    <i class="fas fa-arrow-down text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Dépôt</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Dépôt</span>
             </a>
-            <a href="{{ route('retrait') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-blue-600 border border-gray-50">
-                    <i class="fas fa-paper-plane text-xl"></i>
+            <a href="{{ route('retrait') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-cyan-400 group-hover:text-cyan-300 transition-all duration-300 group-hover:scale-105" style="background: rgba(6,182,212,0.12); border: 1px solid rgba(6,182,212,0.2);">
+                    <i class="fas fa-arrow-up text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Retrait</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Retrait</span>
             </a>
-            <a href="{{ route('fond.index') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-orange-600 border border-gray-50">
-                    <i class="fas fa-leaf text-xl"></i>
+            <a href="{{ route('fond.index') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-emerald-400 group-hover:text-emerald-300 transition-all duration-300 group-hover:scale-105" style="background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.2);">
+                    <i class="fas fa-leaf text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Fonds</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Fonds</span>
             </a>
-            <a href="{{ route('team') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-purple-600 border border-gray-50">
-                    <i class="fas fa-users text-xl"></i>
+            <a href="{{ route('team') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-violet-400 group-hover:text-violet-300 transition-all duration-300 group-hover:scale-105" style="background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.2);">
+                    <i class="fas fa-users text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Équipes</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Équipe</span>
             </a>
-            
-            <a href="{{ route('share') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-indigo-600 border border-gray-50">
-                    <i class="fas fa-link text-xl"></i>
+            <a href="{{ route('share') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-indigo-400 group-hover:text-indigo-300 transition-all duration-300 group-hover:scale-105" style="background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.2);">
+                    <i class="fas fa-share-nodes text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Lien</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Lien</span>
             </a>
-            <a href="{{ route('bonus.code') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-amber-500 border border-gray-50">
-                    <i class="fas fa-gift text-xl"></i>
+            <a href="{{ route('bonus.code') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-amber-400 group-hover:text-amber-300 transition-all duration-300 group-hover:scale-105" style="background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.2);">
+                    <i class="fas fa-gift text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Bonus</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Bonus</span>
             </a>
-            <a href="{{ route('emploi') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-emerald-600 border border-gray-50">
-                    <i class="fas fa-briefcase text-xl"></i>
+            <a href="{{ route('emploi') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-rose-400 group-hover:text-rose-300 transition-all duration-300 group-hover:scale-105" style="background: rgba(244,63,94,0.12); border: 1px solid rgba(244,63,94,0.2);">
+                    <i class="fas fa-briefcase text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Emploi</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Emploi</span>
             </a>
-            <a href="{{ route('presentation') }}" class="flex flex-col items-center gap-2">
-                <div class="w-14 h-14 bg-white rounded-2xl shadow-sm flex items-center justify-center text-gray-600 border border-gray-50">
-                    <i class="fas fa-info-circle text-xl"></i>
+            <a href="{{ route('presentation') }}" class="group flex flex-col items-center gap-2">
+                <div class="w-14 h-14 rounded-[1.25rem] flex items-center justify-center text-gray-400 group-hover:text-gray-200 transition-all duration-300 group-hover:scale-105" style="background: rgba(107,114,128,0.12); border: 1px solid rgba(107,114,128,0.2);">
+                    <i class="fas fa-info text-lg"></i>
                 </div>
-                <span class="text-[10px] font-bold text-gray-600">Infos</span>
+                <span class="text-[10px] font-medium" style="color: #6b7280;">Infos</span>
             </a>
         </div>
 
-        <!-- Section Impact & Vidéo Sleeker -->
-        <div class="space-y-6 pb-10">
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-                <h3 class="text-xs font-bold text-gray-400 mb-4">Notre impact</h3>
+        <!-- Section Impact & Vidéo -->
+        <div class="space-y-4 pb-2">
+            <div class="rounded-2xl p-5" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+                <h3 class="text-[11px] font-semibold mb-4" style="color: #4b5563;">Notre impact</h3>
                 <div class="grid grid-cols-2 gap-6">
                     <div>
-                        <p class="text-xl font-bold text-emerald-600">+12k</p>
-                        <p class="text-[10px] font-medium text-gray-400">GWh produits</p>
+                        <p class="text-xl font-bold text-blue-400">+12k</p>
+                        <p class="text-[10px] font-medium" style="color: #4b5563;">GWh produits</p>
                     </div>
                     <div>
-                        <p class="text-xl font-bold text-emerald-600">210t</p>
-                        <p class="text-[10px] font-medium text-gray-400">CO₂ évitées</p>
+                        <p class="text-xl font-bold text-cyan-400">210t</p>
+                        <p class="text-[10px] font-medium" style="color: #4b5563;">CO₂ évitées</p>
                     </div>
                 </div>
             </div>
 
-            <div class="relative rounded-3xl overflow-hidden shadow-lg bg-black group">
+            <div class="relative rounded-2xl overflow-hidden" style="border: 1px solid rgba(255,255,255,0.06);">
                 <div class="aspect-video relative">
-                    <iframe class="absolute inset-0 w-full h-full opacity-80"
+                    <iframe class="absolute inset-0 w-full h-full opacity-70"
                             src="https://www.youtube.com/embed/yHWcddUZ35s?controls=0"
                             title="BioEnergy" frameborder="0"></iframe>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-6">
-                        <p class="text-white font-bold text-sm">Comprendre la biomasse en 2 minutes</p>
+                    <div class="absolute inset-0 flex items-end p-5" style="background: linear-gradient(to top, rgba(7,9,15,0.8), transparent);">
+                        <p class="text-white font-semibold text-sm">Comprendre la biomasse en 2 minutes</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Activité Récente (Tableau) -->
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 pb-6 mb-10">
-            <h3 class="text-xs font-bold text-gray-400 mb-4 flex items-center gap-2">
-                <i class="fas fa-broadcast-tower text-emerald-500 animate-pulse"></i>
+        <div class="rounded-2xl p-5 mb-10" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <h3 class="text-[11px] font-semibold mb-4 flex items-center gap-2" style="color: #4b5563;">
+                <i class="fas fa-broadcast-tower text-blue-500 animate-pulse"></i>
                 Activité en direct
             </h3>
             <div class="overflow-hidden">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-gray-50">
-                            <th class="pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-1/3">Membre</th>
-                            <th class="pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-1/3 text-center">Action</th>
-                            <th class="pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest w-1/3 text-right">Montant</th>
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <th class="pb-2 text-[10px] font-semibold w-1/3" style="color: #374151;">Membre</th>
+                            <th class="pb-2 text-[10px] font-semibold w-1/3 text-center" style="color: #374151;">Action</th>
+                            <th class="pb-2 text-[10px] font-semibold w-1/3 text-right" style="color: #374151;">Montant</th>
                         </tr>
                     </thead>
-                    <tbody id="live-activity-table" class="text-xs divide-y divide-gray-50">
+                    <tbody id="live-activity-table" class="text-xs" style="--tw-divide-color: rgba(255,255,255,0.04);">
                         <!-- Rempli par JS -->
                     </tbody>
                 </table>

@@ -9,6 +9,9 @@ class Produit extends Model
     protected $fillable = [
         "name",
         "description",
+        "min_amount",
+        "max_amount",
+        "rate",
         "price",
         "limit_order",
         "day_income",

@@ -1,82 +1,67 @@
 <x-layouts :title="'Bonus et Récompenses'" :level="Auth::user()->level">
-<div class="max-w-xl mx-auto pt-6 px-4 space-y-8 pb-20">
+<div class="max-w-xl mx-auto pt-5 px-4 space-y-6 pb-24">
 
-    <!-- Message succès -->
-    @if(session('success'))
-        <div class="bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-lg text-center font-bold text-[10px] animate__animated animate__fadeInDown">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <!-- Message erreur -->
-    @if(session('error'))
-        <div class="bg-red-500 text-white px-6 py-4 rounded-2xl shadow-lg text-center font-bold text-[10px] animate__animated animate__shakeX">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <!-- Hero Bonus Sleeker -->
-    <div class="relative overflow-hidden rounded-3xl bg-slate-900 p-8 text-white shadow-xl">
+    <!-- Hero Bonus -->
+    <div class="relative overflow-hidden rounded-[2rem] p-7 text-white" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0e7490 100%); box-shadow: 0 0 40px rgba(30,64,175,0.35);">
         <div class="relative z-10">
             <h1 class="text-xl font-bold">Centre de Récompenses</h1>
-            <p class="text-[11px] font-semibold text-gray-400 mt-1">Échangez vos codes cadeaux</p>
-            
-            <form action="{{ route('bonus.reclamer') }}" method="POST" class="mt-8 relative">
+            <p class="text-[11px] font-medium mt-1" style="color: rgba(147,197,253,0.8);">Échangez vos codes cadeaux</p>
+
+            <form action="{{ route('bonus.reclamer') }}" method="POST" class="mt-6 relative">
                 @csrf
-                <input type="text" name="code" required 
-                       class="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold text-white focus:bg-white/10 focus:border-emerald-500 transition outline-none"
+                <input type="text" name="code" required
+                       class="w-full rounded-2xl px-5 py-4 text-sm font-semibold text-white outline-none transition"
+                       style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.15);"
                        placeholder="Saisir votre code ici...">
-                <button type="submit" class="absolute right-2 top-2 bottom-2 bg-emerald-600 text-white px-6 rounded-xl text-[11px] font-bold active:scale-95 transition">
+                <button type="submit" class="absolute right-2 top-2 bottom-2 px-5 rounded-xl text-[11px] font-bold transition active:scale-95" style="background: rgba(59,130,246,0.9);">
                     Valider
                 </button>
             </form>
         </div>
-        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl"></div>
+        <div class="absolute -right-10 -top-10 w-40 h-40 rounded-full" style="background: rgba(255,255,255,0.05); filter: blur(30px);"></div>
     </div>
 
-    <!-- Stats Bonus Sleeker -->
+    <!-- Stats -->
     <div class="grid grid-cols-2 gap-4">
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50">
-            <p class="text-[10px] font-bold text-gray-400 mb-1">Total Reçu</p>
-            <p class="text-sm font-bold text-gray-800">{{ fmtCurrency($historique->sum('montant')) }}</p>
+        <div class="rounded-2xl p-5" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Total Reçu</p>
+            <p class="text-sm font-bold text-white">{{ fmtCurrency($historique->sum('montant')) }}</p>
         </div>
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50 text-right">
-            <p class="text-[10px] font-bold text-gray-400 mb-1">Bonus Réclamés</p>
-            <p class="text-sm font-bold text-emerald-600">{{ $historique->count() }} <span class="text-[10px] font-medium opacity-30">Codes</span></p>
+        <div class="rounded-2xl p-5 text-right" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Bonus Réclamés</p>
+            <p class="text-sm font-bold text-blue-400">{{ $historique->count() }} <span class="text-[10px] font-medium opacity-40">Codes</span></p>
         </div>
     </div>
 
-    <!-- Historique Sleeker -->
-    <div class="space-y-4">
-        <h3 class="text-[11px] font-bold text-gray-400 px-2">Dernières Récompenses</h3>
-        
+    <!-- Historique -->
+    <div class="space-y-3">
+        <h3 class="text-[11px] font-semibold px-1" style="color: #4b5563;">Dernières Récompenses</h3>
+
         @forelse($historique as $tx)
-            <div class="bg-white rounded-2xl p-4 flex items-center justify-between border border-gray-50 shadow-sm">
+            <div class="rounded-2xl p-4 flex items-center justify-between" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                        <i class="fas fa-gift text-xs"></i>
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
+                        <i class="fas fa-gift text-blue-400 text-xs"></i>
                     </div>
                     <div>
-                        <p class="text-[11px] font-bold text-gray-800">Code Cadeau</p>
-                        <p class="text-[10px] font-medium text-gray-400">{{ $tx->created_at->format('d/m/y • H:i') }}</p>
+                        <p class="text-[11px] font-semibold text-white">Code Cadeau</p>
+                        <p class="text-[10px] font-medium" style="color: #4b5563;">{{ $tx->created_at->format('d/m/y • H:i') }}</p>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-xs font-bold text-emerald-600">+{{ fmtCurrency($tx->montant) }}</p>
-                </div>
+                <p class="text-xs font-bold text-cyan-400">+{{ fmtCurrency($tx->montant) }}</p>
             </div>
         @empty
-            <div class="text-center py-12 bg-gray-50/50 rounded-3xl border border-dashed border-gray-100">
-                <p class="text-[11px] font-bold text-gray-300">Aucun bonus reçu</p>
+            <div class="text-center py-12 rounded-2xl border border-dashed" style="border-color: rgba(255,255,255,0.08);">
+                <p class="text-[11px] font-semibold" style="color: #374151;">Aucun bonus reçu</p>
             </div>
         @endforelse
     </div>
 
-    <!-- CTA Support Sleeker -->
-    <div class="bg-emerald-600/5 rounded-[32px] p-8 border border-emerald-100 text-center">
-        <p class="text-[10px] font-bold text-emerald-700 mb-4">Besoin d'un code ?</p>
-        <p class="text-[11px] font-medium text-emerald-800/60 leading-relaxed mb-6">Suivez notre canal officiel ou contactez votre parrain pour obtenir des codes cadeaux exclusifs.</p>
-        <a href="{{ route('contact') }}" class="inline-block text-[11px] font-bold text-emerald-700 border-b-2 border-emerald-200 pb-1 hover:text-emerald-900 transition">
+    <!-- CTA Support -->
+    <div class="rounded-2xl p-6 text-center" style="background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15);">
+        <p class="text-[11px] font-semibold text-blue-400 mb-2">Besoin d'un code ?</p>
+        <p class="text-[11px] font-medium leading-relaxed mb-4" style="color: #4b5563;">Suivez notre canal officiel ou contactez votre parrain pour obtenir des codes cadeaux exclusifs.</p>
+        <a href="{{ route('contact') }}" class="inline-block text-[11px] font-bold text-blue-400 border-b border-blue-400/30 pb-0.5 hover:text-blue-300 transition">
             Contacter le support
         </a>
     </div>
@@ -86,12 +71,7 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         setTimeout(() => {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#10b981', '#059669', '#34d399']
-            });
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#3b82f6', '#06b6d4', '#60a5fa'] });
         }, 200);
     </script>
 @endif

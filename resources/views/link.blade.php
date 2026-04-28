@@ -1,95 +1,88 @@
 <x-layouts :title="'Lien d\'invitation'">
-<div class="max-w-xl mx-auto pt-6 px-4 space-y-8">
+<div class="max-w-xl mx-auto pt-5 px-4 space-y-6 pb-24">
 
-    <!-- Hero Parrainage Sleeker -->
-    <div class="relative overflow-hidden rounded-3xl bg-emerald-600 p-8 text-white shadow-xl">
-        <div class="relative z-10 text-center">
-            <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 backdrop-blur-md border border-white/10">
-                <i class="fas fa-users-crown text-2xl"></i>
+    <!-- Hero Parrainage -->
+    <div class="relative overflow-hidden rounded-[2rem] p-8 text-white text-center" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0e7490 100%); box-shadow: 0 0 40px rgba(30,64,175,0.35);">
+        <div class="relative z-10">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                <i class="fas fa-users-crown text-2xl text-white"></i>
             </div>
-            <h1 class="text-xl font-bold">Faites grandir votre réseau</h1>
-            <p class="text-[10px] font-semibold text-emerald-100 mt-2">Partagez • Gagnez • Progressez</p>
+            <h1 class="text-2xl font-bold">Faites grandir votre réseau</h1>
+            <p class="text-[11px] font-medium mt-1" style="color: rgba(147,197,253,0.8);">Partagez • Gagnez • Progressez</p>
         </div>
-        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 rounded-full" style="background: rgba(255,255,255,0.05); filter: blur(30px);"></div>
     </div>
 
-    <!-- Carte Lien Sleeker -->
-    <div class="bg-white rounded-[32px] p-8 shadow-sm border border-gray-50 space-y-8">
+    <!-- Carte Lien -->
+    <div class="rounded-2xl p-6 space-y-6" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
         <div class="text-center">
-            <p class="text-[10px] font-bold text-gray-400 mb-4">Votre lien exclusif</p>
-            <div class="bg-gray-50 border border-dashed border-gray-200 rounded-2xl p-6 relative group active:bg-gray-100 transition" onclick="copyReferralLink()">
-                <p id="refLink" class="text-xs font-bold text-emerald-600 break-all select-all">{{ $refUrl }}</p>
-                <div id="copyMsg" class="absolute inset-0 bg-emerald-600 flex items-center justify-center rounded-2xl text-white text-[10px] font-bold hidden animate__animated animate__fadeIn">
-                    Lien copié !
+            <p class="text-[11px] font-semibold mb-4" style="color: #4b5563;">Votre lien exclusif</p>
+            <div class="rounded-2xl p-5 relative cursor-pointer active:scale-95 transition border border-dashed" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.2);" onclick="copyReferralLink()">
+                <p id="refLink" class="text-xs font-semibold text-blue-400 break-all select-all">{{ $refUrl }}</p>
+                <div id="copyMsg" class="absolute inset-0 rounded-2xl flex items-center justify-center text-white text-[11px] font-bold hidden animate__animated animate__fadeIn" style="background: linear-gradient(135deg, #2563eb, #0891b2);">
+                    <i class="fas fa-check mr-2"></i>Lien copié !
                 </div>
             </div>
         </div>
 
-        <!-- Social Share Grid -->
+        <!-- Social Share -->
         <div class="grid grid-cols-4 gap-4">
-            <a href="https://wa.me/?text={{ urlencode('Rejoins BioEnergy et gagne tous les jours ! 👉 ' . $refUrl) }}" target="_blank"
-               class="flex flex-col items-center gap-2">
-                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center border border-emerald-100 shadow-sm active:scale-90 transition">
-                    <i class="fab fa-whatsapp text-lg"></i>
+            <a href="https://wa.me/?text={{ urlencode('Rejoins BioEnergy et gagne tous les jours ! 👉 ' . $refUrl) }}" target="_blank" class="flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.2);">
+                    <i class="fab fa-whatsapp text-lg text-green-400"></i>
                 </div>
-                <span class="text-[8px] font-black text-gray-400 uppercase">WhatsApp</span>
+                <span class="text-[10px] font-medium" style="color: #4b5563;">WhatsApp</span>
             </a>
-            <a href="https://t.me/share/url?url={{ urlencode($refUrl) }}&text={{ urlencode('Rejoins BioEnergy et gagne tous les jours !') }}" target="_blank"
-               class="flex flex-col items-center gap-2">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center border border-blue-100 shadow-sm active:scale-90 transition">
-                    <i class="fab fa-telegram-plane text-lg"></i>
+            <a href="https://t.me/share/url?url={{ urlencode($refUrl) }}&text={{ urlencode('Rejoins BioEnergy !') }}" target="_blank" class="flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(0,136,204,0.12); border: 1px solid rgba(0,136,204,0.2);">
+                    <i class="fab fa-telegram-plane text-lg text-sky-400"></i>
                 </div>
-                <span class="text-[8px] font-black text-gray-400 uppercase">Telegram</span>
+                <span class="text-[10px] font-medium" style="color: #4b5563;">Telegram</span>
             </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($refUrl) }}" target="_blank"
-               class="flex flex-col items-center gap-2">
-                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center border border-indigo-100 shadow-sm active:scale-90 transition">
-                    <i class="fab fa-facebook-f text-lg"></i>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($refUrl) }}" target="_blank" class="flex flex-col items-center gap-2">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(59,89,152,0.12); border: 1px solid rgba(59,89,152,0.2);">
+                    <i class="fab fa-facebook-f text-lg text-indigo-400"></i>
                 </div>
-                <span class="text-[8px] font-black text-gray-400 uppercase">Facebook</span>
+                <span class="text-[10px] font-medium" style="color: #4b5563;">Facebook</span>
             </a>
             <button onclick="copyReferralLink()" class="flex flex-col items-center gap-2">
-                <div class="w-12 h-12 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center border border-gray-100 shadow-sm active:scale-90 transition">
-                    <i class="fas fa-copy text-lg"></i>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center active:scale-90 transition" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
+                    <i class="fas fa-copy text-lg text-blue-400"></i>
                 </div>
-                <span class="text-[9px] font-bold text-gray-400">Copier</span>
+                <span class="text-[10px] font-medium" style="color: #4b5563;">Copier</span>
             </button>
         </div>
     </div>
 
-    <!-- Mini Stats Grid -->
+    <!-- Mini Stats -->
     <div class="grid grid-cols-2 gap-4">
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50">
-            <p class="text-[10px] font-bold text-gray-400 mb-1">Code Promo</p>
-            <p class="text-xl font-bold text-gray-800">{{ Auth::user()->invitation_code }}</p>
+        <div class="rounded-2xl p-5" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Code D'invitation</p>
+            <p class="text-xl font-bold text-white">{{ Auth::user()->invitation_code }}</p>
         </div>
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-50 text-right">
-            <p class="text-[10px] font-bold text-gray-400 mb-1">Total Réseau</p>
-            <p class="text-xl font-bold text-emerald-600">{{ $total }} <span class="text-[10px] font-medium opacity-30">pers.</span></p>
+        <div class="rounded-2xl p-5 text-right" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Total Réseau</p>
+            <p class="text-xl font-bold text-blue-400">{{ $total }} <span class="text-[10px] font-medium opacity-40">pers.</span></p>
         </div>
     </div>
 
-    <!-- Why Section Sleeker -->
-    <div class="bg-slate-900 rounded-[32px] p-8 text-white space-y-6">
-        <h3 class="text-sm font-bold text-center text-emerald-400">Pourquoi parrainer ?</h3>
-        <div class="space-y-4">
-            <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <div class="text-2xl font-bold text-emerald-400 w-12 text-center">15%</div>
-                <p class="text-[10px] font-semibold text-gray-300 leading-relaxed">Sur le premier dépôt de vos filleuls directs</p>
+    <!-- Commissions -->
+    <div class="rounded-2xl p-6 space-y-4" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+        <h3 class="text-sm font-bold text-center text-blue-400">Parrainage a 3 niveaux</h3>
+        <div class="space-y-3">
+            <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.12);">
+                <div class="text-2xl font-bold text-blue-400 w-12 text-center flex-shrink-0">10%</div>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Sur le premier investissement de vos filleuls directs (niveau 1)</p>
             </div>
-            <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <div class="text-2xl font-black text-emerald-400 w-12 text-center">5%</div>
-                <p class="text-[10px] font-bold text-gray-300 uppercase tracking-wide leading-relaxed">Des revenus journaliers de votre niveau 1</p>
+            <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.12);">
+                <div class="text-2xl font-bold text-cyan-400 w-12 text-center flex-shrink-0">3%</div>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Sur le premier investissement de vos filleuls niveau 2</p>
             </div>
-            <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                <div class="text-2xl font-black text-emerald-400 w-12 text-center">2%</div>
-                <p class="text-[10px] font-bold text-gray-300 uppercase tracking-wide leading-relaxed">Commission sur les niveaux 2 et 3</p>
+            <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.12);">
+                <div class="text-2xl font-bold text-indigo-400 w-12 text-center flex-shrink-0">1%</div>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Sur le premier investissement de vos filleuls niveau 3</p>
             </div>
         </div>
-    </div>
-    
-    <div class="pb-10 text-center">
-        <p class="text-[9px] font-black text-gray-300 uppercase tracking-[0.2em]">BioEnergy Network • {{ date('Y') }}</p>
     </div>
 </div>
 
