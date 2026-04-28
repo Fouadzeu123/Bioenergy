@@ -97,6 +97,20 @@
 
 </div>
 
+<!-- Win Modal -->
+<div id="winModal" class="fixed inset-0 z-[120] hidden flex items-center justify-center backdrop-blur-md p-4" style="background: rgba(0,0,0,0.85);">
+    <div class="rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center transform transition-all scale-95" id="winModalContent" style="background: linear-gradient(135deg, #0d1117 0%, #1e1b4b 100%); border: 2px solid rgba(99,102,241,0.3);">
+        <div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6" style="background: rgba(59,130,246,0.15); box-shadow: 0 0 30px rgba(59,130,246,0.5);">
+            <i class="fas fa-gift text-4xl text-blue-400 animate-bounce"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white mb-2">Félicitations !</h2>
+        <p id="winMessage" class="text-lg font-medium text-cyan-400 mb-6"></p>
+        <button onclick="closeWinModal()" class="w-full py-4 text-[13px] font-bold text-white rounded-2xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2); box-shadow: 0 0 20px rgba(37,99,235,0.4);">
+            Génial !
+        </button>
+    </div>
+</div>
+
 <script>
     const canvas = document.getElementById('wheel-canvas');
     const ctx = canvas.getContext('2d');
@@ -181,17 +195,22 @@
             if (data.error) { alert(data.error); return; }
 
             isSpinning = true;
-            const prizeIndex = prizes.findIndex(p => p.val == data.prize);
+            
+            const matchingIndexes = prizes.map((p, i) => p.val == data.prize ? i : -1).filter(i => i !== -1);
+            const prizeIndex = matchingIndexes[Math.floor(Math.random() * matchingIndexes.length)];
+            
             const extraRounds = 5 + Math.floor(Math.random() * 5);
-            const targetRotation = 360 * extraRounds + (360 - (prizeIndex * sliceDeg)) - (sliceDeg / 2);
-            currentRotation += targetRotation;
+            const currentSpins = Math.floor(currentRotation / 360);
+            
+            const targetRotation = (currentSpins + extraRounds) * 360 + 270 - (prizeIndex * sliceDeg + sliceDeg / 2);
+            
+            currentRotation = targetRotation;
             wheel.style.transform = `rotate(${currentRotation}deg)`;
 
             setTimeout(() => {
                 isSpinning = false;
                 spinCountDisplay.textContent = data.remaining_spins;
-                alert(data.message);
-                window.location.reload();
+                showWinModal(data.message);
             }, 5500);
         } catch (error) {
             console.error(error);
@@ -210,5 +229,32 @@
     }
     feed.innerHTML += feed.innerHTML;
     scrollFeed();
+
+    function showWinModal(message) {
+        document.getElementById('winMessage').textContent = message;
+        const modal = document.getElementById('winModal');
+        const modalContent = document.getElementById('winModalContent');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+        
+        // Confetti effect if possible, or just the modal
+        if (typeof confetti === 'function') {
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+        }
+    }
+
+    function closeWinModal() {
+        const modal = document.getElementById('winModal');
+        const modalContent = document.getElementById('winModalContent');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            window.location.reload();
+        }, 200);
+    }
 </script>
 </x-layouts>
