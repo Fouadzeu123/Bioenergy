@@ -16,7 +16,7 @@
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen px-6 overflow-hidden relative">
+<body class="flex items-center justify-center min-h-screen px-2 overflow-hidden relative">
 
     <!-- Background Decoration -->
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
@@ -25,7 +25,7 @@
     </div>
 
     <div class="w-full max-w-sm space-y-10">
-        
+
         <!-- Brand Header -->
         <div class="text-center space-y-4">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-[32px] border border-white/5 shadow-2xl mb-2">
@@ -100,7 +100,7 @@
 
             <div class="text-center pt-4">
                 <p class="text-[11px] font-bold text-gray-500">
-                    Nouveau membre ? 
+                    Nouveau membre ?
                     <a href="{{ route('index') }}" class="text-emerald-400 hover:text-emerald-300 transition">Créer un compte</a>
                 </p>
             </div>
