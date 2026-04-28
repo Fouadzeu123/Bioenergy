@@ -93,7 +93,7 @@ class AdminUserController extends Controller
     {
         $request->validate([
             'phone'           => 'nullable|string|max:20',
-            'email'           => 'required|email|max:255',
+            'email'           => 'nullable|email|max:255',
             'account_balance' => 'required|numeric|min:0',
             'lucky_spins'     => 'required|integer|min:0',
             'role'            => 'required|in:user,admin',
