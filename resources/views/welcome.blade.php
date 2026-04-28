@@ -25,7 +25,7 @@
     </div>
 
     <div class="w-full max-w-sm space-y-10">
-        
+
         <!-- Brand Header -->
         <div class="text-center space-y-4">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-slate-800 rounded-[32px] border border-white/5 shadow-2xl mb-2">
@@ -81,7 +81,7 @@
                         <label class="text-[10px] font-bold text-gray-500 px-2">Pseudo</label>
                         <input type="text" name="username" value="{{ old('username') }}" required
                                class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none"
-                               placeholder="Identifiant public">
+                               placeholder="Nom d'utilisateur">
                     </div>
 
                     <div class="space-y-2">
@@ -122,7 +122,7 @@
 
             <div class="text-center pt-2">
                 <p class="text-[11px] font-bold text-gray-500">
-                    Déjà inscrit ? 
+                    Déjà inscrit ?
                     <a href="{{ route('login') }}" class="text-emerald-400 hover:text-emerald-300 transition">Se connecter</a>
                 </p>
             </div>
