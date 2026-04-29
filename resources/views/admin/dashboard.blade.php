@@ -33,6 +33,24 @@
         </div>
     </div>
 
+    <!-- Alert for Pending Withdrawals -->
+    @if($pendingWithdrawals > 0)
+        <div class="rounded-2xl p-4 flex items-center justify-between" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3);">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center bg-red-500/20 text-red-500">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div>
+                    <h3 class="text-white font-bold text-sm">Action Requise</h3>
+                    <p class="text-red-400 text-[12px]">Vous avez <strong>{{ $pendingWithdrawals }}</strong> demande(s) de retrait en attente de validation.</p>
+                </div>
+            </div>
+            <a href="{{ route('admin.transactions', ['type' => 'retrait', 'status' => 'pending']) }}" class="px-4 py-2 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-500 transition">
+                Traiter maintenant
+            </a>
+        </div>
+    @endif
+
     <!-- 8 Cartes Statistiques -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 

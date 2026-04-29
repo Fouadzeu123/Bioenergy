@@ -72,6 +72,7 @@
                         <th class="text-right">Montant</th>
                         <th class="text-center">Statut</th>
                         <th class="text-left">Référence</th>
+                        <th class="text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,10 +117,28 @@
                             <td>
                                 <code class="text-[11px] font-mono px-2 py-1 rounded" style="background: rgba(255,255,255,0.05); color: #9ca3af;">{{ $tx->reference }}</code>
                             </td>
+                            <td class="text-right space-x-2">
+                                @if($tx->type === 'retrait' && $tx->status === 'pending')
+                                    <form action="{{ route('admin.transactions.approve', $tx) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        <button type="submit" onclick="return confirm('Voulez-vous valider ce retrait et envoyer l\'argent ?')" class="px-3 py-1 rounded-lg text-[10px] font-bold text-white bg-emerald-600 hover:bg-emerald-500 transition">
+                                            Valider
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('admin.transactions.reject', $tx) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        <button type="submit" onclick="return confirm('Voulez-vous rejeter ce retrait et rembourser l\'utilisateur ?')" class="px-3 py-1 rounded-lg text-[10px] font-bold text-white bg-red-600 hover:bg-red-500 transition">
+                                            Rejeter
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-gray-600 text-xs">-</span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-10" style="color: #374151;">
+                            <td colspan="7" class="text-center py-10" style="color: #374151;">
                                 <i class="fas fa-inbox text-3xl mb-3 block" style="color: #1f2937;"></i>
                                 Aucune transaction trouvée
                             </td>

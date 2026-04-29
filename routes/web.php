@@ -149,6 +149,8 @@ Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function 
     Route::post('/users/{id}/revenu', [AdminUserController::class, 'augmenterRevenu'])->name('admin.users.revenu');
     Route::post('/users/{id}/reset-password',[AdminUserController::class,'resetPassword'])->name('admin.users.reset-password');
     Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('admin.transactions');
+    Route::post('/transactions/{transaction}/approve', [AdminTransactionController::class, 'approve'])->name('admin.transactions.approve');
+    Route::post('/transactions/{transaction}/reject', [AdminTransactionController::class, 'reject'])->name('admin.transactions.reject');
 });
 
 Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function () {

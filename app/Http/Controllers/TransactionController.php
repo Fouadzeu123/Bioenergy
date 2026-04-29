@@ -333,92 +333,10 @@ class TransactionController extends Controller
             'description' => "Retrait de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " via " . strtoupper($user->withdrawal_method),
         ]);
 
-        // =============================================
-        // 6. MODE SIMULATION (local/testing)
-        // =============================================
-        $isSimulation = app()->environment(['local', 'testing']) || config('notchpay.sandbox', false);
+        // Déduction immédiate du solde pour verrouiller les fonds
+        $user->decrement('account_balance', $amount);
 
-        if ($isSimulation) {
-            $user->decrement('account_balance', $amount);
-            $transaction->update(['status' => 'completed']);
-
-            return back()->with('success', "Retrait de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " SIMULÉ avec succès ! (mode test)");
-        }
-
-        // =============================================
-        // 7. MODE PRODUCTION → Transfert/Payout via Notch Pay
-        // =============================================
-        try {
-            // Pays de retrait de l'utilisateur (CM ou CI)
-            $withdrawalCountry = strtoupper($user->withdrawal_country ?? 'CM');
-
-            // Indicatif téléphonique selon le pays
-            $phonePrefix = config('notchpay.country_phone_codes.' . $withdrawalCountry, '237');
-
-            // Nettoyage du numéro de téléphone
-            $phone = $user->withdrawal_account;
-            if (!str_starts_with($phone, '+')) {
-                $phone = '+' . $phonePrefix . ltrim($phone, '0');
-            }
-
-            $amountFCFA = $amount;
-            $amountNetFCFA = (int) round($amountFCFA * 0.90); // 10% de frais appliqués
-
-            // Canal générique pour la création du bénéficiaire (cm.mobile ou ci.mobile)
-            $beneficiaryChannel = config('notchpay.beneficiary_channels.' . $withdrawalCountry, 'cm.mobile');
-
-            // Étape 1 : Créer le bénéficiaire
-            $beneficiary = $this->notchPay->createBeneficiary(
-                name: $user->withdrawal_name ?? 'Investisseur BioEnergy',
-                phone: $phone,
-                email: $user->email ?? 'no-reply@bioenergy.cm',
-                channel: $beneficiaryChannel,
-                country: strtolower($withdrawalCountry)
-            );
-
-            if (!$beneficiary['success']) {
-                $transaction->update(['status' => 'failed']);
-                return back()->with('error', 'Erreur création bénéficiaire : ' . $beneficiary['message']);
-            }
-
-            // Étape 2 : Initier le transfert (Payout)
-            $transfer = $this->notchPay->transfer(
-                amountFCFA: $amountNetFCFA,
-                beneficiaryId: $beneficiary['beneficiary_id'],
-                description: "Retrait BioEnergy",
-                reference: $reference,
-                currency: $user->currency
-            );
-
-            if (!$transfer['success']) {
-                $transaction->update(['status' => 'failed']);
-                return back()->with('error', 'Échec du transfert : ' . $transfer['message']);
-            }
-
-            // Succès de l'initiation du transfert
-            $user->decrement('account_balance', $amount);
-
-            // Le statut reste 'pending' si le transfert n'est pas finalisé immédiatement.
-            // Notch Pay webhooks renverront l'événement "transfer.complete"
-            $status = ($transfer['status'] === 'complete') ? 'completed' : 'pending';
-
-            $transaction->update([
-                'status' => $status,
-                'gateway_reference' => $transfer['notch_reference'] ?? null,
-            ]);
-
-
-            return back()->with('success', "Votre retrait de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " a été pris en compte. Il est en cours d'envoi vers votre compte Mobile Money.");
-
-        } catch (Exception $e) {
-            Log::error('Retrait NotchPay: exception', [
-                'user_id' => $user->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            $transaction->update(['status' => 'failed']);
-            return back()->with('error', 'Erreur technique lors du transfert. Veuillez contacter le support.');
-        }
+        return back()->with('success', "Votre demande de retrait de " . number_format($amount, 0, '.', ' ') . " " . $user->currency . " a été enregistrée avec succès.");
     }
 
     // ====================================================================
