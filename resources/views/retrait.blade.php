@@ -48,26 +48,17 @@
 
         <div class="rounded-2xl p-6 space-y-5 text-center" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
             <div class="space-y-3">
-                <label class="text-[11px] font-semibold" style="color: #4b5563;">Montant à transférer</label>
-                <div class="relative">
-                    <input type="number" name="amount" id="amountInput" step="1" min="{{ $MIN_WITHDRAWAL }}" max="{{ $balance }}"
-                           required class="w-full rounded-2xl px-6 py-5 text-3xl font-bold text-center text-white outline-none transition"
-                           style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"
-                           placeholder="0">
-                    <span class="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-semibold" style="color: #374151;">{{ $currency }}</span>
+                <label class="block text-left text-[11px] font-semibold px-2" style="color: #4b5563;">Sélectionnez le montant ({{ $currency }})</label>
+                
+                <input type="hidden" name="amount" id="amountInput" required>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    @foreach([1000, 5000, 15000, 50000, 150000, 500000, 1500000, 3000000] as $amt)
+                        <button type="button" onclick="setAmount({{ $amt }}, this)" class="amount-btn py-4 rounded-xl text-[14px] font-bold transition-all active:scale-95" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af;">
+                            {{ number_format($amt, 0, '.', ' ') }}
+                        </button>
+                    @endforeach
                 </div>
-            </div>
-
-            <!-- Boutons rapides -->
-            <div class="grid grid-cols-4 gap-3">
-                @foreach([5000, 10000, 50000] as $amt)
-                    <button type="button" onclick="setAmount({{ $amt }})" class="py-3 rounded-xl text-[11px] font-semibold transition active:scale-95" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: #9ca3af;">
-                        {{ number_format($amt/1000, 0) }}K
-                    </button>
-                @endforeach
-                <button type="button" onclick="setAmount({{ $balance }})" class="py-3 rounded-xl text-white text-[11px] font-bold active:scale-95 transition" style="background: rgba(6,182,212,0.2); border: 1px solid rgba(6,182,212,0.3); color: #22d3ee;">
-                    MAX
-                </button>
             </div>
 
             <!-- Aperçu Net -->
@@ -164,11 +155,27 @@
     const CURRENCY = "{{ $currency }}";
     const MIN_W = {{ $MIN_WITHDRAWAL }};
 
-    function setAmount(amt) {
+    function setAmount(amt, btnElement) {
         document.getElementById('amountInput').value = amt;
+        
+        // Réinitialiser le style de tous les boutons
+        document.querySelectorAll('.amount-btn').forEach(btn => {
+            btn.style.background = 'rgba(255,255,255,0.03)';
+            btn.style.borderColor = 'rgba(255,255,255,0.08)';
+            btn.style.color = '#9ca3af';
+            btn.style.boxShadow = 'none';
+        });
+
+        // Appliquer le style au bouton sélectionné
+        if(btnElement) {
+            btnElement.style.background = 'rgba(6,182,212,0.1)';
+            btnElement.style.borderColor = 'rgba(6,182,212,0.3)';
+            btnElement.style.color = '#22d3ee';
+            btnElement.style.boxShadow = '0 0 15px rgba(6,182,212,0.2)';
+        }
+
         updatePreview();
     }
-    document.getElementById('amountInput').addEventListener('input', updatePreview);
 
     function updatePreview() {
         const val = parseFloat(document.getElementById('amountInput').value) || 0;
@@ -183,7 +190,9 @@
 
     document.getElementById('withdrawForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const amount = parseFloat(document.getElementById('amountInput').value);
+        const amountStr = document.getElementById('amountInput').value;
+        if (!amountStr) { alert('Veuillez sélectionner un montant.'); return; }
+        const amount = parseFloat(amountStr);
         if (amount < MIN_W) { alert('Le montant minimum est de ' + MIN_W + ' ' + CURRENCY); return; }
         const net = Math.round(amount * (1 - FEE));
         document.getElementById('finalNet').textContent = net.toLocaleString('fr-FR') + ' ' + CURRENCY;

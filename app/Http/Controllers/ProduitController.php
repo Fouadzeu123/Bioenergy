@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProduitController extends Controller
 {
-    private const INVESTMENT_DURATION_DAYS = 180; // 6 mois
+    private const INVESTMENT_DURATION_DAYS = 365; // 6 mois
 
     private const BONUS_RATES = [
         1 => 0.10, // 10% niveau 1 (premier investissement du filleul)
@@ -76,7 +76,7 @@ class ProduitController extends Controller
             $user->save();
         }
 
-        // Calcul du gain journalier 
+        // Calcul du gain journalier
         $rate = $produit->rate ;
         $dayIncome = round(($amount * $rate) / 100); // Gain total par jour (arrondi à l'unité locale)
 
@@ -143,7 +143,7 @@ class ProduitController extends Controller
 
             if ($bonusAmount > 0) {
                 $parrain->increment('account_balance', $bonusAmount);
-                
+
                 // +1 Tour de roue pour le parrain de niveau 1 lors du 1er achat du filleul
                 if ($level === 1) {
                     $parrain->increment('lucky_spins', 1);
@@ -198,7 +198,7 @@ class ProduitController extends Controller
             $now   = Carbon::now();
 
             $daysPassed    = $start->diffInDays($now);
-            $daysRemaining = max(180, $end->diffInDays($now, false));
+            $daysRemaining = max(365, $end->diffInDays($now, false));
             $earnedSoFar   = Transaction::where('user_id',$user->id)
                 ->where('type', 'gain_journalier')
                 ->where('order_id', $order->id) // Spécifique à cet ordre
@@ -226,8 +226,8 @@ class ProduitController extends Controller
         $claimableAmount = 0;
         foreach ($orders as $order) {
             $today = Carbon::today()->startOfDay();
-            
-            $validGainDay = !$today->isSunday() && 
+
+            $validGainDay = !$today->isSunday() &&
                             $today->isAfter(Carbon::parse($order->start_date)->startOfDay()) &&
                             ($order->last_gain_at === null || Carbon::parse($order->last_gain_at)->startOfDay()->lt($today));
 
@@ -242,7 +242,7 @@ class ProduitController extends Controller
     public function claimGains(\App\Services\SystemAutomationService $automationService)
     {
         $user = Auth::user();
-        
+
         $balanceBefore = $user->account_balance;
 
         // Traite les gains pour tous les ordres éligibles

@@ -43,6 +43,20 @@ class TransactionController extends Controller
         return view('deposit', compact('depots', 'totalDepots'));
     }
 
+    public function previewDepot(Request $request)
+    {
+        $user = Auth::user();
+        $minDepot = $user->role === 'admin' ? 0 : 5;
+        
+        $request->validate([
+            'amount' => "required|numeric|min:{$minDepot}|max:100000",
+        ]);
+
+        $amount = (float) $request->amount;
+        
+        return view('depot-confirm', compact('amount'));
+    }
+
     public function storeDepot(Request $request)
     {
         $user = Auth::user();
@@ -55,6 +69,7 @@ class TransactionController extends Controller
         $request->validate([
             'amount'         => "required|numeric|min:{$minDepot}|max:100000",
             'payment_method' => ['required', \Illuminate\Validation\Rule::in($allowedOperators)],
+            'payment_phone'  => 'required|string',
         ]);
 
         $amount = (float) $request->amount;
@@ -65,7 +80,7 @@ class TransactionController extends Controller
 
         // Formatage du téléphone selon le pays
         $phonePrefix = config('notchpay.country_phone_codes.' . $userCountry, '237');
-        $phone = $user->phone;
+        $phone = $request->payment_phone;
         if (!str_starts_with($phone, '+')) {
             $phone = '+' . $phonePrefix . ltrim($phone, '0');
         }

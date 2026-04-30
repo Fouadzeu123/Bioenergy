@@ -76,6 +76,11 @@
                 $daysPassed = $start->diffInDays($now);
                 $progress = $totalDays > 0 ? min(100, round(($daysPassed / $totalDays) * 100)) : 100;
                 $earned = \App\Models\Transaction::where('user_id', Auth::id())->where('type', 'gain_journalier')->where('order_id', $order->id)->sum('montant');
+                
+                $today = \Carbon\Carbon::today()->startOfDay();
+                $validGainDay = !$today->isSunday() && 
+                                $today->isAfter($start->startOfDay()) &&
+                                ($order->last_gain_at === null || \Carbon\Carbon::parse($order->last_gain_at)->startOfDay()->lt($today));
             @endphp
 
             <div class="rounded-2xl p-5 space-y-5 cursor-pointer hover:border-blue-500/20 transition-all" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);" onclick="openDetails({{ $order->id }})">
@@ -97,14 +102,24 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                <div class="flex items-center justify-between pt-4" style="border-top: 1px solid rgba(255,255,255,0.05);">
                     <div>
                         <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Profit Cumulé</p>
                         <p class="text-sm font-bold text-cyan-400">{{ fmtCurrency($earned) }}</p>
                     </div>
-                    <div class="text-right">
-                        <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Échéance</p>
-                        <p class="text-sm font-bold text-gray-300">{{ $end->format('d/m/Y') }}</p>
+                    <div>
+                        @if($validGainDay)
+                            <form method="POST" action="{{ route('produits.claim') }}" onclick="event.stopPropagation();">
+                                @csrf
+                                <button type="submit" class="px-5 py-2 rounded-xl text-[11px] font-bold text-white transition-all active:scale-95 shadow-lg" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16,185,129,0.3);">
+                                    Réclamer
+                                </button>
+                            </form>
+                        @else
+                            <button type="button" disabled class="px-5 py-2 rounded-xl text-[11px] font-bold text-gray-500 cursor-not-allowed" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);" onclick="event.stopPropagation();">
+                                <i class="fas fa-clock mr-1 text-[10px]"></i> En attente
+                            </button>
+                        @endif
                     </div>
                 </div>
             </div>

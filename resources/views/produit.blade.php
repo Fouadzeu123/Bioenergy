@@ -59,7 +59,7 @@
                     <div class="absolute bottom-0 left-0 right-0 p-5 flex justify-between items-end">
                         <div>
                             <h3 class="text-lg font-bold text-white leading-tight">{{ $produit->name }}</h3>
-                            <p class="text-[10px] font-medium text-cyan-400">Contrat 180 Jours</p>
+                            <p class="text-[10px] font-medium text-cyan-400">Contrat 365 Jours</p>
                         </div>
                         <div class="text-right">
                             <p class="text-xl font-bold text-blue-400">{{ $produit->rate }}%</p>

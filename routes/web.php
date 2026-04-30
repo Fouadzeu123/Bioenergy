@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('contact');
 
 Route::get('/deposit', [TransactionController::class, 'deposit'])->name('deposit');
+Route::post('/depot/preview', [TransactionController::class, 'previewDepot'])->name('depot.preview');
 Route::post('/depot', [TransactionController::class, 'storeDepot'])->name('depot.store');
 Route::get('/depot/status/{reference}', [TransactionController::class, 'checkStatus'])->name('depot.status');
 Route::get('/depot/waiting/{reference}', [TransactionController::class, 'waitingDepot'])->name('depot.waiting');
