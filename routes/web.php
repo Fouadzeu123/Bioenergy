@@ -157,6 +157,7 @@ Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/emploi', [\App\Http\Controllers\AdminEmploiController::class, 'index'])->name('admin.emploi.index');
     Route::post('/emploi/pay', [\App\Http\Controllers\AdminEmploiController::class, 'payAll'])->name('admin.emploi.pay');
+    Route::post('/emploi/{user}/assign', [\App\Http\Controllers\AdminEmploiController::class, 'assignJob'])->name('admin.emploi.assign');
     Route::post('/users/{id}/bonus', [AdminUserController::class, 'addBonus'])->name('admin.users.bonus');
     Route::post('/users/{id}/lucky-spins', [AdminUserController::class, 'addLuckySpins'])->name('admin.users.lucky_spins');
     Route::patch('/users/{id}/ban', [AdminUserController::class, 'ban'])->name('admin.users.ban');

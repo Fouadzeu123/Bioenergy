@@ -56,10 +56,23 @@
                             <td class="text-right font-bold text-emerald-400" style="font-size: 13px;">
                                 {{ number_format($p['revenu'], 0, '.', ' ') }}
                             </td>
-                            <td class="text-center">
-                                <a href="{{ route('admin.users.show', $u->id) }}" class="btn-primary-admin py-1.5 px-3 text-xs inline-block" style="background: rgba(255,255,255,0.1); box-shadow: none;">
+                            <td class="text-center flex items-center justify-center gap-2">
+                                <a href="{{ route('admin.users.show', $u->id) }}" title="Voir l'utilisateur" class="btn-primary-admin py-1.5 px-3 text-xs inline-block" style="background: rgba(255,255,255,0.1); box-shadow: none;">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                @if($u->poste_id !== $p['id'])
+                                    <form method="POST" action="{{ route('admin.emploi.assign', $u->id) }}" onsubmit="return confirm('Valider le poste {{ $p['titre'] }} pour cet utilisateur ?')">
+                                        @csrf
+                                        <input type="hidden" name="poste_id" value="{{ $p['id'] }}">
+                                        <button type="submit" class="btn-primary-admin py-1.5 px-3 text-xs inline-block" style="background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.3); box-shadow: none;">
+                                            <i class="fas fa-check"></i> Valider
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="text-[10px] text-emerald-500 font-bold px-2 py-1 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+                                        <i class="fas fa-check-double"></i> Approuvé
+                                    </span>
+                                @endif
                             </td>
                         </tr>
                     @empty
