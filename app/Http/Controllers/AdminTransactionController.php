@@ -24,7 +24,7 @@ class AdminTransactionController extends Controller
         $type    = $request->get('type');
         $status  = $request->get('status');
 
-        $query = Transaction::with(['user:id,phone,level,withdrawal_account,withdrawal_name,withdrawal_country,email,currency'])
+        $query = Transaction::with(['user:id,phone,level,withdrawal_account,withdrawal_name,withdrawal_country,email'])
             ->select('transactions.*')
             ->leftJoin('users', 'transactions.user_id', '=', 'users.id');
 
