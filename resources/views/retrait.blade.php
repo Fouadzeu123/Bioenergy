@@ -4,7 +4,7 @@
     $user = Auth::user();
     $currency = $user->currency;
     $MIN_WITHDRAWAL = 1000;
-    $FEE_PERCENT = 10;
+    $FEE_PERCENT = 6;
     $balance = $user->account_balance ?? 0;
 @endphp
 
@@ -72,6 +72,31 @@
             <button type="submit" class="w-full py-5 text-white text-[12px] font-bold rounded-2xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2); box-shadow: 0 0 24px rgba(59,130,246,0.3);">
                 Confirmer le retrait
             </button>
+
+            <!-- Instructions de retrait -->
+            <div class="mt-6 pt-6 border-t border-white/5 space-y-4 text-left">
+                <div class="space-y-3 text-[10px] sm:text-[11px] leading-relaxed text-gray-400">
+                    <p>
+                        <span class="text-gray-300 font-bold">Délai de traitement :</span> 1 à 3 jours ouvrables (sous 72 heures).
+                    </p>
+                    <p>
+                        <span class="text-gray-300 font-bold">Frais de gestion :</span> Chaque transaction entraîne des frais de gestion de 6%. Ces frais couvrent les coûts administratifs et opérationnels liés à la gestion de l'unité de l'employé (préparation de projet, supervision, rapports financiers, etc.).
+                    </p>
+                    <p>
+                        <span class="text-gray-300 font-bold">Montants fixes :</span> 
+                        1 000 / 5 000 / 15 000 / 50 000 / 150 000 / 500 000 / 1 500 000 / 5 000 000.
+                    </p>
+                    <p>
+                        <span class="text-gray-300 font-bold">Heures de retrait :</span> 10h30 à 17h00 les jours ouvrables.
+                    </p>
+                    <div class="p-3 rounded-xl bg-rose-500/5 border border-rose-500/10">
+                        <p class="text-rose-400/90 font-medium">
+                            <i class="fas fa-triangle-exclamation mr-1"></i>
+                            Veuillez vérifier vos informations de compte. Toute perte due à des coordonnées de paiement erronées sera à la charge de l'employé.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 

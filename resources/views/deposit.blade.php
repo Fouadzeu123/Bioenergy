@@ -58,23 +58,25 @@
             <!-- Passerelle -->
             <div class="space-y-3 text-center">
                 <p class="text-[11px] font-semibold" style="color: #4b5563;">Passerelle de Paiement</p>
-                <div class="p-4 rounded-2xl" style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);">
-                    <div class="flex items-center justify-center gap-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.15);">
-                            <i class="fas fa-mobile-screen text-blue-400"></i>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-[12px] font-bold text-white">Fast Pay 01</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <div id="gw1" class="gw-card p-4 rounded-2xl cursor-pointer transition-all" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); box-shadow: 0 0 15px rgba(59,130,246,0.2);" onclick="selectGw(1)">
+                        <div class="flex items-center justify-center gap-3">
+                            <div class="gw-icon-bg w-10 h-10 rounded-xl flex items-center justify-center transition-all" style="background: rgba(59,130,246,0.2);">
+                                <i class="gw-icon fas fa-mobile-screen transition-all text-blue-400"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="gw-text text-[12px] font-bold transition-all text-white">Fast Pay 01</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="p-4 rounded-2xl" style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2);">
-                    <div class="flex items-center justify-center gap-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.15);">
-                            <i class="fas fa-mobile-screen text-blue-400"></i>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-[12px] font-bold text-white">Fast Pay 02</p>
+                    <div id="gw2" class="gw-card p-4 rounded-2xl cursor-pointer transition-all" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); box-shadow: none;" onclick="selectGw(2)">
+                        <div class="flex items-center justify-center gap-3">
+                            <div class="gw-icon-bg w-10 h-10 rounded-xl flex items-center justify-center transition-all" style="background: rgba(255,255,255,0.05);">
+                                <i class="gw-icon fas fa-mobile-screen transition-all text-gray-500"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="gw-text text-[12px] font-bold transition-all text-gray-500">Fast Pay 02</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -140,6 +142,43 @@
 <script>
     function setAmount(amt) {
         document.getElementById('amount').value = amt;
+    }
+
+    function selectGw(id) {
+        // Reset all
+        document.querySelectorAll('.gw-card').forEach(el => {
+            el.style.background = 'rgba(255,255,255,0.03)';
+            el.style.borderColor = 'rgba(255,255,255,0.06)';
+            el.style.boxShadow = 'none';
+            
+            let iconBg = el.querySelector('.gw-icon-bg');
+            iconBg.style.background = 'rgba(255,255,255,0.05)';
+            
+            let icon = el.querySelector('.gw-icon');
+            icon.classList.remove('text-blue-400');
+            icon.classList.add('text-gray-500');
+
+            let text = el.querySelector('.gw-text');
+            text.classList.remove('text-white');
+            text.classList.add('text-gray-500');
+        });
+
+        // Highlight selected
+        const selected = document.getElementById('gw' + id);
+        selected.style.background = 'rgba(59,130,246,0.15)';
+        selected.style.borderColor = 'rgba(59,130,246,0.4)';
+        selected.style.boxShadow = '0 0 15px rgba(59,130,246,0.2)';
+
+        let selIconBg = selected.querySelector('.gw-icon-bg');
+        selIconBg.style.background = 'rgba(59,130,246,0.2)';
+
+        let selIcon = selected.querySelector('.gw-icon');
+        selIcon.classList.remove('text-gray-500');
+        selIcon.classList.add('text-blue-400');
+
+        let selText = selected.querySelector('.gw-text');
+        selText.classList.remove('text-gray-500');
+        selText.classList.add('text-white');
     }
 </script>
 </x-layouts>

@@ -1,85 +1,70 @@
 <x-layouts :title="'Dépôt Réussi'" :level="Auth::user()->level">
-    <div class="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <div class="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden" style="background-color: #0f172a;">
         <!-- Background Decorations -->
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-100 rounded-full blur-[100px] opacity-50"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-100 rounded-full blur-[100px] opacity-50"></div>
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px]"></div>
+            <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"></div>
+        </div>
 
-        <div class="w-full max-w-md relative z-10">
-            <div class="bg-white/80 backdrop-blur-xl border border-white/40 rounded-[2.5rem] shadow-2xl shadow-emerald-200/50 p-8 text-center animate__animated animate__zoomIn">
+        <div class="w-full max-w-sm relative z-10">
+            <div class="rounded-[2.5rem] p-8 text-center animate__animated animate__zoomIn" style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
                 
                 <!-- Success Animated Icon -->
                 <div class="mb-8 relative">
-                    <div class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-lime-400 rounded-full mx-auto flex items-center justify-center shadow-lg shadow-emerald-200 animate__animated animate__bounceIn animate__delay-1s">
-                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                        </svg>
+                    <div class="w-20 h-20 bg-gradient-to-tr from-emerald-500 to-lime-400 rounded-full mx-auto flex items-center justify-center shadow-lg shadow-emerald-500/20 animate__animated animate__bounceIn">
+                        <i class="fas fa-check text-3xl text-white"></i>
                     </div>
-                    <div class="absolute top-0 left-0 w-full h-full animate-ping opacity-20 rounded-full bg-emerald-400"></div>
+                    <div class="absolute inset-0 animate-ping opacity-20 rounded-full bg-emerald-400"></div>
                 </div>
 
-                <h2 class="text-3xl font-bold text-slate-800 mb-2 leading-tight">Félicitations !</h2>
-                <p class="text-slate-500 font-medium mb-8">
-                    Votre paiement a été confirmé. Votre investissement est prêt à générer des profits.
+                <h2 class="text-2xl font-bold text-white mb-2 leading-tight">Félicitations !</h2>
+                <p class="text-[12px] font-medium text-gray-400 mb-8 leading-relaxed">
+                    Votre paiement a été confirmé. Votre compte a été crédité avec succès.
                 </p>
 
                 <!-- Transaction Details Card -->
-                <div class="bg-slate-50/50 backdrop-blur-sm rounded-3xl p-6 mb-8 border border-slate-100 text-left space-y-4">
-                    <div class="flex justify-between items-end border-b border-slate-100 pb-4">
+                <div class="rounded-3xl p-5 mb-8 text-left space-y-4" style="background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.06);">
+                    <div class="flex justify-between items-center border-b border-white/5 pb-3">
                         <div>
-                            <p class="text-[10px] font-bold text-slate-400 mb-1">Montant Crédité</p>
-                            <div class="flex items-baseline gap-1">
-                                <span class="text-3xl font-bold text-slate-900">{{ number_format($transaction->montant, 2) }}</span>
-                                <span class="text-lg font-bold text-emerald-600">$</span>
-                            </div>
+                            <p class="text-[10px] font-bold text-emerald-400/80 uppercase tracking-wider mb-1">Montant Crédité</p>
+                            <p class="text-xl font-bold text-white">{{ number_format($transaction->montant, 0, '.', ' ') }} <span class="text-xs text-emerald-400">{{ Auth::user()->currency }}</span></p>
                         </div>
                         <div class="text-right">
-                            <p class="text-[10px] font-bold text-slate-400 mb-1">Valeur Locale</p>
-                            <p class="text-sm font-bold text-slate-700">~ {{ number_format($transaction->montant_fcfa ?? ($transaction->montant * 600), 0, ',', ' ') }} FCFA</p>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Méthode</p>
+                            <p class="text-sm font-bold text-blue-400">{{ $transaction->operator ?: 'NotchPay' }}</p>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 mb-1">Méthode</p>
-                            <div class="flex items-center gap-2">
-                                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                <p class="text-xs font-bold text-slate-700">{{ $transaction->operator ?: 'NotchPay' }}</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[10px] font-bold text-slate-400 mb-1">Référence</p>
-                            <p class="text-[10px] font-mono font-bold text-slate-500 break-all">{{ substr($transaction->reference, -12) }}</p>
-                        </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Référence</p>
+                        <p class="text-[10px] font-mono font-medium text-gray-400 break-all leading-tight">
+                            {{ $transaction->reference }}
+                        </p>
                     </div>
                 </div>
 
                 <!-- Actions -->
                 <div class="space-y-3">
-                    <a href="{{ route('dashboard') }}" class="group relative block w-full overflow-hidden rounded-2xl bg-slate-900 p-4 font-bold text-white transition-all hover:bg-slate-800 active:scale-[0.98]">
-                        <span class="relative z-10 flex items-center justify-center gap-2">
-                            Aller au Tableau de Bord
-                            <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                        </span>
+                    <a href="{{ route('dashboard') }}" class="block w-full py-4 rounded-2xl bg-white text-slate-900 font-bold text-[12px] transition-all hover:bg-gray-100 active:scale-95 shadow-lg shadow-white/5">
+                        Tableau de Bord <i class="fas fa-arrow-right ml-2"></i>
                     </a>
                     
-                    <a href="{{ route('transaction') }}" class="block w-full py-3 text-slate-500 hover:text-emerald-600 font-bold text-sm transition-colors">
+                    <a href="{{ route('transaction') }}" class="block w-full py-3 text-gray-500 hover:text-white font-bold text-[11px] transition-colors">
                         Consulter mon historique
                     </a>
                 </div>
             </div>
 
             <!-- Trust Badge -->
-            <div class="mt-8 flex items-center justify-center gap-2 text-slate-400 opacity-60">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 4.908-3.367 9.132-8 10.125a12.01 12.01 0 01-8-10.125c0-.681.057-1.35.166-2.001zM10 21a11.954 11.954 0 01-10-10C0 4.477 4.477 0 10 0s10 4.477 10 10c0 5.523-4.477 10-10 10z" clip-rule="evenodd"></path></svg>
-                <span class="text-[10px] font-bold">Paiement Sécurisé par NotchPay</span>
+            <div class="mt-8 flex items-center justify-center gap-2 text-gray-600">
+                <i class="fas fa-shield-halved text-xs"></i>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Paiement Sécurisé</span>
             </div>
         </div>
     </div>
 
     <!-- Confetti & Animations -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    
     <script>
         window.addEventListener('load', () => {
             const duration = 3 * 1000;
@@ -98,7 +83,6 @@
                 }
 
                 const particleCount = 50 * (timeLeft / duration);
-                // since particles fall down, start a bit higher than random
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
             }, 250);

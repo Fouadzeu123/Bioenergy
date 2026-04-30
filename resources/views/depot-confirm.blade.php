@@ -29,84 +29,87 @@
     }
 @endphp
 
-<div class="max-w-xl mx-auto pt-5 px-4 space-y-6 pb-24">
-    
-    <!-- Résumé du montant -->
-    <div class="rounded-3xl p-6 text-center shadow-lg" style="background: linear-gradient(135deg, #1e3a8a 0%, #0e7490 100%);">
-        <p class="text-[11px] font-semibold text-blue-200 mb-1 uppercase tracking-wider">Montant sélectionné</p>
-        <p class="text-3xl font-bold text-white">{{ number_format($amount, 0, '.', ' ') }} <span class="text-lg">{{ $currency }}</span></p>
+<div class="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden" style="background-color: #0f172a;">
+    <!-- Background Decorations -->
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px]"></div>
     </div>
 
-    <!-- Instructions -->
-    <div class="rounded-2xl p-5" style="background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.15);">
-        <div class="flex items-center gap-3 mb-3">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center bg-blue-500/20 text-blue-400">
-                <i class="fas fa-info-circle"></i>
-            </div>
-            <h3 class="text-[12px] font-bold text-white">Instructions de dépôt</h3>
-        </div>
-        <ul class="space-y-2 text-[11px] font-medium text-gray-400">
-            <li class="flex items-start gap-2">
-                <i class="fas fa-check text-blue-400 mt-0.5"></i>
-                Veuillez saisir le numéro de téléphone avec lequel vous souhaitez effectuer le paiement.
-            </li>
-            <li class="flex items-start gap-2">
-                <i class="fas fa-check text-blue-400 mt-0.5"></i>
-                Sélectionnez le bon opérateur (MTN, Orange, Moov).
-            </li>
-            <li class="flex items-start gap-2">
-                <i class="fas fa-check text-blue-400 mt-0.5"></i>
-                Gardez votre téléphone à proximité pour valider le retrait depuis votre compte Mobile Money.
-            </li>
-        </ul>
-    </div>
-
-    <!-- Formulaire de confirmation -->
-    <form action="{{ route('depot.store') }}" method="POST" class="space-y-5">
-        @csrf
-        <input type="hidden" name="amount" value="{{ $amount }}">
-
-        <div class="rounded-2xl p-6 space-y-6" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+    <div class="w-full max-w-sm relative z-10">
+        <div class="rounded-[2.5rem] p-8 animate__animated animate__fadeIn" style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
             
-            <div class="space-y-4">
-                <!-- Numéro de paiement -->
-                <div class="space-y-2">
-                    <label class="block text-[11px] font-semibold px-1" style="color: #4b5563;">Numéro de Paiement</label>
-                    <div class="flex items-center rounded-2xl px-5 py-4 transition-all" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                        <span class="text-blue-400 font-bold text-sm pr-4 border-r" style="border-color: rgba(255,255,255,0.1);">+{{ $phonePrefix }}</span>
-                        <input type="tel" name="payment_phone" value="{{ old('payment_phone', ltrim(preg_replace('/\D/','',$phone), '0237225')) }}" required
-                               class="flex-1 bg-transparent text-white text-sm font-semibold pl-4 focus:outline-none"
-                               placeholder="Ex: 6XXXXXXXX">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-white mb-2">Finaliser le Dépôt</h2>
+                <p class="text-[12px] font-medium text-gray-400">Vérifiez vos informations avant de valider.</p>
+            </div>
+
+            <!-- Résumé du montant -->
+            <div class="rounded-3xl p-6 text-center mb-6 shadow-lg" style="background: linear-gradient(135deg, #1e3a8a 0%, #0e7490 100%);">
+                <p class="text-[11px] font-semibold text-blue-200 mb-1 uppercase tracking-wider">Montant à créditer</p>
+                <p class="text-3xl font-bold text-white">{{ number_format($amount, 0, '.', ' ') }} <span class="text-lg text-emerald-400">{{ $currency }}</span></p>
+            </div>
+
+            <!-- Instructions Flash -->
+            <div class="rounded-2xl p-4 mb-6" style="background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.1);">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-info-circle text-blue-400 text-sm"></i>
+                    <p class="text-[10px] font-medium text-gray-300 leading-relaxed">
+                        Un message USSD s'affichera sur votre téléphone après validation.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Formulaire de confirmation -->
+            <form action="{{ route('depot.store') }}" method="POST" class="space-y-5">
+                @csrf
+                <input type="hidden" name="amount" value="{{ $amount }}">
+
+                <div class="space-y-4">
+                    <!-- Numéro de paiement -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider px-1">Numéro de Paiement</label>
+                        <div class="flex items-center rounded-2xl px-5 py-4 transition-all" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
+                            <span class="text-blue-400 font-bold text-sm pr-4 border-r" style="border-color: rgba(255,255,255,0.1);">+{{ $phonePrefix }}</span>
+                            <input type="tel" name="payment_phone" value="{{ old('payment_phone', ltrim(preg_replace('/\D/','',$phone), '0237225')) }}" required
+                                   class="flex-1 bg-transparent text-white text-sm font-semibold pl-4 focus:outline-none"
+                                   placeholder="Ex: 6XXXXXXXX">
+                        </div>
+                    </div>
+
+                    <!-- Opérateur -->
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-wider px-1">Opérateur Mobile</label>
+                        <div class="relative">
+                            <select name="payment_method" required class="w-full rounded-2xl px-5 py-4 text-white text-sm font-semibold focus:outline-none transition-all appearance-none" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
+                                <option value="" disabled selected>Sélectionnez l'opérateur</option>
+                                @if($userCountry === 'CI')
+                                    <option value="MTN" {{ $detectedOperator === 'MTN' ? 'selected' : '' }}>MTN Côte d'Ivoire</option>
+                                    <option value="ORANGE" {{ $detectedOperator === 'ORANGE' ? 'selected' : '' }}>Orange Côte d'Ivoire</option>
+                                    <option value="MOOV" {{ $detectedOperator === 'MOOV' ? 'selected' : '' }}>Moov Côte d'Ivoire</option>
+                                @else
+                                    <option value="MTN" {{ $detectedOperator === 'MTN' ? 'selected' : '' }}>MTN Cameroun</option>
+                                    <option value="ORANGE" {{ $detectedOperator === 'ORANGE' ? 'selected' : '' }}>Orange Cameroun</option>
+                                @endif
+                            </select>
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-500 text-[10px]"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Opérateur -->
-                <div class="space-y-2">
-                    <label class="block text-[11px] font-semibold px-1" style="color: #4b5563;">Opérateur Mobile</label>
-                    <select name="payment_method" required class="w-full rounded-2xl px-5 py-4 text-white text-sm font-semibold focus:outline-none transition-all appearance-none" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                        <option value="" disabled selected style="background: #0d1117;">Sélectionnez l'opérateur</option>
-                        @if($userCountry === 'CI')
-                            <option value="MTN" {{ $detectedOperator === 'MTN' ? 'selected' : '' }} style="background: #0d1117;">MTN Côte d'Ivoire</option>
-                            <option value="ORANGE" {{ $detectedOperator === 'ORANGE' ? 'selected' : '' }} style="background: #0d1117;">Orange Côte d'Ivoire</option>
-                            <option value="MOOV" {{ $detectedOperator === 'MOOV' ? 'selected' : '' }} style="background: #0d1117;">Moov Côte d'Ivoire</option>
-                        @else
-                            <option value="MTN" {{ $detectedOperator === 'MTN' ? 'selected' : '' }} style="background: #0d1117;">MTN Cameroun</option>
-                            <option value="ORANGE" {{ $detectedOperator === 'ORANGE' ? 'selected' : '' }} style="background: #0d1117;">Orange Cameroun</option>
-                        @endif
-                    </select>
+                <div class="grid grid-cols-2 gap-4 pt-4">
+                    <a href="{{ route('deposit') }}" class="flex items-center justify-center py-4 rounded-2xl text-[12px] font-bold transition active:scale-95 text-gray-400" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05);">
+                        Annuler
+                    </a>
+                    <button type="submit" class="py-4 text-white text-[12px] font-bold rounded-2xl active:scale-95 transition shadow-lg shadow-emerald-500/20" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        Confirmer
+                    </button>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3 pt-2">
-                <a href="{{ route('deposit') }}" class="flex items-center justify-center py-4 rounded-2xl text-[12px] font-semibold transition active:scale-95" style="background: rgba(255,255,255,0.05); color: #9ca3af;">
-                    Annuler
-                </a>
-                <button type="submit" class="py-4 text-white text-[12px] font-bold rounded-2xl active:scale-95 transition" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 4px 15px rgba(16,185,129,0.25);">
-                    Payer maintenant
-                </button>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 </x-layouts>
