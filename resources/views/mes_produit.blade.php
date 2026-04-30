@@ -1,6 +1,30 @@
 <x-layouts :title="'Mes Actifs'" :level="Auth::user()->level">
 <div class="max-w-xl mx-auto pt-5 px-4 space-y-6 pb-24">
 
+    <!-- Messages de succès / erreur -->
+    @if(session('success'))
+        <div class="rounded-2xl p-4 flex items-center gap-3 animate__animated animate__fadeInDown" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(16,185,129,0.2);">
+                <i class="fas fa-check-circle text-emerald-400 text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-emerald-400">Succès !</p>
+                <p class="text-[11px] font-medium mt-0.5" style="color: rgba(167,243,208,0.8);">{{ session('success') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="rounded-2xl p-4 flex items-center gap-3 animate__animated animate__shakeX" style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: rgba(239,68,68,0.2);">
+                <i class="fas fa-exclamation-circle text-red-400 text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-red-400">Oups !</p>
+                <p class="text-[11px] font-medium mt-0.5" style="color: rgba(254,202,202,0.8);">{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
     <!-- Header & Timer Countdown -->
     <div class="relative overflow-hidden rounded-[2rem] p-7 text-white text-center" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #1e3a8a 100%); box-shadow: 0 0 50px rgba(99,102,241,0.3);">
         <div class="relative z-10 space-y-3">
@@ -97,8 +121,8 @@
 </div>
 
 <!-- Modal Détails -->
-<div id="detailsModal" class="fixed inset-0 z-[120] hidden flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4" style="background: rgba(0,0,0,0.75);">
-    <div class="rounded-t-[2rem] sm:rounded-3xl shadow-2xl max-w-lg w-full p-6 space-y-6 animate__animated animate__slideInUp" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
+<div id="detailsModal" class="fixed inset-0 z-[120] hidden flex items-center justify-center backdrop-blur-sm p-4" style="background: rgba(0,0,0,0.75);">
+    <div class="rounded-3xl shadow-2xl max-w-lg w-full p-6 space-y-6 animate__animated animate__slideInUp" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
         <div class="flex justify-between items-center">
             <div>
                 <h4 id="modalTitle" class="text-xl font-bold text-white">Détails de l'actif</h4>

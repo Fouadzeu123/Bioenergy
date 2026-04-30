@@ -13,7 +13,7 @@
                        class="w-full rounded-2xl px-5 py-4 text-sm font-semibold text-white outline-none transition"
                        style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.15);"
                        placeholder="Saisir votre code ici...">
-                <button type="submit" class="absolute right-2 top-2 bottom-2 px-5 rounded-xl text-[11px] font-bold transition active:scale-95" style="background: rgba(59,130,246,0.9);">
+                <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2.5 rounded-xl text-[11px] font-bold transition active:scale-95" style="background: rgba(59,130,246,0.9);">
                     Valider
                 </button>
             </form>

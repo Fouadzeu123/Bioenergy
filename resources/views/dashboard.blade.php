@@ -296,11 +296,11 @@
             </div>
 
             <div class="relative rounded-2xl overflow-hidden" style="border: 1px solid rgba(255,255,255,0.06);">
-                <div class="aspect-video relative">
-                    <iframe class="absolute inset-0 w-full h-full opacity-70"
+                <div class="aspect-video relative group">
+                    <iframe class="absolute inset-0 w-full h-full opacity-70 group-hover:opacity-100 transition-opacity"
                         src="https://www.youtube.com/embed/yHWcddUZ35s?controls=0" title="BioEnergy"
-                        frameborder="0"></iframe>
-                    <div class="absolute inset-0 flex items-end p-5"
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class="absolute inset-0 flex items-end p-5 pointer-events-none"
                         style="background: linear-gradient(to top, rgba(7,9,15,0.8), transparent);">
                         <p class="text-white font-semibold text-sm">Comprendre la biomasse en 2 minutes</p>
                     </div>

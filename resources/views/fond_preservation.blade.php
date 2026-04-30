@@ -73,8 +73,8 @@
 </div>
 
 <!-- Modal Investissement -->
-<div id="investModal" class="fixed inset-0 z-[100] hidden flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4" style="background: rgba(0,0,0,0.75);">
-    <div class="rounded-t-[2rem] sm:rounded-3xl shadow-2xl max-w-lg w-full p-7 space-y-6 animate__animated animate__slideInUp" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
+<div id="investModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4" style="background: rgba(0,0,0,0.75);">
+    <div class="rounded-3xl shadow-2xl max-w-lg w-full p-7 space-y-6 animate__animated animate__slideInUp" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
         <div class="flex justify-between items-center">
             <h4 class="text-xl font-bold text-white">Placer des fonds</h4>
             <button onclick="closeInvestModal()" class="w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:text-white transition" style="background: rgba(255,255,255,0.05);">

@@ -40,6 +40,18 @@
     <div class="space-y-3">
         <h3 class="text-[12px] font-semibold px-1" style="color: #4b5563;">Assistance Directe</h3>
 
+        @php
+            $supportContacts = [
+                '2376686812801', // Service Client 1
+                '237689910071',  // Service Client 2
+                // Ajoutez d'autres numéros ici si nécessaire
+            ];
+            // On attribue un numéro différent en fonction de l'ID de l'utilisateur
+            // ex: l'utilisateur ID 1 aura le contact 1, l'ID 2 le contact 2, etc.
+            $assignedIndex = (Auth::id() - 1) % count($supportContacts);
+            $assignedContact = $supportContacts[$assignedIndex];
+        @endphp
+
         <div class="rounded-2xl p-5 space-y-4" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -47,12 +59,12 @@
                         <i class="fas fa-user-tie text-xs text-blue-400"></i>
                     </div>
                     <div>
-                        <p class="text-[12px] font-semibold text-white">Service Client</p>
-                        <p class="text-[10px] font-medium" style="color: #4b5563;">Support Général & Aide</p>
+                        <p class="text-[12px] font-semibold text-white">Service Client Attitré</p>
+                        <p class="text-[10px] font-medium" style="color: #4b5563;">Votre conseiller RH</p>
                     </div>
                 </div>
-                <a href="https://wa.me/2376686812801" target="_blank" class="text-white text-[11px] font-bold px-4 py-2 rounded-xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2);">
-                    Contact 1
+                <a href="https://wa.me/{{ $assignedContact }}" target="_blank" class="text-white text-[11px] font-bold px-4 py-2 rounded-xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2);">
+                    Contacter
                 </a>
             </div>
 
@@ -61,14 +73,7 @@
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(6,182,212,0.12);">
                         <i class="fas fa-receipt text-xs text-cyan-400"></i>
                     </div>
-                    <div>
-                        <p class="text-[12px] font-semibold text-white">Service RH & Finance</p>
-                        <p class="text-[10px] font-medium" style="color: #4b5563;">Questions de recrutement</p>
-                    </div>
                 </div>
-                <a href="https://wa.me/237689910071" target="_blank" class="text-white text-[11px] font-bold px-4 py-2 rounded-xl active:scale-95 transition" style="background: linear-gradient(135deg, #0891b2, #0d9488);">
-                    Contact 2
-                </a>
             </div>
         </div>
     </div>

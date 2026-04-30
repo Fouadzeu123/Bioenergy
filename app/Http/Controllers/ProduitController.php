@@ -61,10 +61,14 @@ class ProduitController extends Controller
         $user->account_balance -= $amount;
         $user->save();
 
+        $isFirstPurchase = $user->orders()->count() === 0;
+
         // Mise à jour VIP
         if ($user->level < $produit->level) {
             $user->level = $produit->level;
-            $user->increment('lucky_spins', 1); // +1 Tour de roue pour montée en VIP
+            if (!$isFirstPurchase) {
+                $user->increment('lucky_spins', 1); // +1 Tour de roue pour montée en VIP
+            }
             $user->save();
         }
         if (is_null($user->vip_activated_at)) {
