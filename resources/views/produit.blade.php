@@ -62,7 +62,7 @@
                             <p class="text-[10px] font-medium text-cyan-400">Contrat 365 Jours</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xl font-bold text-blue-400">{{ $produit->rate }}%</p>
+                            <p class="text-xl font-bold text-blue-400">{{ fmtCurrency(($produit->rate * $produit->min_amount) / 100) }}</p>
                             <p class="text-[10px] font-medium" style="color: #4b5563;">Par jour</p>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
         document.getElementById('modalTitle').textContent = p.name;
         document.getElementById('modalImage').src = p.image ? `/${p.image}` : `/images/produits/produit${p.id}.jpg`;
         document.getElementById('modalInformation').textContent = p.description || p.information || 'Innovation durable pour un avenir énergétique autonome.';
-        document.getElementById('modalRate').textContent = `Rendement Journalier : ${p.rate}%`;
+        document.getElementById('modalRate').textContent = `Rendement Journalier : ${((p.rate * p.min_amount) / 100).toLocaleString('fr-FR')} ${CURRENCY}`;
         document.getElementById('modalMin').textContent = `Min. requis : ${Number(p.min_amount).toLocaleString('fr-FR')} ${CURRENCY}`;
         document.getElementById('investForm').action = `/products/${id}`;
         const input = document.getElementById('investAmount');
