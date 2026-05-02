@@ -41,6 +41,7 @@ public function mesEpargnes()
      */
     public function epagner(Request $request, $id)
     {
+        return redirect()->back()->with('error', 'Le fonds de préservation est temporairement indisponible ❌');
         $fond = Preservation::findOrFail($id);
         $user = Auth::user();
         $request->validate([

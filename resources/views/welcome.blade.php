@@ -84,7 +84,7 @@
                             <input type="hidden" name="country_code" id="country_code_input" value="237">
                             <input type="tel" name="phone" value="{{ old('phone') }}" required
                                    class="flex-1 bg-transparent text-white text-sm font-semibold pl-4 focus:outline-none"
-                                   placeholder="000000000">
+                                   placeholder="Numero telephone">
                         </div>
                     </div>
 

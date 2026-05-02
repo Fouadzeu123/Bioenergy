@@ -206,6 +206,12 @@
         <div class="relative rounded-2xl overflow-hidden shadow-lg aspect-[16/7]"
             style="border: 1px solid rgba(255,255,255,0.06);">
             <div id="carousel" class="flex transition-transform duration-700 ease-in-out h-full">
+                <img src="{{ asset('images/slide5.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
+                <img src="{{ asset('images/slide6.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
+                <img src="{{ asset('images/slide7.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
+                <img src="{{ asset('images/slide8.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
+                <img src="{{ asset('images/slide9.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
+                <img src="{{ asset('images/slide10.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
                 <img src="{{ asset('images/slide1.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
                 <img src="{{ asset('images/slide2.jpg') }}" class="w-full h-full object-cover flex-shrink-0">
                 <img src="{{ asset('images/slide3.jpg') }}" class="w-full h-full object-cover flex-shrink-0">

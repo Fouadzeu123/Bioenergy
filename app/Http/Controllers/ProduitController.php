@@ -31,6 +31,9 @@ class ProduitController extends Controller
     public function acheter(Request $request, $id)
     {
         $produit = Produit::findOrFail($id);
+        if ($produit->level == 5) {
+            return back()->with('error', "Ce produit n'est pas encore indisponible.");
+        }
         $user = Auth::user();
         $curr = $user->currency;
 

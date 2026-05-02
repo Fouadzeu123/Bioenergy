@@ -46,16 +46,14 @@
         @foreach($produits as $produit)
             @php
                 $purchases = Auth::user()->orders()->where('produit_id', $produit->id)->count();
-                $canBuy = $purchases < $produit->limit_order;
+                $canBuy = $purchases < $produit->limit_order && $produit->level != 5;
+                $isUnavailable = $produit->level == 5;
             @endphp
 
             <div class="rounded-2xl overflow-hidden transition-all hover:border-blue-500/20" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
                 <div class="relative h-44">
                     <img src="{{ asset($produit->image ? $produit->image : 'images/produits/produit' . $produit->id . '.jpg') }}" class="w-full h-full object-cover opacity-70">
                     <div class="absolute inset-0" style="background: linear-gradient(to top, #0d1117 0%, rgba(13,17,23,0.4) 60%, transparent 100%);"></div>
-                    <div class="absolute top-3 left-3">
-                        <span class="text-[10px] font-bold px-3 py-1.5 rounded-full" style="background: rgba(59,130,246,0.2); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3);">VIP {{ $produit->level }}</span>
-                    </div>
                     <div class="absolute bottom-0 left-0 right-0 p-5 flex justify-between items-end">
                         <div>
                             <h3 class="text-lg font-bold text-white leading-tight">{{ $produit->name }}</h3>
@@ -81,10 +79,10 @@
                                 <p class="text-[12px] font-bold text-white">{{ fmtCurrency($produit->min_amount) }}</p>
                             </div>
                         </div>
-                        <button onclick="openProductModal({{ $produit->id }})"
+                        <button @if(!$isUnavailable) onclick="openProductModal({{ $produit->id }})" @endif
                                 class="text-white text-[11px] font-bold px-5 py-2.5 rounded-xl active:scale-95 transition-all"
                                 style="background: {{ $canBuy ? 'linear-gradient(135deg, #2563eb, #0891b2)' : 'rgba(107,114,128,0.2)' }}; {{ $canBuy ? 'box-shadow: 0 0 16px rgba(59,130,246,0.25);' : '' }}">
-                            {{ $canBuy ? 'Investir' : 'Complet' }}
+                            {{ $isUnavailable ? 'Indisponible' : ($canBuy ? 'Investir' : 'Complet') }}
                         </button>
                     </div>
                 </div>

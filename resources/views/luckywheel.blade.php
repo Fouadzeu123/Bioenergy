@@ -134,12 +134,12 @@
 
     const prizes = [
         { val: 500 },
-        { val: 'Montre connectée', img: 'watch.png' },
+        { val: 1200 },
         { val: 5000 },
-        { val: 'Power Bank', img: 'powerbank.png' },
+        { val: 1200 },
         { val: 150000 },
         { val: 500 },
-        { val: 'Ventilateur', img: 'fan.png' },
+        { val: 25000 },
         { val: 5000 }
     ];
     // Couleurs bleu nuit pour la roue
@@ -177,7 +177,7 @@
             ctx.save();
             ctx.translate(200, 200);
             ctx.rotate(((i + 0.5) * sliceDeg * Math.PI) / 180);
-            
+
             if (prizes[i].img && loadedImages[prizes[i].img] && loadedImages[prizes[i].img].complete) {
                 // Dessiner l'image (X vers le bord extérieur, Y centré verticalement)
                 ctx.drawImage(loadedImages[prizes[i].img], 120, -25, 50, 50);
@@ -188,7 +188,7 @@
                 let text = typeof prizes[i].val === 'number' ? prizes[i].val.toLocaleString('fr-FR') : prizes[i].val;
                 ctx.fillText(text, 175, 6);
             }
-            
+
             ctx.restore();
         }
     }
@@ -209,15 +209,15 @@
             if (data.error) { showErrorModal(data.error); return; }
 
             isSpinning = true;
-            
+
             const matchingIndexes = prizes.map((p, i) => p.val == data.prize ? i : -1).filter(i => i !== -1);
             const prizeIndex = matchingIndexes[Math.floor(Math.random() * matchingIndexes.length)];
-            
+
             const extraRounds = 5 + Math.floor(Math.random() * 5);
             const currentSpins = Math.floor(currentRotation / 360);
-            
+
             const targetRotation = (currentSpins + extraRounds) * 360 + 270 - (prizeIndex * sliceDeg + sliceDeg / 2);
-            
+
             currentRotation = targetRotation;
             wheel.style.transform = `rotate(${currentRotation}deg)`;
 
@@ -253,7 +253,7 @@
             modalContent.classList.remove('scale-95');
             modalContent.classList.add('scale-100');
         }, 10);
-        
+
         // Confetti effect if possible, or just the modal
         if (typeof confetti === 'function') {
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
