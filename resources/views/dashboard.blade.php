@@ -380,7 +380,6 @@
         }, 4500);
 
         function showNotif() {
-            // Numéro camerounais ou ivoirien masqué
             function randomPhone() {
                 const country = Math.random() > 0.3 ? '237' : '225';
                 let p;
@@ -400,47 +399,47 @@
             const phone = randomPhone();
             const currency = "{{ Auth::user()->currency }}";
 
-            // Choisir un type de notification au hasard
-            const type = Math.floor(Math.random() * 3); // 0 = parrainage, 1 = dépôt, 2 = retrait
+            // Types: 0=Achat, 1=Dépôt, 2=Retrait, 3=Gain
+            const type = Math.floor(Math.random() * 4);
 
             let actionText, amountText;
 
             if (type === 0) {
-                // ── PARRAINAGE ──
-                const reward = Math.floor(Math.random() * (50000 - 500 + 1)) + 500;
-                actionText = `<span class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-md font-bold text-[9px]">Gagné</span>`;
-                amountText = `<span class="text-emerald-600 font-bold">+${reward.toLocaleString()}</span>`;
+                // ── ACHAT ──
+                const amounts = [5000, 15000, 30000, 50000, 100000, 200000, 500000];
+                const amount = amounts[Math.floor(Math.random() * amounts.length)];
+                actionText = `<span class="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-md font-bold text-[9px]">Achat</span>`;
+                amountText = `<span class="text-emerald-600 font-bold">${amount.toLocaleString()}</span>`;
             } else if (type === 1) {
                 // ── DÉPÔT ──
-                const amount = Math.floor(Math.random() * (500000 - 5000 + 1)) + 5000;
+                const amount = Math.floor(Math.random() * (100000 - 5000 + 1)) + 5000;
                 actionText = `<span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-md font-bold text-[9px]">Dépôt</span>`;
                 amountText = `<span class="text-blue-600 font-bold">+${amount.toLocaleString()}</span>`;
-            } else {
+            } else if (type === 2) {
                 // ── RETRAIT ──
-                const amount = Math.floor(Math.random() * (200000 - 5000 + 1)) + 5000;
+                const amount = Math.floor(Math.random() * (50000 - 2000 + 1)) + 2000;
                 actionText = `<span class="bg-violet-50 text-violet-600 px-2 py-1 rounded-md font-bold text-[9px]">Retrait</span>`;
                 amountText = `<span class="text-violet-600 font-bold">-${amount.toLocaleString()}</span>`;
+            } else {
+                // ── GAIN ──
+                const amount = (Math.random() * (25000 - 100) + 100).toFixed(0);
+                actionText = `<span class="bg-amber-50 text-amber-600 px-2 py-1 rounded-md font-bold text-[9px]">Gain</span>`;
+                amountText = `<span class="text-amber-600 font-bold">+${Number(amount).toLocaleString()}</span>`;
             }
 
             const tr = document.createElement('tr');
             tr.className = `animate__animated animate__fadeIn bg-emerald-50/30 transition-all duration-500`;
             tr.innerHTML = `
-        <td class="py-3 font-semibold text-gray-700 truncate w-1/3">${phone}</td>
-        <td class="py-3 text-center w-1/3">${actionText}</td>
-        <td class="py-3 text-right w-1/3">${amountText} <span class="text-[9px] text-gray-400 ml-1">${currency}</span></td>
-    `;
+                <td class="py-3 font-semibold text-gray-700 truncate w-1/3">${phone}</td>
+                <td class="py-3 text-center w-1/3">${actionText}</td>
+                <td class="py-3 text-right w-1/3">${amountText} <span class="text-[9px] text-gray-400 ml-1">${currency}</span></td>
+            `;
 
             const tbody = document.getElementById('live-activity-table');
-
-            // Enlever le fond coloré après l'animation
-            setTimeout(() => {
-                tr.classList.remove('bg-emerald-50/30');
-            }, 1000);
-
+            setTimeout(() => tr.classList.remove('bg-emerald-50/30'), 1000);
             tbody.prepend(tr);
 
-            // Garder 5 éléments max
-            if (tbody.children.length > 5) {
+            if (tbody.children.length > 6) {
                 const last = tbody.lastElementChild;
                 last.classList.replace('animate__fadeIn', 'animate__fadeOut');
                 setTimeout(() => last.remove(), 800);

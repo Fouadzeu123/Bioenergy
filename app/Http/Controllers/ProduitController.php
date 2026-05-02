@@ -70,7 +70,7 @@ class ProduitController extends Controller
         if ($user->level < $produit->level) {
             $user->level = $produit->level;
             if (!$isFirstPurchase) {
-                $user->increment('lucky_spins', 1); // +1 Tour de roue pour montée en VIP
+                // $user->increment('lucky_spins', 1); // +1 Tour de roue pour montée en VIP (Retiré: contact RH manuel)
             }
             $user->save();
         }
@@ -114,7 +114,7 @@ class ProduitController extends Controller
         if ($totalOrders === 1) {
             $bonusAmount = 500; // Montant du bonus
             $user->increment('account_balance', $bonusAmount);
-            $user->increment('lucky_spins', 1); // +1 Tour de roue pour le 1er achat
+            // $user->increment('lucky_spins', 1); // +1 Tour de roue pour le 1er achat (Retiré: contact RH manuel)
 
             Transaction::create([
                 'user_id'     => $user->id,
@@ -128,11 +128,11 @@ class ProduitController extends Controller
             Notification::create([
                 'user_id' => $user->id,
                 'type'    => 'bonus',
-                'content' => "Félicitations ! Vous avez reçu un bonus de " . fmtCurrency($bonusAmount) . " et 1 tour de roue gratuit après votre premier investissement.",
+                'content' => "Félicitations ! Vous avez reçu un bonus de " . fmtCurrency($bonusAmount) . " après votre premier investissement. Veuillez contacter le service RH pour obtenir votre tour de roue gratuit.",
             ]);
         }
 
-        return back()->with('success', 'Investissement effectué avec succès !' . ($totalOrders === 1 ? ' Vous avez reçu un bonus de bienvenue et un tour de roue !' : ''));
+        return back()->with('success', 'Investissement effectué avec succès !' . ($totalOrders === 1 ? ' Vous avez reçu un bonus de bienvenue ! Veuillez contacter le RH pour votre tour de roue.' : ''));
     }
 
     private function attribuerBonusParrainage(User $filleul, float $amount, string $productName): void
@@ -147,9 +147,9 @@ class ProduitController extends Controller
             if ($bonusAmount > 0) {
                 $parrain->increment('account_balance', $bonusAmount);
 
-                // +1 Tour de roue pour le parrain de niveau 1 lors du 1er achat du filleul
+                // +1 Tour de roue pour le parrain de niveau 1 lors du 1er achat du filleul (Retiré: contact RH manuel)
                 if ($level === 1) {
-                    $parrain->increment('lucky_spins', 1);
+                    // $parrain->increment('lucky_spins', 1);
                 }
 
                 Transaction::create([
@@ -165,7 +165,7 @@ class ProduitController extends Controller
                 Notification::create([
                     'user_id' => $parrain->id,
                     'type'    => 'bonus',
-                    'content' => "Bonus de parrainage reçu : +" . fmtCurrency($bonusAmount, $parrain->currency) . ($level === 1 ? " + 1 Tour de roue gratuit !" : ""),
+                    'content' => "Bonus de parrainage reçu : +" . fmtCurrency($bonusAmount, $parrain->currency) . ($level === 1 ? " (Contactez le RH pour votre tour de roue gratuit)" : ""),
                 ]);
             }
 
