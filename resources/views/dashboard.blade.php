@@ -370,7 +370,7 @@
             index++;
             carousel.style.transition = "transform 1s ease-in-out";
             carousel.style.transform = `translateX(-${index * 100}%)`;
-            if (index === 10) {
+            if (index === 9) {
                 setTimeout(() => {
                     carousel.style.transition = "none";
                     carousel.style.transform = "translateX(0)";
