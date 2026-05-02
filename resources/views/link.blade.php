@@ -50,19 +50,39 @@
 
     <!-- Commissions -->
     <div class="rounded-2xl p-6 space-y-4" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
-        <h3 class="text-sm font-bold text-center text-blue-400">Parrainage a 3 niveaux</h3>
+        <h3 class="text-sm font-bold text-center text-blue-400">Bonus de Parrainage</h3>
+
+        <!-- Premier Investissement -->
         <div class="space-y-3">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-500 ml-1">Sur le premier investissement</p>
             <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.12);">
                 <div class="text-2xl font-bold text-blue-400 w-12 text-center flex-shrink-0">10%</div>
-                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Sur le premier investissement de vos filleuls directs (niveau 1)</p>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Niveau 1</p>
             </div>
             <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.12);">
                 <div class="text-2xl font-bold text-cyan-400 w-12 text-center flex-shrink-0">3%</div>
-                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Sur le premier investissement de vos filleuls niveau 2</p>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Niveau 2</p>
             </div>
             <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.12);">
                 <div class="text-2xl font-bold text-indigo-400 w-12 text-center flex-shrink-0">1%</div>
-                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Sur le premier investissement de vos filleuls niveau 3</p>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Niveau 3</p>
+            </div>
+        </div>
+
+        <!-- Revenus Journaliers -->
+        <div class="space-y-3 mt-6">
+            <p class="text-[10px] font-bold uppercase tracking-wider text-gray-500 ml-1">Sur les revenus journaliers</p>
+            <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.12);">
+                <div class="text-2xl font-bold text-blue-400 w-12 text-center flex-shrink-0">5%</div>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Filleuls Niveau 1</p>
+            </div>
+            <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.12);">
+                <div class="text-2xl font-bold text-cyan-400 w-12 text-center flex-shrink-0">2%</div>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Filleuls Niveau 2</p>
+            </div>
+            <div class="flex items-center gap-4 rounded-2xl p-4" style="background: rgba(99,102,241,0.06); border: 1px solid rgba(99,102,241,0.12);">
+                <div class="text-2xl font-bold text-indigo-400 w-12 text-center flex-shrink-0">1%</div>
+                <p class="text-[11px] font-medium leading-relaxed" style="color: #6b7280;">Filleuls Niveau 3</p>
             </div>
         </div>
     </div>
