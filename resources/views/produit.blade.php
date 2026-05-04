@@ -46,8 +46,8 @@
         @foreach($produits as $produit)
             @php
                 $purchases = Auth::user()->orders()->where('produit_id', $produit->id)->count();
-                $canBuy = $purchases < $produit->limit_order && $produit->level != 5;
-                $isUnavailable = $produit->level == 5;
+                $canBuy = $purchases < $produit->limit_order && $produit->level < 5;
+                $isUnavailable = $produit->level >= 5;
             @endphp
 
             <div class="rounded-2xl overflow-hidden transition-all hover:border-blue-500/20" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
