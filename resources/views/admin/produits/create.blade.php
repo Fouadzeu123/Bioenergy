@@ -19,7 +19,7 @@
             </div>
             <div>
                 <label style="font-size: 11px; font-weight: 600; color: #4b5563; display: block; margin-bottom: 6px;">Niveau VIP requis</label>
-                <input type="number" name="level" value="{{ old('level', 1) }}" min="0" max="5" required class="input-dark" placeholder="1">
+                <input type="number" name="level" value="{{ old('level', 1) }}" min="0" required class="input-dark" placeholder="1">
             </div>
         </div>
 
