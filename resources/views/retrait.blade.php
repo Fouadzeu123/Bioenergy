@@ -160,9 +160,9 @@
 
     <!-- Modal Confirmation -->
     <div id="confirmModal"
-        class="fixed inset-0 z-[110] hidden flex items-end sm:items-center justify-center backdrop-blur-sm p-0 sm:p-4"
-        style="background: rgba(0,0,0,0.7);">
-        <div class="rounded-t-[2rem] sm:rounded-3xl shadow-2xl max-w-lg w-full p-7 space-y-6 animate__animated animate__slideInUp"
+        class="fixed inset-0 z-[110] hidden flex items-center justify-center backdrop-blur-sm p-5"
+        style="background: rgba(0,0,0,0.75);">
+        <div class="rounded-[2rem] sm:rounded-3xl shadow-2xl max-w-lg w-full p-7 space-y-6 animate__animated animate__zoomIn"
             style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
             <div class="text-center space-y-1">
                 <h4 class="text-xl font-bold text-white">Finaliser le transfert</h4>
