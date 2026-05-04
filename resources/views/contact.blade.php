@@ -13,70 +13,51 @@
         <div class="absolute -right-10 -bottom-10 w-40 h-40 rounded-full" style="background: rgba(255,255,255,0.05); filter: blur(30px);"></div>
     </div>
 
-    <!-- Canaux Officiels -->
-    <div class="space-y-3">
-        <h3 class="text-[12px] font-semibold px-1" style="color: #4b5563;">Canaux Officiels</h3>
-        <div class="grid grid-cols-2 gap-4">
-            <a href="https://t.me/+MBOmbS0qokZkMmY8" target="_blank"
-               class="rounded-2xl p-5 flex flex-col items-center text-center active:scale-95 transition hover:border-sky-500/30" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3" style="background: rgba(0,136,204,0.12); border: 1px solid rgba(0,136,204,0.2);">
-                    <i class="fab fa-telegram-plane text-xl text-sky-400"></i>
-                </div>
-                <p class="text-[12px] font-semibold text-white">Telegram</p>
-                <p class="text-[10px] font-medium mt-0.5" style="color: #4b5563;">Communauté</p>
-            </a>
-            <a href="https://chat.whatsapp.com/JHIsnbvCzw43KssWzSJ1Qr?mode=gi_t" target="_blank"
-               class="rounded-2xl p-5 flex flex-col items-center text-center active:scale-95 transition hover:border-green-500/20" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3" style="background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.2);">
-                    <i class="fab fa-whatsapp text-xl text-green-400"></i>
-                </div>
-                <p class="text-[12px] font-semibold text-white">WhatsApp</p>
-                <p class="text-[10px] font-medium mt-0.5" style="color: #4b5563;">Canal Info</p>
-            </a>
-        </div>
-    </div>
-
-    <!-- Assistance Directe -->
-    <div class="space-y-3">
-        <h3 class="text-[12px] font-semibold px-1" style="color: #4b5563;">Assistance Directe</h3>
-
-        @php
-            $supportContacts = [
-                '2376686812801', // Service Client 1
-                '237689910071',  // Service Client 2
-                // Ajoutez d'autres numéros ici si nécessaire
-            ];
-            // On attribue un numéro différent en fonction de l'ID de l'utilisateur
-            // ex: l'utilisateur ID 1 aura le contact 1, l'ID 2 le contact 2, etc.
-            $assignedIndex = (Auth::id() - 1) % count($supportContacts);
-            $assignedContact = $supportContacts[$assignedIndex];
-        @endphp
-
-        <div class="rounded-2xl p-5 space-y-4" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.12);">
-                        <i class="fas fa-user-tie text-xs text-blue-400"></i>
-                    </div>
-                    <div>
-                        <p class="text-[12px] font-semibold text-white">Service Client Attitré</p>
-                        <p class="text-[10px] font-medium" style="color: #4b5563;">Votre conseiller RH</p>
-                    </div>
-                </div>
-                <a href="https://wa.me/{{ $assignedContact }}" target="_blank" class="text-white text-[11px] font-bold px-4 py-2 rounded-xl active:scale-95 transition" style="background: linear-gradient(135deg, #2563eb, #0891b2);">
-                    Contacter
-                </a>
+    <!-- Nouveau Message Contact via Parrain -->
+    <div class="space-y-6">
+        <div class="rounded-[2rem] p-8 text-center space-y-6" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
+            <div class="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto" style="background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.2);">
+                <i class="fas fa-users text-3xl text-blue-400"></i>
             </div>
+            <div class="space-y-2">
+                <h2 class="text-xl font-bold text-white">Assistance Via Parrain</h2>
+                <p class="text-xs leading-relaxed text-gray-400 px-4">
+                    Pour toute question, assistance technique ou demande de bonus, veuillez contacter directement votre <span class="text-blue-400 font-bold">parrain</span> ou la personne qui vous a invité sur la plateforme.
+                </p>
+            </div>
+            
+            @php
+                $parrain = Auth::user()->parrain;
+            @endphp
 
-            <div class="flex items-center justify-between pt-3" style="border-top: 1px solid rgba(255,255,255,0.05);">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(6,182,212,0.12);">
-                        <i class="fas fa-receipt text-xs text-cyan-400"></i>
+            @if($parrain)
+                <div class="pt-4">
+                    <div class="rounded-2xl p-5 flex items-center justify-between text-left" style="background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.1);">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(59,130,246,0.12);">
+                                <i class="fas fa-phone-alt text-xs text-blue-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-[12px] font-semibold text-white">Votre Parrain</p>
+                                <p class="text-[10px] font-medium" style="color: #4b5563;">+{{ $parrain->country_code }} {{ $parrain->phone }}</p>
+                            </div>
+                        </div>
+                        <a href="https://wa.me/{{ $parrain->country_code }}{{ ltrim($parrain->phone, '0') }}" target="_blank" 
+                           class="text-white text-[11px] font-bold px-4 py-2 rounded-xl active:scale-95 transition" 
+                           style="background: linear-gradient(135deg, #10b981, #059669);">
+                            WhatsApp
+                        </a>
                     </div>
                 </div>
-            </div>
+            @else
+                <div class="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                    <p class="text-[11px] text-blue-300 font-medium italic">
+                        "Votre parrain est votre guide privilégié pour une expérience optimale chez BioEnergy."
+                    </p>
+                </div>
+            @endif
         </div>
-    </div>
+    </div> 
 
     <!-- Meta Info -->
     <div class="rounded-2xl p-5" style="background: rgba(59,130,246,0.04); border: 1px solid rgba(59,130,246,0.1);">
