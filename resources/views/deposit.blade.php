@@ -8,7 +8,7 @@
     $phonePrefix = ($userCountry === 'CI') ? '225' : '237';
     $countryName  = ($userCountry === 'CI') ? "Côte d'Ivoire" : 'Cameroun';
     $countryFlag  = ($userCountry === 'CI') ? '🇨🇮' : '🇨🇲';
-    $minDepot = 1000;
+    $minDepot = 500;
     $currency = $user->currency;
 
     $detectedOperator = 'UNKNOWN';
@@ -94,7 +94,7 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-3">
-                    @foreach([5000, 10000, 50000] as $amt)
+                    @foreach([500, 1000, 5000,15000, 10000, 50000] as $amt)
                         <button type="button" onclick="setAmount({{ $amt }})" class="py-3 rounded-xl text-[11px] font-semibold transition active:scale-95" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); color: #9ca3af;">
                             {{ number_format($amt, 0, '.', ' ') }}
                         </button>
@@ -150,10 +150,10 @@
             el.style.background = 'rgba(255,255,255,0.03)';
             el.style.borderColor = 'rgba(255,255,255,0.06)';
             el.style.boxShadow = 'none';
-            
+
             let iconBg = el.querySelector('.gw-icon-bg');
             iconBg.style.background = 'rgba(255,255,255,0.05)';
-            
+
             let icon = el.querySelector('.gw-icon');
             icon.classList.remove('text-blue-400');
             icon.classList.add('text-gray-500');

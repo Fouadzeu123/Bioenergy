@@ -46,21 +46,21 @@ class TransactionController extends Controller
     public function previewDepot(Request $request)
     {
         $user = Auth::user();
-        $minDepot = $user->role === 'admin' ? 0 : 5;
-        
+        $minDepot = $user->role === 'admin' ? 0 : 500;
+
         $request->validate([
             'amount' => "required|numeric|min:{$minDepot}|max:100000",
         ]);
 
         $amount = (float) $request->amount;
-        
+
         return view('depot-confirm', compact('amount'));
     }
 
     public function storeDepot(Request $request)
     {
         $user = Auth::user();
-        $minDepot = $user->role === 'admin' ? 0 : 5;
+        $minDepot = $user->role === 'admin' ? 0 : 500;
 
         // Déterminer le pays de l'utilisateur depuis l'indicatif téléphonique
         $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
