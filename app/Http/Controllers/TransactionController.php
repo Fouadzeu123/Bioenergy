@@ -279,7 +279,7 @@ class TransactionController extends Controller
         $minRetrait   = $user->role === 'admin' ? 1 : 5;
 
         $request->validate([
-            'amount'              => "required|numeric|min:1000|max:1000000",
+            'amount'              => "required|numeric|min:500|max:1000000",
             'withdrawal_password' => 'required|string',
         ]);
 
@@ -320,16 +320,16 @@ class TransactionController extends Controller
         }
 
         // =============================================
-        // 4. Éviter les doublons
+        // 4. Limite : Un seul retrait par jour
         // =============================================
-        $recent = Transaction::where('user_id', $user->id)
+        $hasWithdrawnToday = Transaction::where('user_id', $user->id)
             ->where('type', 'retrait')
-            ->where('montant', $amount)
-            ->where('created_at', '>', now()->subMinutes(2))
+            ->whereDate('created_at', now()->toDateString())
+            ->whereIn('status', ['pending', 'completed'])
             ->exists();
 
-        if ($recent) {
-            return back()->with('error', 'Vous avez déjà soumis ce retrait. Veuillez patienter.');
+        if ($hasWithdrawnToday) {
+            return back()->with('error', 'Limite quotidienne atteinte : vous ne pouvez effectuer qu\'un seul retrait par jour.');
         }
 
         // =============================================

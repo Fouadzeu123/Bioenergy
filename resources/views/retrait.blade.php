@@ -3,7 +3,7 @@
     @php
         $user = Auth::user();
         $currency = $user->currency;
-        $MIN_WITHDRAWAL = 1000;
+        $MIN_WITHDRAWAL = 500;
         $FEE_PERCENT = 10;
         $balance = $user->account_balance ?? 0;
     @endphp
@@ -61,7 +61,7 @@
                     <input type="hidden" name="amount" id="amountInput" required>
 
                     <div class="grid grid-cols-2 gap-3">
-                        @foreach([1000, 5000, 15000, 50000, 150000, 500000, 1500000, 3000000] as $amt)
+                        @foreach([500, 1000, 5000, 15000, 50000, 150000, 500000, 1500000, 3000000] as $amt)
                             <button type="button" onclick="setAmount({{ $amt }}, this)"
                                 class="amount-btn py-4 rounded-xl text-[14px] font-bold transition-all active:scale-95"
                                 style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af;">
@@ -101,12 +101,14 @@
                         </p>
                         <p>
                             <span class="text-gray-300 font-bold">Montants fixes :</span>
-                            1 000 / 5 000 / 15 000 / 50 000 / 150 000 / 500 000 / 1 500 000 / 3 000 000.
+                            500 / 1 000 / 5 000 / 15 000 / 50 000 / 150 000 / 500 000 / 1 500 000 / 3 000 000.
                         </p>
                         <p>
                             <span class="text-gray-300 font-bold text-red">Heures de retrait :</span> 9h00 à 18h00 les
-                            jours
-                            ouvrables.
+                            jours ouvrables.
+                        </p>
+                        <p>
+                            <span class="text-gray-300 font-bold text-cyan-400">Limite quotidienne :</span> Un seul retrait maximum est autorisé par jour.
                         </p>
                         <div class="p-3 rounded-xl bg-rose-500/5 border border-rose-500/10">
                             <p class="text-rose-400/90 font-medium">

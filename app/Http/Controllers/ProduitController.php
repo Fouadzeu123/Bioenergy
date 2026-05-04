@@ -112,7 +112,7 @@ class ProduitController extends Controller
         // Bonus de bienvenue (après le tout premier achat global)
         $totalOrders = $user->orders()->count();
         if ($totalOrders === 1) {
-            $bonusAmount = 500; // Montant du bonus
+            $bonusAmount = 200; // Montant du bonus
             $user->increment('account_balance', $bonusAmount);
             // $user->increment('lucky_spins', 1); // +1 Tour de roue pour le 1er achat (Retiré: contact RH manuel)
 
