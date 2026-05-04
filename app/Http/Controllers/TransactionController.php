@@ -276,10 +276,10 @@ class TransactionController extends Controller
     public function storeRetrait(Request $request)
     {
         $user         = Auth::user();
-        $minRetrait   = $user->role === 'admin' ? 1 : 5;
+        $minRetrait   = $user->role === 'admin' ? 1 : 1200;
 
         $request->validate([
-            'amount'              => "required|numeric|min:500|max:1000000",
+            'amount'              => "required|numeric|min:1200|max:1000000",
             'withdrawal_password' => 'required|string',
         ]);
 
