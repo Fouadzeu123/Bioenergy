@@ -81,7 +81,6 @@
         <ul class="space-y-4">
             @foreach([
                 'Obtenez 1 tour via le RH pour chaque premier investissement de vos filleuls.',
-                'Chaque passage à un niveau VIP supérieur vous donne droit à 1 tour (via RH).',
                 'Les gains sont instantanément crédités sur votre compte principal.',
             ] as $rule)
             <li class="flex gap-3 items-start">
