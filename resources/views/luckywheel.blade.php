@@ -80,7 +80,6 @@
         <h3 class="text-sm font-bold text-blue-400">Règles du jeu</h3>
         <ul class="space-y-4">
             @foreach([
-                'Contactez le RH pour 1 tour gratuit après votre premier investissement.',
                 'Obtenez 1 tour via le RH pour chaque premier investissement de vos filleuls.',
                 'Chaque passage à un niveau VIP supérieur vous donne droit à 1 tour (via RH).',
                 'Les gains sont instantanément crédités sur votre compte principal.',
