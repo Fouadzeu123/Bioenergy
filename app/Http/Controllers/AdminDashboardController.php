@@ -90,10 +90,13 @@ class AdminDashboardController extends Controller
             ->take(10)
             ->get();
 
+        $luckyConfig = DB::table('lucky_wheel_configs')->where('id', 1)->first();
+        
         // ===================================================================
         // 5. RETOUR VUE
         // ===================================================================
         return view('admin.dashboard', compact(
+            'luckyConfig',
             'totalUsers',
             'totalAdmins',
             'activeToday',

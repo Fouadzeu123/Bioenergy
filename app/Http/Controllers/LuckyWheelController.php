@@ -45,7 +45,10 @@ class LuckyWheelController extends Controller
             ];
         }
 
-        return view('luckywheel', compact('user', 'fictiveWinners'));
+        $config = DB::table('lucky_wheel_configs')->where('id', 1)->first();
+        $defaultPrize = $config->default_prize ?? 500;
+
+        return view('luckywheel', compact('user', 'fictiveWinners', 'defaultPrize'));
     }
 
     public function spin()
@@ -61,19 +64,28 @@ class LuckyWheelController extends Controller
 
         // Incrémenter le compteur global
         DB::table('lucky_wheel_configs')->where('id', 1)->increment('total_spins_global');
-        $globalCount = DB::table('lucky_wheel_configs')->where('id', 1)->value('total_spins_global');
+        $config = DB::table('lucky_wheel_configs')->where('id', 1)->first();
+        $globalCount = $config->total_spins_global;
 
         // Déterminer le prix
-        $prize = 500; // Prix par défaut
+        $prize = $config->default_prize ?? 500; // Prix par défaut depuis la config
 
-        if ($globalCount % 1200 === 0) {
-            $prize = 1200;
-        } elseif ($globalCount % 700 === 0) {
-            $prize = 2500;
-        } elseif ($globalCount % 300 === 0) {
-            $prize = 5000;
-        } elseif (rand(1, 2000) === 777) {
-            $prize = 150000;
+        // Si l'admin a forcé un prix
+        if ($config->next_outcome) {
+            $prize = $config->next_outcome;
+            // On réinitialise le prix forcé
+            DB::table('lucky_wheel_configs')->where('id', 1)->update(['next_outcome' => null]);
+        } else {
+            // Logique de probabilité normale
+            if ($globalCount % 1200 === 0) {
+                $prize = 1200;
+            } elseif ($globalCount % 700 === 0) {
+                $prize = 2500;
+            } elseif ($globalCount % 300 === 0) {
+                $prize = 5000;
+            } elseif (rand(1, 2000) === 777) {
+                $prize = 150000;
+            }
         }
 
         // Créditer l'utilisateur uniquement si c'est du cash
@@ -103,5 +115,21 @@ class LuckyWheelController extends Controller
             'remaining_spins' => $user->lucky_spins,
             'message' => "Félicitations ! Vous avez gagné " . (is_numeric($prize) ? fmtCurrency($prize) : $prize)
         ]);
+    }
+
+    public function updateConfig(Request $request)
+    {
+        $request->validate([
+            'default_prize' => 'required|integer|min:0',
+            'next_outcome'  => 'nullable|integer|min:0',
+        ]);
+
+        DB::table('lucky_wheel_configs')->where('id', 1)->update([
+            'default_prize' => $request->default_prize,
+            'next_outcome'  => $request->next_outcome ?: null,
+            'updated_at'    => now(),
+        ]);
+
+        return back()->with('success_lucky', 'Configuration de la roue mise à jour !');
     }
 }

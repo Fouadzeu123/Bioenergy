@@ -173,8 +173,8 @@
         </div>
     </div>
 
-    <!-- Dernières activités -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Dernières activités & Config Roue -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Nouveaux inscrits -->
         <div class="card-admin p-5">
             <div class="flex items-center justify-between mb-4">
@@ -230,6 +230,39 @@
                     </div>
                 @endforeach
             </div>
+        </div>
+
+        <!-- Config Lucky Wheel -->
+        <div class="card-admin p-5">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-bold text-indigo-400">Config Lucky Wheel</h3>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-indigo-500/10 text-indigo-400">
+                    <i class="fas fa-dharmachakra"></i>
+                </div>
+            </div>
+            <form action="{{ route('admin.luckywheel.update_config') }}" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <label class="text-[11px] font-semibold text-gray-400 block mb-1">Prix par défaut (XAF)</label>
+                    <input type="number" name="default_prize" value="{{ $luckyConfig->default_prize ?? 500 }}" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition">
+                </div>
+                <div>
+                    <label class="text-[11px] font-semibold text-gray-400 block mb-1">Prochain gain forcé (XAF)</label>
+                    <select name="next_outcome" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition">
+                        <option value="">-- Aléatoire (Probabilités) --</option>
+                        @foreach([500, 1200, 2500, 5000, 10000, 25000, 50000, 150000] as $p)
+                            <option value="{{ $p }}" {{ ($luckyConfig->next_outcome ?? 0) == $p ? 'selected' : '' }}>{{ number_format($p, 0, ',', ' ') }} XAF</option>
+                        @endforeach
+                    </select>
+                    <p class="text-[9px] text-gray-500 mt-1">Une fois gagné, il repassera en automatique.</p>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/20">
+                    Mettre à jour la roue
+                </button>
+            </form>
+            @if(session('success_lucky'))
+                <p class="text-[10px] text-emerald-400 mt-2 text-center font-medium">{{ session('success_lucky') }}</p>
+            @endif
         </div>
     </div>
 </div>

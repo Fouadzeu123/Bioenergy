@@ -178,6 +178,7 @@ Route::prefix('admin')->middleware(['admin' => IsAdmin::class])->group(function 
     Route::get('/preservation/{preservation}/edit', [AdminPreservationController::class, 'edit'])->name('admin.preservation.edit');
     Route::put('/preservation/{preservation}', [AdminPreservationController::class, 'update'])->name('admin.preservation.update');
     Route::delete('/preservation/{preservation}', [AdminPreservationController::class, 'destroy'])->name('admin.preservation.destroy');
+    Route::post('/lucky-wheel/config', [LuckyWheelController::class, 'updateConfig'])->name('admin.luckywheel.update_config');
 });
 
 }); // Fin du groupe middleware('auth')

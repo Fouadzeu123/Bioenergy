@@ -131,12 +131,12 @@
     const spinCountDisplay = document.getElementById('spin-count');
 
     const prizes = [
-        { val: 500 },
+        { val: {{ $defaultPrize }} },
         { val: 1200 },
         { val: 5000 },
         { val: 1200 },
         { val: 150000 },
-        { val: 500 },
+        { val: {{ $defaultPrize }} },
         { val: 25000 },
         { val: 5000 }
     ];
@@ -209,7 +209,10 @@
             isSpinning = true;
 
             const matchingIndexes = prizes.map((p, i) => p.val == data.prize ? i : -1).filter(i => i !== -1);
-            const prizeIndex = matchingIndexes[Math.floor(Math.random() * matchingIndexes.length)];
+            let prizeIndex = matchingIndexes[Math.floor(Math.random() * matchingIndexes.length)];
+            
+            // Si le prix n'est pas sur la roue, on s'arrête sur le premier (dynamique)
+            if (prizeIndex === undefined) prizeIndex = 0;
 
             const extraRounds = 5 + Math.floor(Math.random() * 5);
             const currentSpins = Math.floor(currentRotation / 360);
