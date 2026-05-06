@@ -66,12 +66,12 @@ class LuckyWheelController extends Controller
         // Déterminer le prix
         $prize = 500; // Prix par défaut
 
-        if ($globalCount % 120 === 0) {
-            $prize = 'Power Bank';
-        } elseif ($globalCount % 70 === 0) {
-            $prize = 'Ventilateur';
-        } elseif ($globalCount % 30 === 0) {
-            $prize = 'Montre connectée';
+        if ($globalCount % 1200 === 0) {
+            $prize = 1200;
+        } elseif ($globalCount % 700 === 0) {
+            $prize = 2500;
+        } elseif ($globalCount % 300 === 0) {
+            $prize = 5000;
         } elseif (rand(1, 2000) === 777) {
             $prize = 150000;
         }
