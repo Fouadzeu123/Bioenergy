@@ -31,7 +31,7 @@ class ProduitController extends Controller
     public function acheter(Request $request, $id)
     {
         $produit = Produit::findOrFail($id);
-        if ($produit->level == 5) {
+        if ($produit->level >= 5) {
             return back()->with('error', "Ce produit n'est pas encore indisponible.");
         }
         $user = Auth::user();
@@ -128,11 +128,11 @@ class ProduitController extends Controller
             Notification::create([
                 'user_id' => $user->id,
                 'type'    => 'bonus',
-                'content' => "Félicitations ! Vous avez reçu un bonus de " . fmtCurrency($bonusAmount) . " après votre premier investissement. Veuillez contacter le service RH pour obtenir votre tour de roue gratuit.",
+                'content' => "Félicitations ! Vous avez reçu un bonus de " . fmtCurrency($bonusAmount) . " après votre premier investissement.",
             ]);
         }
 
-        return back()->with('success', 'Investissement effectué avec succès !' . ($totalOrders === 1 ? ' Vous avez reçu un bonus de bienvenue ! Veuillez contacter le RH pour votre tour de roue.' : ''));
+        return back()->with('success', 'Investissement effectué avec succès !' . ($totalOrders === 1 ? ' Vous avez reçu un bonus de bienvenue!' : ''));
     }
 
     private function attribuerBonusParrainage(User $filleul, float $amount, string $productName): void
