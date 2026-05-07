@@ -78,7 +78,7 @@
                 $earned = \App\Models\Transaction::where('user_id', Auth::id())->where('type', 'gain_journalier')->where('order_id', $order->id)->sum('montant');
                 
                 $today = \Carbon\Carbon::today()->startOfDay();
-                $validGainDay = !$today->isSunday() && 
+                $validGainDay = !$today->isSaturday() && !$today->isSunday() && 
                                 $today->isAfter($start->startOfDay()) &&
                                 ($order->last_gain_at === null || \Carbon\Carbon::parse($order->last_gain_at)->startOfDay()->lt($today));
             @endphp

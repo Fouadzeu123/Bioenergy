@@ -230,7 +230,7 @@ class ProduitController extends Controller
         foreach ($orders as $order) {
             $today = Carbon::today()->startOfDay();
 
-            $validGainDay = !$today->isSunday() &&
+            $validGainDay = !$today->isSaturday() && !$today->isSunday() &&
                             $today->isAfter(Carbon::parse($order->start_date)->startOfDay()) &&
                             ($order->last_gain_at === null || Carbon::parse($order->last_gain_at)->startOfDay()->lt($today));
 

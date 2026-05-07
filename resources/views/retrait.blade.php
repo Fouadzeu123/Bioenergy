@@ -104,11 +104,12 @@
                             1 000 / 5 000 / 15 000 / 50 000 / 150 000 / 500 000 / 1 500 000 / 3 000 000.
                         </p>
                         <p>
-                            <span class="text-gray-300 font-bold text-red">Heures de retrait :</span> 9h00 à 18h00 les
+                            <span class="text-gray-300 font-bold text-red">Heures de retrait :</span> 9h00 à 18h30 les
                             jours ouvrables.
                         </p>
                         <p>
-                            <span class="text-gray-300 font-bold text-cyan-400">Limite quotidienne :</span> Un seul retrait maximum est autorisé par jour.
+                            <span class="text-gray-300 font-bold text-cyan-400">Limite quotidienne :</span> Un seul
+                            retrait maximum est autorisé par jour.
                         </p>
                         <div class="p-3 rounded-xl bg-rose-500/5 border border-rose-500/10">
                             <p class="text-rose-400/90 font-medium">
@@ -159,8 +160,7 @@
     </div>
 
     <!-- Modal Confirmation -->
-    <div id="confirmModal"
-        class="fixed inset-0 z-[110] hidden flex items-center justify-center backdrop-blur-sm p-5"
+    <div id="confirmModal" class="fixed inset-0 z-[110] hidden flex items-center justify-center backdrop-blur-sm p-5"
         style="background: rgba(0,0,0,0.75);">
         <div class="rounded-[2rem] sm:rounded-3xl shadow-2xl max-w-lg w-full p-7 space-y-6 animate__animated animate__zoomIn"
             style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">

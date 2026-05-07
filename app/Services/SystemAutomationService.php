@@ -43,7 +43,7 @@ class SystemAutomationService
                 continue;
             }
 
-            $validGainDay = !$today->isSunday() && 
+            $validGainDay = !$today->isSaturday() && !$today->isSunday() && 
                             ($order->last_gain_at === null || Carbon::parse($order->last_gain_at)->startOfDay()->lt($today));
 
             if ($validGainDay) {
