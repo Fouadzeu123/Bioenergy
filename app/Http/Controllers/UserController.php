@@ -14,9 +14,9 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $niveau1 = User::where('invited_by', $user->id)->get();
-        $niveau2 = User::whereIn('invited_by', $niveau1->pluck('id'))->get();
-        $niveau3 = User::whereIn('invited_by', $niveau2->pluck('id'))->get();
+        $niveau1 = User::where('invited_by', $user->id)->where('level', '>=', 1)->get();
+        $niveau2 = User::whereIn('invited_by', $niveau1->pluck('id'))->where('level', '>=', 1)->get();
+        $niveau3 = User::whereIn('invited_by', $niveau2->pluck('id'))->where('level', '>=', 1)->get();
 
         $total = $niveau1->count() + $niveau2->count() + $niveau3->count();
         $refUrl = route('register.view', ['ref' => $user->invitation_code]);
@@ -28,19 +28,19 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        // Niveau 1 : filleuls directs (collection)
-        $niveau1 = User::where('invited_by', $user->id)->get();
+        // Niveau 1 : filleuls directs (collection) - Filtrés par niveau >= 1
+        $niveau1 = User::where('invited_by', $user->id)->where('level', '>=', 1)->get();
 
         // Niveau 2 : filleuls des filleuls (collection)
         $niveau2 = collect();
         if ($niveau1->isNotEmpty()) {
-            $niveau2 = User::whereIn('invited_by', $niveau1->pluck('id'))->get();
+            $niveau2 = User::whereIn('invited_by', $niveau1->pluck('id'))->where('level', '>=', 1)->get();
         }
 
         // Niveau 3 : filleuls des niveau 2 (collection)
         $niveau3 = collect();
         if ($niveau2->isNotEmpty()) {
-            $niveau3 = User::whereIn('invited_by', $niveau2->pluck('id'))->get();
+            $niveau3 = User::whereIn('invited_by', $niveau2->pluck('id'))->where('level', '>=', 1)->get();
         }
 
         // Comptes par niveau

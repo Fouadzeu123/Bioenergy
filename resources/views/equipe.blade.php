@@ -9,8 +9,8 @@
                 <p class="text-[11px] font-medium mt-1" style="color: rgba(147,197,253,0.8);">Croissance & Revenus Passifs</p>
 
                 <div class="mt-5">
-                    <p class="text-[10px] font-semibold mb-1" style="color: rgba(147,197,253,0.6);">Taille totale</p>
-                    <p class="text-3xl font-bold">{{ $taille_equipe ?? 0 }} <span class="text-[12px] font-medium" style="color: rgba(255,255,255,0.4);">membres</span></p>
+                    <p class="text-[10px] font-semibold mb-1" style="color: rgba(147,197,253,0.6);">Membres Actifs</p>
+                    <p class="text-3xl font-bold">{{ $taille_equipe ?? 0 }} <span class="text-[12px] font-medium" style="color: rgba(255,255,255,0.4);">actifs</span></p>
                 </div>
             </div>
             <div class="text-right">
@@ -31,42 +31,68 @@
             <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Gains Journaliers</p>
             <p class="text-sm font-bold text-cyan-400">{{ fmtCurrency($gainsJournalier ?? 0) }}</p>
         </div>
-    </div>
-
-    <!-- Niveaux -->
-    <div class="space-y-6">
+    </div>    <!-- Niveaux -->
+    <div class="space-y-8">
         @foreach([1 => $niveau1 ?? collect(), 2 => $niveau2 ?? collect(), 3 => $niveau3 ?? collect()] as $level => $membres)
-            <div class="space-y-3">
-                <div class="flex items-center justify-between px-1">
-                    <h3 class="text-[12px] font-semibold" style="color: #4b5563;">Niveau {{ $level }} ({{ $membres->count() }})</h3>
-                    <span class="text-[10px] font-bold px-3 py-1 rounded-full" style="background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2);">
-                        {{ $level == 1 ? '10%' : ($level == 2 ? '3%' : '1%') }} com.
+            <div class="space-y-4">
+                <div class="flex items-center justify-between px-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-6 rounded-full {{ $level == 1 ? 'bg-blue-500' : ($level == 2 ? 'bg-cyan-500' : 'bg-violet-500') }}"></div>
+                        <h3 class="text-[14px] font-bold text-white">Niveau {{ $level }}</h3>
+                    </div>
+                    <span class="text-[10px] font-extrabold px-3 py-1 rounded-lg" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); color: #9ca3af;">
+                        {{ $membres->count() }} {{ Str::plural('membre', $membres->count()) }}
                     </span>
                 </div>
 
-                <div class="space-y-2">
-                    @forelse($membres->take(10) as $filleul)
+                <div class="grid grid-cols-1 gap-3">
+                    @forelse($membres as $filleul)
                         @php
                             $bonusGenere = App\Models\Transaction::where('user_id', Auth::id())
-                                ->where('type', 'bonus_vip')
+                                ->whereIn('type', ['bonus_vip', 'bonus_journalier'])
                                 ->where('from_user_id', $filleul->id)
                                 ->sum('montant');
                         @endphp
-                        <div class="rounded-2xl p-4 flex items-center justify-between cursor-pointer active:scale-95 transition" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);" onclick="openMemberModal({{ $filleul->id }})">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm" style="background: rgba(59,130,246,0.12); color: #60a5fa;">
-                                    U
+                        <div class="group relative overflow-hidden rounded-2xl p-4 transition-all active:scale-[0.98]" 
+                             style="background: #0d1117; border: 1px solid rgba(255,255,255,0.04);"
+                             onclick="openMemberModal({{ $filleul->id }})">
+                            
+                            <!-- Accent Glass -->
+                            <div class="absolute -right-4 -top-4 w-16 h-16 rounded-full opacity-10 blur-xl" 
+                                 style="background: {{ $level == 1 ? '#3b82f6' : ($level == 2 ? '#06b6d4' : '#8b5cf6') }}"></div>
+
+                            <div class="relative z-10 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg shadow-inner" 
+                                         style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); color: white;">
+                                        {{ substr($filleul->phone, 0, 1) }}
+                                    </div>
+                                    <div>
+                                        <p class="text-[13px] font-bold text-white tracking-wide">
+                                            +{{ $filleul->country_code }} {{ substr($filleul->phone, 0, 3) }}***{{ substr($filleul->phone, -2) }}
+                                        </p>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="text-[9px] font-bold px-2 py-0.5 rounded {{ $filleul->level >= 3 ? 'bg-amber-500/10 text-amber-500' : 'bg-blue-500/10 text-blue-400' }}">
+                                                VIP {{ $filleul->level ?? 0 }}
+                                            </span>
+                                            <span class="text-[9px] font-medium text-gray-500">
+                                                Inscrit le {{ $filleul->created_at->format('d/m/y') }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-[12px] font-semibold text-white">+{{ $filleul->country_code }} {{ substr($filleul->phone, 0, 3) }}***{{ substr($filleul->phone, -2) }}</p>
-                                    <p class="text-[10px] font-medium" style="color: #4b5563;">VIP {{ $filleul->level ?? 0 }} • {{ $filleul->created_at->format('d/m/y') }}</p>
+                                <div class="text-right">
+                                    <p class="text-[12px] font-black text-emerald-400">+{{ number_format($bonusGenere, 0, '.', ' ') }}</p>
+                                    <p class="text-[8px] font-bold text-gray-600 uppercase tracking-tighter">Profit généré</p>
                                 </div>
                             </div>
-                            <p class="text-[11px] font-bold text-cyan-400">{{ fmtCurrency($bonusGenere) }}</p>
                         </div>
                     @empty
-                        <div class="text-center py-6 rounded-2xl border border-dashed" style="border-color: rgba(255,255,255,0.08);">
-                            <p class="text-[11px] font-semibold" style="color: #374151;">Aucun membre</p>
+                        <div class="text-center py-10 rounded-2xl border border-dashed border-white/5 bg-white/[0.01]">
+                            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user-slash text-gray-600 text-xs"></i>
+                            </div>
+                            <p class="text-[11px] font-bold text-gray-600">Aucun membre actif à ce niveau</p>
                         </div>
                     @endforelse
                 </div>

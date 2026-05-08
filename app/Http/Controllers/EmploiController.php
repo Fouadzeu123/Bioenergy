@@ -103,8 +103,10 @@ class EmploiController extends Controller
 
         // --- Statistiques de l'utilisateur ---
 
-        // 1. Filleuls directs
-        $filleulsDirects = User::where('invited_by', $user->id)->count();
+        // 1. Filleuls directs actifs (ceux qui sont au moins au niveau 1)
+        $filleulsDirects = User::where('invited_by', $user->id)
+            ->where('level', '>=', 1)
+            ->count();
 
         // 2. IDs de l'équipe (3 niveaux)
         $niveau1Ids = User::where('invited_by', $user->id)->pluck('id');

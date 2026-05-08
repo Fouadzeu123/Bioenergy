@@ -47,7 +47,7 @@
             <div class="w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-2" style="background: rgba(59,130,246,0.1);">
                 <i class="fas fa-user-plus text-blue-400 text-[10px]"></i>
             </div>
-            <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Directs</p>
+            <p class="text-[10px] font-semibold mb-1" style="color: #4b5563;">Directs Actifs</p>
             <p class="text-lg font-bold text-white">{{ $filleulsDirects }}</p>
         </div>
         <div class="rounded-2xl p-4 text-center shadow-lg" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.06);">
