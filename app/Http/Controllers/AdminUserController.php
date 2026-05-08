@@ -65,11 +65,17 @@ class AdminUserController extends Controller
     {
         $user = User::with([
                 'parrain:id,phone',
-                'transactions' => fn($q) => $q->latest()->take(40)
+                'transactions' => fn($q) => $q->latest()->take(40),
+                'filleuls' // Level 1
             ])
             ->findOrFail($id);
 
-        // Calcul des totaux réels en USD
+        // Niveaux de parrainage (1, 2, 3)
+        $level1 = $user->filleuls;
+        $level2 = User::whereIn('invited_by', $level1->pluck('id'))->get();
+        $level3 = User::whereIn('invited_by', $level2->pluck('id'))->get();
+
+        // Calcul des totaux réels
         $user->total_deposits = $user->transactions()
             ->where('type', 'depot')
             ->where('status', 'completed')
@@ -80,7 +86,7 @@ class AdminUserController extends Controller
             ->where('status', 'completed')
             ->sum('montant');
 
-        return view('admin.users-show', compact('user'));
+        return view('admin.users-show', compact('user', 'level1', 'level2', 'level3'));
     }
 
     public function edit($id)

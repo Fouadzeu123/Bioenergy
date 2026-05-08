@@ -111,6 +111,7 @@
                         <p class="font-bold text-white text-sm">+{{ $user->parrain->country_code }} {{ $user->parrain->phone }}</p>
                         <p class="text-[11px] text-gray-500">VIP {{ $user->parrain->level ?? 1 }}</p>
                     </div>
+                    <a href="{{ route('admin.users.show', $user->parrain->id) }}" class="ml-auto text-[10px] text-cyan-400 hover:underline">Voir profil</a>
                 </div>
             @else
                 <p class="text-gray-500 text-sm text-center py-6">Aucun parrain</p>
@@ -126,6 +127,57 @@
             </div>
         </div>
     </div>
+
+    <!-- Réseau de Parrainage -->
+    <div class="card-admin p-6">
+        <h3 class="text-sm font-bold text-white mb-6">Réseau de Parrainage</h3>
+        
+        <div class="flex gap-2 mb-6 p-1 rounded-xl" style="background: rgba(255,255,255,0.03);">
+            <button onclick="showLevel(1)" id="btn-lvl-1" class="lvl-btn active-lvl flex-1 py-2 text-[11px] font-bold rounded-lg transition-all">NIVEAU 1 ({{ $level1->count() }})</button>
+            <button onclick="showLevel(2)" id="btn-lvl-2" class="lvl-btn flex-1 py-2 text-[11px] font-bold rounded-lg transition-all">NIVEAU 2 ({{ $level2->count() }})</button>
+            <button onclick="showLevel(3)" id="btn-lvl-3" class="lvl-btn flex-1 py-2 text-[11px] font-bold rounded-lg transition-all">NIVEAU 3 ({{ $level3->count() }})</button>
+        </div>
+
+        <div id="lvl-content-1" class="lvl-content space-y-3">
+            @forelse($level1 as $f)
+                @include('admin.components.filleul-item', ['f' => $f])
+            @empty
+                <p class="text-center py-6 text-gray-500 text-xs">Aucun filleul de niveau 1</p>
+            @endforelse
+        </div>
+
+        <div id="lvl-content-2" class="lvl-content hidden space-y-3">
+            @forelse($level2 as $f)
+                @include('admin.components.filleul-item', ['f' => $f])
+            @empty
+                <p class="text-center py-6 text-gray-500 text-xs">Aucun filleul de niveau 2</p>
+            @endforelse
+        </div>
+
+        <div id="lvl-content-3" class="lvl-content hidden space-y-3">
+            @forelse($level3 as $f)
+                @include('admin.components.filleul-item', ['f' => $f])
+            @empty
+                <p class="text-center py-6 text-gray-500 text-xs">Aucun filleul de niveau 3</p>
+            @endforelse
+        </div>
+    </div>
+
+    <style>
+        .lvl-btn { color: #4b5563; }
+        .lvl-btn:hover { background: rgba(255,255,255,0.05); color: #9ca3af; }
+        .active-lvl { background: rgba(59,130,246,0.1) !important; color: #60a5fa !important; }
+    </style>
+
+    <script>
+        function showLevel(lvl) {
+            document.querySelectorAll('.lvl-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('lvl-content-' + lvl).classList.remove('hidden');
+            
+            document.querySelectorAll('.lvl-btn').forEach(btn => btn.classList.remove('active-lvl'));
+            document.getElementById('btn-lvl-' + lvl).classList.add('active-lvl');
+        }
+    </script>
 
     <!-- Dernières transactions -->
     <div class="card-admin overflow-hidden">

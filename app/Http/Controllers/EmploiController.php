@@ -25,9 +25,9 @@ class EmploiController extends Controller
                 'revenu'       => 30000,
                 'description'  => 'Premier échelon de la famille BioEnergy. Accompagnez de nouveaux membres et commencez à percevoir un revenu mensuel récurrent.',
                 'conditions'   => [
-                    'filleuls_directs' => 10,
+                    'filleuls_directs' => 20,
                     'depot_equipe'     => 120000,
-                    'depot_propre'     => 30000,
+                    'depot_propre'     => 90000,
                 ],
             ],
             [
@@ -41,9 +41,9 @@ class EmploiController extends Controller
                 'revenu'       => 90000,
                 'description'  => 'Vous constituez une équipe solide et générez un volume d\'affaires croissant. Un revenu mensuel garanti récompense votre engagement.',
                 'conditions'   => [
-                    'filleuls_directs' => 15,
+                    'filleuls_directs' => 50,
                     'depot_equipe'     => 300000,
-                    'depot_propre'     => 120000,
+                    'depot_propre'     => 150000,
                 ],
             ],
             [
@@ -57,7 +57,7 @@ class EmploiController extends Controller
                 'revenu'       => 240000,
                 'description'  => 'Vous supervisez plusieurs agents et coordonnez une équipe performante. Votre influence se traduit par un revenu conséquent.',
                 'conditions'   => [
-                    'filleuls_directs' => 30,
+                    'filleuls_directs' => 100,
                     'depot_equipe'     => 1200000,
                     'depot_propre'     => 300000,
                 ],
@@ -73,7 +73,7 @@ class EmploiController extends Controller
                 'revenu'       => 500000,
                 'description'  => 'Vous dirigez une organisation prospère. Votre leadership et votre réseau étendu vous permettent d\'accéder à un revenu premium.',
                 'conditions'   => [
-                    'filleuls_directs' => 50,
+                    'filleuls_directs' => 125,
                     'depot_equipe'     => 3000000,
                     'depot_propre'     => 600000,
                 ],
@@ -89,7 +89,7 @@ class EmploiController extends Controller
                 'revenu'       => 1200000,
                 'description'  => 'Sommet de la hiérarchie BioEnergy. Vous pilotez un réseau d\'envergure régionale et bénéficiez du revenu le plus élevé de la plateforme.',
                 'conditions'   => [
-                    'filleuls_directs' => 100,
+                    'filleuls_directs' => 210,
                     'depot_equipe'     => 9000000,
                     'depot_propre'     => 1800000,
                 ],

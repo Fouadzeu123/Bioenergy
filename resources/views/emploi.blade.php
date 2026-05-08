@@ -119,7 +119,7 @@
                     <div class="space-y-1.5">
                         <div class="flex justify-between items-center">
                             <p class="text-[10px] font-semibold uppercase tracking-wider" style="color: #4b5563;">Dépôts de l'équipe</p>
-                            <p class="text-[10px] font-bold text-gray-300">{{ $p['equipe'] }}%</p>
+                            <p class="text-[10px] font-bold text-gray-300">{{ number_format($depotEquipe, 0, '.', ' ') }} / {{ number_format($poste['conditions']['depot_equipe'], 0, '.', ' ') }}</p>
                         </div>
                         <div class="h-1.5 rounded-full" style="background: rgba(255,255,255,0.06);">
                             <div class="h-full rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(167,139,250,0.5)]" style="width: {{ $p['equipe'] }}%; background: linear-gradient(90deg, #7c3aed, #a78bfa);"></div>
@@ -130,7 +130,7 @@
                     <div class="space-y-1.5">
                         <div class="flex justify-between items-center">
                             <p class="text-[10px] font-semibold uppercase tracking-wider" style="color: #4b5563;">Investissement Personnel</p>
-                            <p class="text-[10px] font-bold text-gray-300">{{ $p['propre'] }}%</p>
+                            <p class="text-[10px] font-bold text-gray-300">{{ number_format($depotPropre, 0, '.', ' ') }} / {{ number_format($poste['conditions']['depot_propre'], 0, '.', ' ') }}</p>
                         </div>
                         <div class="h-1.5 rounded-full" style="background: rgba(255,255,255,0.06);">
                             <div class="h-full rounded-full transition-all duration-1000 shadow-[0_0_8px_rgba(52,211,153,0.5)]" style="width: {{ $p['propre'] }}%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
