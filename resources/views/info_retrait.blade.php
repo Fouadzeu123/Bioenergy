@@ -42,27 +42,25 @@
             </div>
 
             <!-- Choix pays -->
-            <div class="grid grid-cols-2 gap-3">
-                <label class="relative cursor-pointer">
-                    <input type="radio" name="withdrawal_country" value="CM"
-                           {{ old('withdrawal_country', $user->withdrawal_country ?? 'CM') === 'CM' ? 'checked' : '' }}
-                           class="hidden peer">
-                    <div class="p-4 rounded-2xl text-center transition-all peer-checked:ring-2 peer-checked:ring-blue-500"
-                         style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                        <span class="text-2xl">🇨🇲</span>
-                        <p class="text-[12px] font-semibold text-gray-300 mt-2">Cameroun</p>
+            <div class="space-y-2">
+                <label class="text-[11px] font-semibold px-1" style="color: #4b5563;">Pays de retrait</label>
+                <div class="relative">
+                    <select name="withdrawal_country" id="withdrawal_country" required
+                            class="w-full rounded-2xl px-5 py-4 text-[12px] font-semibold text-white outline-none transition appearance-none cursor-pointer"
+                            style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+                        @php $allCountries = config('notchpay.country_phone_codes'); @endphp
+                        @foreach($allCountries as $iso => $code)
+                            <option value="{{ $iso }}" {{ old('withdrawal_country', $user->withdrawal_country ?? 'CM') === $iso ? 'selected' : '' }}>
+                                {{ config('notchpay.country_flags.' . $iso) }}
+                                {{ config('notchpay.country_names.' . $iso) }}
+                                (+{{ $code }})
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <i class="fas fa-chevron-down text-gray-500 text-[10px]"></i>
                     </div>
-                </label>
-                <label class="relative cursor-pointer">
-                    <input type="radio" name="withdrawal_country" value="CI"
-                           {{ old('withdrawal_country', $user->withdrawal_country ?? 'CM') === 'CI' ? 'checked' : '' }}
-                           class="hidden peer">
-                    <div class="p-4 rounded-2xl text-center transition-all peer-checked:ring-2 peer-checked:ring-blue-500"
-                         style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
-                        <span class="text-2xl">🇨🇮</span>
-                        <p class="text-[12px] font-semibold text-gray-300 mt-2">Côte d'Ivoire</p>
-                    </div>
-                </label>
+                </div>
             </div>
 
             <!-- Opérateur -->
@@ -118,38 +116,25 @@
 </div>
 
 <script>
-    const operators = {
-        CM: [
-            { value: 'MTN',    label: 'MTN Mobile Money' },
-            { value: 'ORANGE', label: 'Orange Money' },
-        ],
-        CI: [
-            { value: 'MTN',    label: 'MTN Mobile Money CI' },
-            { value: 'ORANGE', label: 'Orange Money CI' },
-            { value: 'MOOV',   label: 'Moov Money' },
-        ],
-    };
+    const operators = @json(array_map('array_keys', config('notchpay.channels')));
 
     const savedMethod = @json(old('withdrawal_method', $user->withdrawal_method ?? ''));
     const methodSelect = document.getElementById('withdrawal_method');
+    const countrySelect = document.getElementById('withdrawal_country');
 
     function updateOperators(country) {
-        const list = operators[country] || operators['CM'];
+        const list = operators[country] || [];
         methodSelect.innerHTML = '';
         list.forEach(op => {
             const option = document.createElement('option');
-            option.value = op.value;
-            option.textContent = op.label;
-            if (op.value === savedMethod) option.selected = true;
+            option.value = op;
+            option.textContent = op;
+            if (op === savedMethod) option.selected = true;
             methodSelect.appendChild(option);
         });
     }
 
-    const checkedCountry = document.querySelector('input[name="withdrawal_country"]:checked');
-    updateOperators(checkedCountry ? checkedCountry.value : 'CM');
-
-    document.querySelectorAll('input[name="withdrawal_country"]').forEach(radio => {
-        radio.addEventListener('change', () => updateOperators(radio.value));
-    });
+    updateOperators(countrySelect.value);
+    countrySelect.addEventListener('change', () => updateOperators(countrySelect.value));
 </script>
 </x-layouts>

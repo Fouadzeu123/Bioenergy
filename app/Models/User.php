@@ -51,8 +51,8 @@ protected $fillable = [
                 $user->country_code = '237'; // Cameroun par défaut
             }
             if (empty($user->withdrawal_country)) {
-                // Déduire le pays à partir de country_code
-                $user->withdrawal_country = $user->country_code === '225' ? 'CI' : 'CM';
+                // Déduire le pays ISO depuis l'indicatif téléphonique
+                $user->withdrawal_country = config('notchpay.phone_to_country.' . $user->country_code, 'CM');
             }
         });
     }
@@ -101,10 +101,21 @@ public function transactions()
 }
 
     /**
-     * Retourne la devise de l'utilisateur (XAF pour CM, XOF pour CI).
+     * Retourne la devise de l'utilisateur selon son pays.
      */
     public function getCurrencyAttribute(): string
     {
-        return ($this->withdrawal_country === 'CI' || $this->country_code === '225') ? 'XOF' : 'XAF';
+        $country = config('notchpay.phone_to_country.' . $this->country_code)
+                ?? ($this->withdrawal_country ?: 'CM');
+        return config('notchpay.currencies.' . $country, 'XAF');
+    }
+
+    /**
+     * Retourne le code pays ISO (CM, CI, SN, …)
+     */
+    public function getCountryIsoAttribute(): string
+    {
+        return config('notchpay.phone_to_country.' . $this->country_code)
+            ?? ($this->withdrawal_country ?: 'CM');
     }
 }

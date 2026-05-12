@@ -62,9 +62,10 @@ class TransactionController extends Controller
         $user = Auth::user();
         $minDepot = $user->role === 'admin' ? 0 : 500;
 
-        // Déterminer le pays de l'utilisateur depuis l'indicatif téléphonique
-        $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
-        $allowedOperators = ($userCountry === 'CI') ? ['MTN', 'ORANGE', 'MOOV'] : ['MTN', 'ORANGE'];
+        // Déterminer le pays ISO de l'utilisateur depuis l'indicatif
+        $userCountry = config('notchpay.phone_to_country.' . $user->country_code, 'CM');
+        $countryChannels = config('notchpay.channels.' . $userCountry, []);
+        $allowedOperators = array_keys($countryChannels);
 
         $request->validate([
             'amount'         => "required|numeric|min:{$minDepot}|max:100000",
@@ -86,9 +87,8 @@ class TransactionController extends Controller
         }
 
         // Canal NotchPay
-        $channel = config("notchpay.channels.{$userCountry}.{$operator}",
-            $userCountry === 'CI' ? 'ci.mtn' : 'cm.mtn'
-        );
+        $defaultChannel = $countryChannels[array_key_first($countryChannels)] ?? 'cm.mtn';
+        $channel = config("notchpay.channels.{$userCountry}.{$operator}", $defaultChannel);
 
         // Création de la transaction en statut "pending"
         $transaction = Transaction::create([

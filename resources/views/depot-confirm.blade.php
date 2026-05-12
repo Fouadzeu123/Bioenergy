@@ -3,30 +3,10 @@
 @php
     $user = Auth::user();
     $phone = $user->phone ?? '';
-    $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
-    $phonePrefix = ($userCountry === 'CI') ? '225' : '237';
+    $userCountry = config('notchpay.phone_to_country.' . $user->country_code, 'CM');
+    $phonePrefix = config('notchpay.country_phone_codes.' . $userCountry, '237');
     $currency = $user->currency;
-
-    $detectedOperator = 'UNKNOWN';
-    if ($phone) {
-        $phoneStr = preg_replace('/\D/', '', $phone);
-        if (str_starts_with($phoneStr, '237')) $phoneStr = substr($phoneStr, 3);
-        if (str_starts_with($phoneStr, '225')) $phoneStr = substr($phoneStr, 3);
-        if ($userCountry === 'CI') {
-            $prefix2 = substr($phoneStr, 0, 2);
-            if (in_array($prefix2, ['05','25','45','65','85'])) $detectedOperator = 'MTN';
-            elseif (in_array($prefix2, ['07','27','47','67','87'])) $detectedOperator = 'ORANGE';
-            elseif (in_array($prefix2, ['01','21','41','61','81'])) $detectedOperator = 'MOOV';
-        } else {
-            if (strlen($phoneStr) >= 9) {
-                $prefix3 = substr($phoneStr, 0, 3);
-                $mtnCM    = ['650','651','652','653','654','670','671','672','673','674','675','676','677','678','679','680','681','682','683'];
-                $orangeCM = ['640','641','642','643','644','645','646','647','648','655','656','657','658','659','690','691','692','693','694','695','696','697','698','699'];
-                if (in_array($prefix3, $mtnCM)) $detectedOperator = 'MTN';
-                elseif (in_array($prefix3, $orangeCM)) $detectedOperator = 'ORANGE';
-            }
-        }
-    }
+    $countryOperators = config('notchpay.channels.' . $userCountry, []);
 @endphp
 
 <div class="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden" style="background-color: #0f172a;">
@@ -83,14 +63,9 @@
                         <div class="relative">
                             <select name="payment_method" required class="w-full rounded-2xl px-5 py-4 text-white text-sm font-semibold focus:outline-none transition-all appearance-none" style="background: #0d1117; border: 1px solid rgba(255,255,255,0.08);">
                                 <option value="" disabled selected>Sélectionnez l'opérateur</option>
-                                @if($userCountry === 'CI')
-                                    <option value="MTN" {{ $detectedOperator === 'MTN' ? 'selected' : '' }}>MTN Côte d'Ivoire</option>
-                                    <option value="ORANGE" {{ $detectedOperator === 'ORANGE' ? 'selected' : '' }}>Orange Côte d'Ivoire</option>
-                                    <option value="MOOV" {{ $detectedOperator === 'MOOV' ? 'selected' : '' }}>Moov Côte d'Ivoire</option>
-                                @else
-                                    <option value="MTN" {{ $detectedOperator === 'MTN' ? 'selected' : '' }}>MTN Cameroun</option>
-                                    <option value="ORANGE" {{ $detectedOperator === 'ORANGE' ? 'selected' : '' }}>Orange Cameroun</option>
-                                @endif
+                                @foreach($countryOperators as $operatorKey => $channel)
+                                    <option value="{{ $operatorKey }}">{{ $operatorKey }} {{ config('notchpay.country_names.' . $userCountry) }}</option>
+                                @endforeach
                             </select>
                             <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
                                 <i class="fas fa-chevron-down text-gray-500 text-[10px]"></i>

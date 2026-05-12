@@ -10,11 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .country-radio:checked + .country-card { background: #10b981; border-color: #10b981; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen px-2 overflow-x-hidden relative py-12">
@@ -39,7 +36,7 @@
         </div>
 
         <!-- Form Card -->
-        <div class="glass-card rounded-[48px] p-10 shadow-2xl space-y-8">
+        <div class="glass-card rounded-[48px] p-8 shadow-2xl space-y-8">
             <form method="POST" action="{{ route('register') }}" class="space-y-6">
                 @csrf
 
@@ -59,32 +56,37 @@
                     </div>
                 @endif
 
-                <div class="space-y-6">
-                    <!-- Pays Selection -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="cursor-pointer group">
-                            <input type="radio" name="_country" value="CM" checked class="hidden peer" id="reg-cm">
-                            <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 border border-white/5 bg-slate-900/30 rounded-2xl p-4 text-center transition active:scale-95">
-                                <p class="text-[10px] font-bold text-white mt-1">+237</p>
+                <div class="space-y-5">
+                    <!-- Sélection du pays -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 px-1">Pays</label>
+                        <div class="relative">
+                            <select id="country-select" class="w-full bg-slate-900/50 border border-white/5 rounded-2xl px-5 py-4 text-white text-sm font-semibold focus:border-emerald-500 transition outline-none appearance-none">
+                                @php $countries = config('notchpay.country_phone_codes'); @endphp
+                                @foreach($countries as $iso => $code)
+                                    <option value="{{ $iso }}" data-code="{{ $code }}"
+                                        @selected(old('country_code_iso', 'CM') === $iso)>
+                                        {{ config('notchpay.country_flags.' . $iso) }}
+                                        {{ config('notchpay.country_names.' . $iso) }}
+                                        (+{{ $code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-500 text-[10px]"></i>
                             </div>
-                        </label>
-                        <label class="cursor-pointer group">
-                            <input type="radio" name="_country" value="CI" class="hidden peer" id="reg-ci">
-                            <div class="peer-checked:bg-emerald-500 peer-checked:border-emerald-500 border border-white/5 bg-slate-900/30 rounded-2xl p-4 text-center transition active:scale-95">
-                                <p class="text-[10px] font-bold text-white mt-1">+225</p>
-                            </div>
-                        </label>
+                        </div>
+                        <input type="hidden" name="country_code" id="country_code_input" value="{{ old('country_code', '237') }}">
                     </div>
 
-
+                    <!-- Téléphone -->
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-gray-500 px-2">Téléphone</label>
                         <div class="flex items-center bg-slate-900/50 border border-white/5 rounded-2xl px-6 py-4 focus-within:border-emerald-500 transition">
                             <span id="phone-prefix-display" class="text-emerald-400 font-bold text-sm pr-4 border-r border-white/5">+237</span>
-                            <input type="hidden" name="country_code" id="country_code_input" value="237">
                             <input type="tel" name="phone" value="{{ old('phone') }}" required
                                    class="flex-1 bg-transparent text-white text-sm font-semibold pl-4 focus:outline-none"
-                                   placeholder="Numero telephone">
+                                   placeholder="Numéro de téléphone">
                         </div>
                     </div>
 
@@ -121,25 +123,28 @@
             </div>
         </div>
 
-        <!-- Footer Info -->
         <p class="text-center text-[10px] font-medium text-gray-600 px-8">
             En continuant, vous acceptez nos conditions générales de service et d'investissement.
         </p>
     </div>
 
     <script>
-        const countries = {
-            CM: { code: '237', prefix: '+237' },
-            CI: { code: '225', prefix: '+225' },
-        };
+        const countries = @json(config('notchpay.country_phone_codes'));
 
-        document.querySelectorAll('input[name="_country"]').forEach(radio => {
-            radio.addEventListener('change', function () {
-                const c = countries[this.value];
-                document.getElementById('phone-prefix-display').textContent = c.prefix;
-                document.getElementById('country_code_input').value = c.code;
-            });
+        document.getElementById('country-select').addEventListener('change', function () {
+            const iso = this.value;
+            const code = this.options[this.selectedIndex].dataset.code;
+            document.getElementById('phone-prefix-display').textContent = '+' + code;
+            document.getElementById('country_code_input').value = code;
         });
+
+        // Init on load
+        (function () {
+            const sel = document.getElementById('country-select');
+            const code = sel.options[sel.selectedIndex].dataset.code;
+            document.getElementById('phone-prefix-display').textContent = '+' + code;
+            document.getElementById('country_code_input').value = code;
+        })();
     </script>
 </body>
 </html>

@@ -3,34 +3,12 @@
 @php
     $user = Auth::user();
     $balance = $user->account_balance ?? 0;
-    $phone = $user->phone ?? '';
-    $userCountry = ($user->country_code === '225') ? 'CI' : 'CM';
-    $phonePrefix = ($userCountry === 'CI') ? '225' : '237';
-    $countryName  = ($userCountry === 'CI') ? "Côte d'Ivoire" : 'Cameroun';
-    $countryFlag  = ($userCountry === 'CI') ? '🇨🇮' : '🇨🇲';
+    $userCountry = config('notchpay.phone_to_country.' . $user->country_code, 'CM');
+    $phonePrefix = config('notchpay.country_phone_codes.' . $userCountry, '237');
+    $countryName  = config('notchpay.country_names.' . $userCountry, 'Cameroun');
+    $countryFlag  = config('notchpay.country_flags.' . $userCountry, '🇨🇲');
     $minDepot = 500;
     $currency = $user->currency;
-
-    $detectedOperator = 'UNKNOWN';
-    if ($phone) {
-        $phoneStr = preg_replace('/\D/', '', $phone);
-        if (str_starts_with($phoneStr, '237')) $phoneStr = substr($phoneStr, 3);
-        if (str_starts_with($phoneStr, '225')) $phoneStr = substr($phoneStr, 3);
-        if ($userCountry === 'CI') {
-            $prefix2 = substr($phoneStr, 0, 2);
-            if (in_array($prefix2, ['05','25','45','65','85'])) $detectedOperator = 'MTN';
-            elseif (in_array($prefix2, ['07','27','47','67','87'])) $detectedOperator = 'ORANGE';
-            elseif (in_array($prefix2, ['01','21','41','61','81'])) $detectedOperator = 'MOOV';
-        } else {
-            if (strlen($phoneStr) >= 9) {
-                $prefix3 = substr($phoneStr, 0, 3);
-                $mtnCM    = ['650','651','652','653','654','670','671','672','673','674','675','676','677','678','679','680','681','682','683'];
-                $orangeCM = ['640','641','642','643','644','645','646','647','648','655','656','657','658','659','690','691','692','693','694','695','696','697','698','699'];
-                if (in_array($prefix3, $mtnCM)) $detectedOperator = 'MTN';
-                elseif (in_array($prefix3, $orangeCM)) $detectedOperator = 'ORANGE';
-            }
-        }
-    }
     $depots = $depots ?? collect();
 @endphp
 
