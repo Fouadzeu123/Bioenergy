@@ -42,14 +42,14 @@
                         <p class="text-[10px] font-semibold mb-0.5" style="color: #4b5563;">Montant Min</p>
                         <p class="text-sm font-bold text-white">{{ fmtCurrency($fond->min_amount) }}</p>
                     </div>
-                    <button @if(false) onclick="openInvestModal({{ $fond->id }})" @endif
+                    <button onclick="openInvestModal({{ $fond->id }})"
                             data-min="{{ $fond->min_amount }}"
                             data-name="{{ htmlspecialchars($fond->name, ENT_QUOTES) }}"
                             data-rate="{{ $fond->rate }}"
                             data-period="{{ $fond->period_days }}"
                             class="text-white text-[11px] font-bold px-5 py-2.5 rounded-xl active:scale-95 transition"
-                            style="background: rgba(107,114,128,0.2);">
-                        Indisponible
+                            style="background: linear-gradient(135deg, #2563eb, #0891b2); box-shadow: 0 0 15px rgba(59,130,246,0.2);">
+                        Placer
                     </button>
                 </div>
             </div>
